@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 interface userData {
   id: string | Types.ObjectId;
   email: string;
+  role: string;
 }
 
 export const tokenGenerate = async (user: userData) => {
@@ -17,7 +18,7 @@ export const tokenGenerate = async (user: userData) => {
   }
 
   const accessToken = jwt.sign(
-    { email: user.email, id: user.id },
+    { email: user.email, id: user.id, role: user.role },
     accessTokenKey,
     { expiresIn: "15m" }
   );

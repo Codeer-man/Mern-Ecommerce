@@ -6,17 +6,16 @@ import mongoose from "mongoose";
 import { errorHandler } from "./middleware/errorHandlin.middleware";
 import authRoutes from "./routes/auth.routes";
 import cookieParse from "cookie-parser";
-import { ErrorHandler } from "./utils/ErrorHandler";
 
 const app = express();
 
 app.use(
   cors({
-    origin: "localhost://5073",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
     allowedHeaders: [
       "Content-Type",
-      "Auhorization",
+      "Authorization",
       "Cache-Control",
       "Expires",
       "Pragma",

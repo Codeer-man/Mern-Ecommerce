@@ -74,6 +74,7 @@ export const authLogin = async (
     const { accessToken, refreshAccessToken } = await tokenGenerate({
       id: findUser._id.toString(),
       email: findUser.email,
+      role: findUser.role,
     });
 
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true });
@@ -147,6 +148,7 @@ export const refreshToken = async (
     const accessToken = tokenGenerate({
       id: findUser.id.toString(),
       email: findUser.email,
+      role: findUser.role,
     });
 
     const options = {
