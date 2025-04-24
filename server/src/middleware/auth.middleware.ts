@@ -37,7 +37,7 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw new ErrorHandler("user data not found", 404, false);
     }
-    console.log(user);
+   
 
     (req as any).id = user.id;
     (req as any).user = user;

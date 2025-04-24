@@ -16,4 +16,9 @@ router.post("/login", validation(loginSchema), authLogin);
 router.get("/getData", authMiddleware, GetUserData);
 router.post("/logout", authMiddleware, logout);
 
+router.get("/check-auth", authMiddleware, (req, res) => {
+  const user = (req as any).user;
+  res.status(200).json({ sucess: true, message: "Authenticated User", user });
+});
+
 export default router;

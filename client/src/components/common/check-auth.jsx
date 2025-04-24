@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
-export default function CheckAuth({ isAuthenticated,user,children }) {
+export default function CheckAuth({ isAuthenticated, user, children }) {
   const location = useLocation();
 
   if (
@@ -29,14 +29,14 @@ export default function CheckAuth({ isAuthenticated,user,children }) {
   if (
     isAuthenticated &&
     user?.role !== "admin" &&
-    location.pathname.includes("admin")
+    location.pathname.includes("/admin")
   ) {
     return <Navigate to={"/unauth-page"} />;
   }
   if (
     isAuthenticated &&
     user?.role === "admin" &&
-    location.pathname.includes("shop")
+    location.pathname.includes("/shop")
   ) {
     return <Navigate to={"/admin/dashboard"} />;
   }

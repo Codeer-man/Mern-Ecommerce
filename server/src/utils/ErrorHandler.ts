@@ -1,14 +1,13 @@
 export class ErrorHandler extends Error {
-  public status: string;
   constructor(
     public message: string,
     public statusCode: number,
-    public isOperational: boolean
+    public success: boolean // public isOperational: boolean
   ) {
     super(message);
     this.statusCode = statusCode || 500;
-    this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
-    this.isOperational = isOperational;
+    this.success = success;
+    // this.isOperational = isOperational;
 
     // Maintain proper prototype chain
     Object.setPrototypeOf(this, ErrorHandler.prototype);

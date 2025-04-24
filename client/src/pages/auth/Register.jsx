@@ -20,12 +20,13 @@ export default function Register() {
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser(formData)).then((data) => {
-      if (data?.payload.sucess) {
+      if (data?.payload?.sucess === true) {
         toast.success(data.payload.message);
         return navigate("/auth/login");
-      } else {
-        toast.error(data.payload.message);
       }
+      console.log(data);
+
+      toast.error("hello world");
     });
   };
 

@@ -19,11 +19,18 @@ export default function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser(formData)).then((data) => {
-      // if (data.payload.role === "admin") {
-      //   toast.success(data.payload.user.role);
-      //   return navigate("/admin/dashboard");
-      // }
-      console.log(data);
+      if (data?.payload?.success === true) {
+        if (data.payload.data.role === "admin") {
+          toast.success(data.payload.message);
+          navigate("/admin/dashboard");
+        } else if (data.payload.data.role === "user") {
+          toast.success(data.payload.message);
+          navigate("/shop/home");
+        }
+      }
+
+      toast.error(data.payload.message);
+      // toast.error("hello world");
     });
   };
 

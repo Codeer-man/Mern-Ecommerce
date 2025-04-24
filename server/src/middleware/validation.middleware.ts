@@ -7,11 +7,13 @@ export const validation =
     const result = Schema.safeParse(req.body);
 
     if (!result.success) {
+      const firstError = result.error.errors[0];
+
       res.status(400).json({
-        error: "Validation failed",
-        issues: result.error.errors.map((e) => ({
+        message: firstError.message, // Show the actual first Zod error message at the top
+        errors: result.error.errors.map((e) => ({
+          message: "Validation failed",
           path: e.path.join("."),
-          message: e.message,
         })),
       });
       return;

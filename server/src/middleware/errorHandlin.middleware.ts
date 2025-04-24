@@ -2,7 +2,8 @@ import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 
 interface AppError extends Error {
   statusCode: number;
-  status?: string;
+  success: boolean;
+
   message: string;
 }
 
@@ -13,10 +14,10 @@ export const errorHandler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
+  err.success = err.success || false;
 
   res.status(err.statusCode).json({
-    status: err.status,
+    success: err.success,
     message: err.message,
   });
 };
