@@ -4,7 +4,8 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import { errorHandler } from "./middleware/errorHandlin.middleware";
-import authRoutes from "./routes/auth.routes";
+import authRoutes from "./routes/auth/auth.routes";
+import adminProducts from "./routes/admin/admin.routes";
 import cookieParse from "cookie-parser";
 
 const app = express();
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use(cookieParse());
 // routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin/product", adminProducts);
 
 mongoose
   .connect("mongodb://localhost:27017/E-commerce")

@@ -4,10 +4,10 @@ import {
   authRegister,
   GetUserData,
   logout,
-} from "../controllers/auth/auth.controller";
-import { authMiddleware } from "../middleware/auth.middleware";
-import { loginSchema, registerSchema } from "../validation/user.validation";
-import { validation } from "../middleware/validation.middleware";
+} from "../../controllers/auth/auth.controller";
+import { authMiddleware } from "../../middleware/auth.middleware";
+import { loginSchema, registerSchema } from "../../validation/user.validation";
+import { validation } from "../../middleware/validation.middleware";
 
 const router = express.Router();
 

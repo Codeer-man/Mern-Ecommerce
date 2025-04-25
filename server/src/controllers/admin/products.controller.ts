@@ -1,0 +1,29 @@
+import { Request, Response } from "express";
+import { imageUploadUtil } from "../../helpers/upload-cloudinary";
+import { ErrorHandler } from "../../utils/ErrorHandler";
+
+export const handleImageUpload = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    if (!req.file) {
+      throw new ErrorHandler("No file uploaded", 400, false);
+    }
+
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const url = "data:" + req.file.mimetype + ";base64," + b64;
+    const result = await imageUploadUtil(url);
+
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
