@@ -5,7 +5,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { errorHandler } from "./middleware/errorHandlin.middleware";
 import authRoutes from "./routes/auth/auth.routes";
-import adminProducts from "./routes/admin/admin.routes";
+import adminProducts from "./routes/admin/product.routes";
 import cookieParse from "cookie-parser";
 
 const app = express();

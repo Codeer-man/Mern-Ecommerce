@@ -5,6 +5,7 @@ import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { toast } from "sonner";
+import { Skeleton } from "../ui/skeleton";
 
 export default function ProductImageUpload({
   imageFile,
@@ -12,6 +13,8 @@ export default function ProductImageUpload({
   uploadImageUrl,
   setUploadImageUrl,
   setImageLoading,
+  imageLoading,
+  isEditedMode,
 }) {
   const handleImageFileChange = (e) => {
     // console.log(e.target.files, "e.target.files");
@@ -46,14 +49,14 @@ export default function ProductImageUpload({
         "http://localhost:8080/api/admin/product/image-upload",
         data
       );
-      console.log(response, "response");
 
       if (response.data.success === true) {
         setUploadImageUrl(response.data.result.url);
-        setImageLoading(false);
       }
     } catch (error) {
       return console.error("invalid server error", error);
+    } finally {
+      setImageLoading(false);
     }
   }
 
@@ -63,14 +66,16 @@ export default function ProductImageUpload({
 
   const inputref = useRef(null);
   return (
-    <div className="w-full max-w-md mx-auto mb-2 mt-4">
+    <div className="w-full max-w-md mx-auto mb-2">
       <Label className="text-lg font-semibold mb-2 block">
         Product Image upload
       </Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className="border-2 border-dashed rounded-lg p-4"
+        className={`${
+          isEditedMode ? "opacity-40" : ""
+        } border-2 border-dashed rounded-lg p-4`}
       >
         <Input
           id={"image-upload"}
@@ -78,15 +83,20 @@ export default function ProductImageUpload({
           className="hidden"
           ref={inputref}
           onChange={handleImageFileChange}
+          disabled={isEditedMode}
         />
         {!imageFile ? (
           <label
             htmlFor="image-upload"
-            className="flex flex-col justify-center items-center h-32 cursor-pointer"
+            className={` ${
+              isEditedMode ? "cursor-not-allowed" : ""
+            } flex flex-col justify-center items-center h-32 cursor-pointer`}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span>Drag & drop or click to upload</span>
           </label>
+        ) : imageLoading ? (
+          <Skeleton className="h-10 bg-gray-200" />
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center">

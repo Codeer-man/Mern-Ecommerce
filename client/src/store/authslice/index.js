@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Cookie } from "lucide-react";
 
 const initialState = {
   isLoading: true,
@@ -52,6 +53,23 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+export const logout = createAsyncThunk(
+  "/auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { message: "Logout failed" }
+      );
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -99,6 +117,11 @@ const authSlice = createSlice({
         (state.isAuthenticated = false),
           (state.isLoading = false),
           (state.user = null);
+      }) //log out
+      .addCase(logout.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
       });
   },
 });

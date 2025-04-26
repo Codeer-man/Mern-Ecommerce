@@ -77,10 +77,15 @@ export const authLogin = async (
       role: findUser.role,
     });
 
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true });
-    res.cookie("refreshToken", refreshAccessToken, {
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+    });
+    res.cookie("refreshToken", refreshAccessToken, {
+      httpOnly: false,
+      secure: true,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
     res.status(200).json({
