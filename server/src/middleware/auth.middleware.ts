@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { NOT_FOUND, UNAUTHORIZED } from "../constants/http";
 import { ErrorHandler } from "../utils/ErrorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { findUserById } from "../services/auth.Services";
+import { findUserById } from "../services/auth.service";
 
 interface jwtPayload {
   id: string;
@@ -37,7 +37,6 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw new ErrorHandler("user data not found", 404, false);
     }
-   
 
     (req as any).id = user.id;
     (req as any).user = user;

@@ -6,32 +6,67 @@ import {
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
 import { getShopProduct } from "@/store/shop/product-slice";
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ArrowUpDown } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ShoppingListing() {
   const dispatch = useDispatch();
+  const [filter, setFilter] = useState({});
+  const [sort, setSort] = useState(null);
   const { products } = useSelector((state) => state.shoppingProduct);
 
   useEffect(() => {
     dispatch(getShopProduct());
   }, [dispatch]);
 
-  console.log(products, "Produxcts");
+  function handleSort(value) {
+    setSort(value);
+  }
+
+  function handleFilter(getSectionId, getCurrentOptions) {
+    console.log("Function called");
+    let cpyfilter = { ...filter };
+
+    const indexOfcurrentSort = Object.keys(cpyfilter).indexOf(getSectionId);
+
+    if (indexOfcurrentSort === -1) {
+      cpyfilter = {
+        ...cpyfilter,
+        [getSectionId]: [getCurrentOptions],
+      };
+    } else {
+      const indexOfCurrentOptions =
+        cpyfilter[getSectionId].indexOf(getCurrentOptions);
+
+      if (indexOfCurrentOptions === -1) {
+        cpyfilter[getSectionId].push(getCurrentOptions);
+      } else {
+        cpyfilter[getSectionId].splice(indexOfCurrentOptions, 1);
+      }
+    }
+    setFilter(cpyfilter);
+    sessionStorage.setItem("filter", JSON.stringify(cpyfilter));
+  }
+
+  useEffect(()=> {
+    
+  })
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter />
+      <ProductFilter filter={filter} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className=" p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-extrabold">All Products</h2>
           <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">10 Products</span>
+            <span className="text-muted-foreground">
+              {products.length} Products
+            </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -44,9 +79,10 @@ export default function ShoppingListing() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[200px">
-                <DropdownMenuRadioGroup>
+                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortOptions.map((options) => (
                     <DropdownMenuRadioItem
+                      value={options.id}
                       key={options.id}
                       className={"cursor-pointer"}
                     >

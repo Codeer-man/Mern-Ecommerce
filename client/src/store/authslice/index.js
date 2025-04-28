@@ -71,6 +71,30 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const oAuth = createAsyncThunk(
+  "/oauth/callback",
+  async ({ code, state }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/google/callback",
+        { code, state },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "OAuth login failed" }
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -119,6 +143,21 @@ const authSlice = createSlice({
           (state.user = null);
       }) //log out
       .addCase(logout.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      }) //oauth
+      .addCase(oAuth.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(oAuth.fulfilled, (state, action) => {
+        console.log(action.payload);
+
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(oAuth.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;

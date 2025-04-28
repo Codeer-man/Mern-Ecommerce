@@ -10,8 +10,12 @@ export interface UserI extends Document {
   _id: Types.ObjectId;
   username: string;
   email: string;
-  password: string;
+  password?: string;
+  googleId?: string;
+  githubId?: string;
+  provider: "local" | "github" | "google";
   role: UserRole;
+  avatar?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -31,7 +35,9 @@ const UserSchema = new Schema<UserI>(
     },
     password: {
       type: String,
-      required: true,
+      required: function (this: UserI) {
+        return this.provider === "local"; // required only for local users
+      },
       trim: true,
     },
     role: {
@@ -39,13 +45,28 @@ const UserSchema = new Schema<UserI>(
       enum: Object.values(UserRole),
       default: UserRole.USER,
     },
+    githubId: {
+      type: String,
+    },
+    googleId: {
+      type: String,
+    },
+    provider: {
+      type: String,
+      enum: ["local", "google", "github"],
+      required: true,
+      default: "local",
+    },
+    avatar: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
 // Hash password before saving
 UserSchema.pre<UserI>("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password") || !this.password) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);

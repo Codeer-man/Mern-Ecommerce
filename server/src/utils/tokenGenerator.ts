@@ -7,7 +7,7 @@ interface userData {
   role: string;
 }
 
-export const tokenGenerate = async (user: userData) => {
+export const tokenGenerate = (user: userData) => {
   const refreshTokenKey = process.env.JWT_REFRESH_TOKEN;
   const accessTokenKey = process.env.JWT_ACCESS_TOKEN;
 

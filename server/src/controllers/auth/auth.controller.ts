@@ -4,7 +4,7 @@ import User from "../../model/User";
 import {
   compareEmailAndUserName,
   findUserById,
-} from "../../services/auth.Services";
+} from "../../services/auth.service";
 import { CREATED, NOT_FOUND, UNAUTHORIZED } from "../../constants/http";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import { tokenGenerate } from "../../utils/tokenGenerator";
@@ -71,7 +71,7 @@ export const authLogin = async (
       throw new ErrorHandler("Password did not match", UNAUTHORIZED, false);
     }
 
-    const { accessToken, refreshAccessToken } = await tokenGenerate({
+    const { accessToken, refreshAccessToken } =  tokenGenerate({
       id: findUser._id.toString(),
       email: findUser.email,
       role: findUser.role,

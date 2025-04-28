@@ -1,4 +1,6 @@
 import CommonForm from "@/components/common/form";
+import Oauth from "@/components/oauth/Oauth";
+import { Button } from "@/components/ui/button";
 import { loginFormControls } from "@/config";
 import { loginUser } from "@/store/authslice";
 import React, { useState } from "react";
@@ -57,6 +59,8 @@ export default function Login() {
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
+
+      <Oauth />
     </div>
   );
 }
