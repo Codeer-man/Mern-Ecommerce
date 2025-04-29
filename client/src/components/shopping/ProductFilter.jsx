@@ -22,6 +22,12 @@ function ProductFilter({ filter, handleFilter }) {
                     key={option.id}
                   >
                     <Checkbox
+                      checked={
+                        filter &&
+                        Object.keys(filter).length > 0 &&
+                        filter[keyItem] &&
+                        filter[keyItem].indexOf(option.id) > -1
+                      }
                       onCheckedChange={() => handleFilter(keyItem, option.id)}
                     />
                     {option.label}

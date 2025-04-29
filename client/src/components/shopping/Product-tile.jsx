@@ -4,10 +4,10 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 
-export default function ShopingProduct({ product }) {
+export default function ShopingProduct({ product,handleGetProductDetail }) {
   return (
     <Card className="w-full max-w-sm mx-auto">
-      <div>
+      <div onClick={() => handleGetProductDetail(product._id)}>
         <div className="relative">
           <img
             src={product.image}
