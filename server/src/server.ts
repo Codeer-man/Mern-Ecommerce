@@ -9,6 +9,7 @@ import adminProducts from "./routes/admin/product.routes";
 import shopProductRoutes from "./routes/shop/products.routes";
 import cookieParse from "cookie-parser";
 import OauthRoutes from "./routes/oauth/google.routes";
+import cartRoutes from "./routes/cart/Cart.Routes";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin/product", adminProducts);
 app.use("/api/shop/product", shopProductRoutes);
 app.use("/api", OauthRoutes);
+app.use("/api/cart", cartRoutes);
 
 mongoose
   .connect("mongodb://localhost:27017/E-commerce")

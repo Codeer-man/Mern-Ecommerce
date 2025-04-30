@@ -10,11 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
+import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
 import { getShopProduct, getSingleProduct } from "@/store/shop/product-slice";
 import { ArrowUpDown } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 function createQueryParamsHelper(filter) {
   const queryParams = [];
@@ -39,6 +41,7 @@ export default function ShoppingListing() {
     (state) => state.shoppingProduct
   );
 
+  const { user } = useSelector((state) => state.auth);
   function handleGetProductDetail(id) {
     dispatch(getSingleProduct(id));
   }
@@ -74,6 +77,17 @@ export default function ShoppingListing() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
+  function handleAddToCart(productId) {
+    dispatch(
+      addToCart({ userId: user._id, ProductId: productId, quantity: 1 })
+    ).then((data) => {
+      if (data.payload.success === true) {
+        dispatch(fetchUserItems(user._id));
+        toast.success("Product has been added to cart");
+      }
+    });
+  }
+
   useEffect(() => {
     setSort("lowtohigh");
     setFilter(JSON.parse(sessionStorage.getItem("filters")) || {});
@@ -92,8 +106,6 @@ export default function ShoppingListing() {
     }
   }, [productDetail]);
 
-  // console.log(productDetail, "productDetail");
-  console.log(productDetail, "productDetail");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter filter={filter} handleFilter={handleFilter} />
@@ -137,6 +149,7 @@ export default function ShoppingListing() {
                 <ShopingProduct
                   product={products}
                   handleGetProductDetail={handleGetProductDetail}
+                  handleAddToCart={handleAddToCart}
                   key={products._id}
                 />
               ))

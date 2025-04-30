@@ -4,7 +4,11 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 
-export default function ShopingProduct({ product,handleGetProductDetail }) {
+export default function ShopingProduct({
+  product,
+  handleGetProductDetail,
+  handleAddToCart,
+}) {
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div onClick={() => handleGetProductDetail(product._id)}>
@@ -46,10 +50,15 @@ export default function ShopingProduct({ product,handleGetProductDetail }) {
             ) : null}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button className={"w-full"}>Add To Cart</Button>
-        </CardFooter>
       </div>
+      <CardFooter>
+        <Button
+          className={"w-full"}
+          onClick={() => handleAddToCart(product._id)}
+        >
+          Add To Cart
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
