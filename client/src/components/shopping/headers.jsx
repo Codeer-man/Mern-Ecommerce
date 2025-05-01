@@ -17,18 +17,28 @@ import {
 import { logout } from "@/store/authslice";
 import CartWrapper from "./cart-wrapper";
 import { fetchUserItems } from "@/store/shop/cart-slice";
+import { Label } from "../ui/label";
 
 function MenuItem() {
+  const navigate = useNavigate();
+
+  function handleNavigate(getMenuItem) {
+    sessionStorage.removeItem("filters");
+    const filterNav =
+      getMenuItem.id !== "home" ? { category: [getMenuItem.id] } : null;
+    sessionStorage.setItem("filters", JSON.stringify(filterNav));
+    navigate(getMenuItem.path);
+  }
   return (
     <nav className="flex flex-col p-2  mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
-        <Link
+        <Label
           key={menuItem.id}
-          to={menuItem.path}
-          className="text-sm font-medium"
+          className="text-sm font-medium cursor-pointer"
+          onClick={() => handleNavigate(menuItem)}
         >
           {menuItem.label}{" "}
-        </Link>
+        </Label>
       ))}
     </nav>
   );
@@ -99,7 +109,7 @@ function HeaderRightContent() {
 
 export default function ShoppingHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
+    <header className="sticky top-0 z-40 w-full h-[10vh] border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/shop/home" className=" flex items-center gap-2">
           <HousePlug className="h-6 w-6" />

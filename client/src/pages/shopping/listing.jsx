@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
+//! import to learn query
 function createQueryParamsHelper(filter) {
   const queryParams = [];
 
@@ -54,7 +55,8 @@ export default function ShoppingListing() {
   function handleSort(value) {
     setSort(value);
   }
-
+  
+  //! handle filter function
   function handleFilter(getSectionId, getCurrentOption) {
     let cpyFilters = { ...filter };
     const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
@@ -88,11 +90,13 @@ export default function ShoppingListing() {
     });
   }
 
+  //! include in query to filter
   useEffect(() => {
-    setSort("lowtohigh");
+    setSort("price-lowtohigh");
     setFilter(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, []);
 
+  //! query imp to learn
   useEffect(() => {
     if (filter && Object.keys(filter).length > 0) {
       const createQuery = createQueryParamsHelper(filter);
