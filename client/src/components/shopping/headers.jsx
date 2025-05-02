@@ -25,7 +25,9 @@ function MenuItem() {
   function handleNavigate(getMenuItem) {
     sessionStorage.removeItem("filters");
     const filterNav =
-      getMenuItem.id !== "home" ? { category: [getMenuItem.id] } : null;
+      getMenuItem.id !== "home" && getMenuItem.id !== "products"
+        ? { category: [getMenuItem.id] }
+        : null;
     sessionStorage.setItem("filters", JSON.stringify(filterNav));
     navigate(getMenuItem.path);
   }
@@ -72,6 +74,7 @@ function HeaderRightContent() {
           <span className="sr-only">User Cart</span>
         </Button>
         <CartWrapper
+          setOpenCartSheet={setOpenCartSheet}
           cartItems={
             cartItem && cartItem.items && cartItem.items.lenght > 0
               ? []

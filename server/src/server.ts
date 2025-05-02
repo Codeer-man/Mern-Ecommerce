@@ -10,6 +10,7 @@ import shopProductRoutes from "./routes/shop/products.routes";
 import cookieParse from "cookie-parser";
 import OauthRoutes from "./routes/oauth/google.routes";
 import cartRoutes from "./routes/cart/Cart.Routes";
+import addressRoutes from "./routes/shop/address.routes";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/admin/product", adminProducts);
 app.use("/api/shop/product", shopProductRoutes);
 app.use("/api", OauthRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/shop/address", addressRoutes);
 
 mongoose
   .connect("mongodb://localhost:27017/E-commerce")
@@ -43,6 +45,7 @@ mongoose
   .catch((e) => console.log("Datasebase not connected", e));
 
 app.use(errorHandler);
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening to PORT ${PORT}`);
