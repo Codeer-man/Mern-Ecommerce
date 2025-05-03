@@ -11,6 +11,8 @@ import cookieParse from "cookie-parser";
 import OauthRoutes from "./routes/oauth/google.routes";
 import cartRoutes from "./routes/cart/Cart.Routes";
 import addressRoutes from "./routes/shop/address.routes";
+import orderRouter from "./routes/shop/order.routes";
+import AdminOrderRouter from "./routes/admin/order.routes";
 
 const app = express();
 
@@ -34,10 +36,14 @@ app.use(cookieParse());
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/product", adminProducts);
-app.use("/api/shop/product", shopProductRoutes);
+app.use("/api/admin/order", AdminOrderRouter);
+
 app.use("/api", OauthRoutes);
+
+app.use("/api/shop/product", shopProductRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/shop/address", addressRoutes);
+app.use("/api/shop/order", orderRouter);
 
 mongoose
   .connect("mongodb://localhost:27017/E-commerce")

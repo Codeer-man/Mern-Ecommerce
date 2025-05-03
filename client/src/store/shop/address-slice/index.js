@@ -85,8 +85,6 @@ const addressSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchAddress.fulfilled, (state, action) => {
-        console.log(action.payload);
-
         state.isLoading = false;
         state.address = action.payload.data;
       })

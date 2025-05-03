@@ -9,44 +9,39 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
-import { Dialog } from "../ui/dialog";
-import ShoppingOrderDetailView from "./order-details";
+import { Dialog, DialogTitle } from "../ui/dialog";
+import AdminOrdetailsView from "./order-view";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllOrderByUser,
-  getOrderDetail,
+  getAllOrderForAdmin,
   resetOrderDetail,
-} from "@/store/shop/order-slice";
+} from "@/store/admin/order-slice";
 import { Badge } from "../ui/badge";
+import { getOrderDetail } from "@/store/shop/order-slice";
 
-export default function ShoppingOrders() {
-  const [openDetails, setOpenDetail] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+export default function AdminOrdersView() {
+  const [openDetailsDialogue, setOpenDetailsDialogue] = useState(false);
+  const { orderList, orderDetail } = useSelector((state) => state.adminOrder);
+
+  function handleFetchOrderDetail(getId) {
+    dispatch(getOrderDetail(getId));
+    setOpenDetailsDialogue(true);
+  }
+  console.log(orderDetail, "orderDetail");
 
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  const { orderList, orderDetail } = useSelector((state) => state.shopOrder);
-
-  function handleFetchOrderDetail(orderId) {
-    setSelectedOrderId(orderId);
-    dispatch(getOrderDetail(orderId));
-  }
 
   useEffect(() => {
-    if (user?._id) {
-      dispatch(getAllOrderByUser(user._id));
-    }
-  }, [dispatch, user]);
+    dispatch(getAllOrderForAdmin());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (orderDetail?._id === selectedOrderId) {
-      setOpenDetail(true);
-    }
-  }, [orderDetail, selectedOrderId]);
+    if (orderDetail !== null) setOpenDetailsDialogue(true);
+  }, [orderDetail]);
 
   function handleDialogClose() {
-    setOpenDetail(false);
-    setSelectedOrderId(null);
+    setOpenDetailsDialogue(false);
+    // setSelectedOrderId(null);
     dispatch(resetOrderDetail());
   }
 
@@ -106,8 +101,8 @@ export default function ShoppingOrders() {
         </Table>
       </CardContent>
 
-      <Dialog open={openDetails} onOpenChange={handleDialogClose}>
-        {orderDetail && <ShoppingOrderDetailView orderDetail={orderDetail} />}
+      <Dialog open={openDetailsDialogue} onOpenChange={handleDialogClose}>
+        {orderDetail && <AdminOrdetailsView orderDetails={orderDetail} />}
       </Dialog>
     </Card>
   );

@@ -20,7 +20,7 @@ const intialAddressFormData = {
   City: "",
 };
 
-export default function Address() {
+export default function Address({setCurrentSelectedAddress}) {
   const [formData, setformdata] = useState(intialAddressFormData);
   const [currentEditedData, setCurrentEditedData] = useState(null);
   const dispatch = useDispatch();
@@ -109,6 +109,7 @@ export default function Address() {
                 addressInfo={singleAddress}
                 handleDeleteAddress={handleDeleteAddress}
                 handleEditAddress={handleEditAddress}
+                setCurrentSelectedAddress={setCurrentSelectedAddress}
               />
             ))
           : null}
