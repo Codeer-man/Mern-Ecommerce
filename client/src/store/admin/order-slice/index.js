@@ -25,7 +25,7 @@ export const getOrderDetailForAdmin = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/admin/order/detail/${id}`
+        `http://localhost:8080/api/admin/order/details/${id}`
       );
       return response.data;
     } catch (error) {
@@ -36,12 +36,12 @@ export const getOrderDetailForAdmin = createAsyncThunk(
 
 export const updateOrderStatus = createAsyncThunk(
   "/order/updateOrderStatus",
-  async ({ id, orderStatus }, { rejectWithValue }) => {
+  async ({ id, orderstatus }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/update/detail/${id}`,
+        `http://localhost:8080/api/admin/order/update/${id}`,
         {
-            orderStatus
+          orderstatus,
         }
       );
       return response.data;

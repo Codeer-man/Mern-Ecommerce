@@ -16,7 +16,7 @@ import { ArrowUpDown } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 
 //! import to learn query
 function createQueryParamsHelper(filter) {
@@ -41,8 +41,10 @@ export default function ShoppingListing() {
   const { products, productDetail } = useSelector(
     (state) => state.shoppingProduct
   );
-
+  const { cartItem } = useSelector((state) => state.shopCart);
+  const categorySearchParams = searchParams.get("category");
   const { user } = useSelector((state) => state.auth);
+
   function handleGetProductDetail(id) {
     dispatch(getSingleProduct(id));
   }
@@ -55,7 +57,7 @@ export default function ShoppingListing() {
   function handleSort(value) {
     setSort(value);
   }
-  
+
   //! handle filter function
   function handleFilter(getSectionId, getCurrentOption) {
     let cpyFilters = { ...filter };
@@ -79,7 +81,24 @@ export default function ShoppingListing() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
-  function handleAddToCart(productId) {
+  function handleAddToCart(productId, getTotalStock) {
+    let getCartItems = cartItem.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.ProductId === productId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(
+            `Only ${getQuantity} quantity can be added for this item`
+          );
+          return;
+        }
+      }
+    }
+
     dispatch(
       addToCart({ userId: user._id, ProductId: productId, quantity: 1 })
     ).then((data) => {
@@ -94,7 +113,7 @@ export default function ShoppingListing() {
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilter(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, []);
+  }, [categorySearchParams]);
 
   //! query imp to learn
   useEffect(() => {

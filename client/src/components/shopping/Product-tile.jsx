@@ -18,6 +18,13 @@ export default function ShopingProduct({
             alt={product.title}
             className="w-full h-[300px] object-cover rounded-t-lg"
           />
+          {product.totalStock === 0 ? (
+            <Badge className={"absolute top-2 right-2"}>Out Od Stock</Badge>
+          ) : product.totalStock <= 10 ? (
+            <Badge
+              className={"absolute top-2 right-2"}
+            >{`Only ${product.totalStock} items left`}</Badge>
+          ) : null}
           {product.salePrice > 0 ? (
             <Badge
               className={"absolute top-2 left-2 bg-red-500 hover:bg-red-600"}
@@ -52,12 +59,22 @@ export default function ShopingProduct({
         </CardContent>
       </div>
       <CardFooter>
-        <Button
-          className={"w-full"}
-          onClick={() => handleAddToCart(product._id)}
-        >
-          Add To Cart
-        </Button>
+        {product.totalStock === 0 ? (
+          <Button
+            className={"w-full"}
+            onClick={() => handleAddToCart(product._id)}
+            disabled={product.totalStock === 0}
+          >
+            Out of stock
+          </Button>
+        ) : (
+          <Button
+            className={"w-full"}
+            onClick={() => handleAddToCart(product._id, product.totalStock)}
+          >
+            Add To Cart
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

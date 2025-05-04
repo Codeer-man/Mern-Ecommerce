@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { DialogContent } from "../ui/dialog";
+import { DialogContent, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CommonForm from "../common/form";
 import { Badge } from "../ui/badge";
+import {
+  getAllOrderForAdmin,
+  getOrderDetailForAdmin,
+  updateOrderStatus,
+} from "@/store/admin/order-slice";
+import { toast } from "sonner";
 
 const initialFormData = {
   status: "",
@@ -13,9 +19,24 @@ const initialFormData = {
 export default function AdminOrdetailsView({ orderDetails }) {
   const [formData, setFormData] = useState(initialFormData);
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   function handleUpdateStatus(e) {
+    const { status } = formData;
     e.preventDefault();
+    dispatch(
+      updateOrderStatus({
+        id: orderDetails._id,
+        orderstatus: status,
+      })
+    ).then((data) => {
+      if (data.payload.success) {
+        dispatch(getOrderDetailForAdmin(orderDetails._id));
+        dispatch(getAllOrderForAdmin());
+        setFormData(initialFormData);
+        toast.success("order updated");
+      }
+    });
   }
 
   return (
@@ -24,7 +45,7 @@ export default function AdminOrdetailsView({ orderDetails }) {
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
             <p className="font-medium">Order ID</p>
-            <Label>{orderDetails?._id}</Label>
+            <DialogTitle>{orderDetails?._id}</DialogTitle>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Date</p>
@@ -47,14 +68,14 @@ export default function AdminOrdetailsView({ orderDetails }) {
             <Label>
               <Badge
                 className={`py-1 px-3 ${
-                  orderDetails?.orderStatus === "confirmed"
+                  orderDetails?.oderstatus === "confirmed"
                     ? "bg-green-500"
-                    : orderDetails?.orderStatus === "rejected"
+                    : orderDetails?.oderstatus === "rejected"
                     ? "bg-red-600"
                     : "bg-black"
                 }`}
               >
-                {orderDetails?.orderStatus}
+                {orderDetails?.oderstatus}
               </Badge>
             </Label>
           </div>
@@ -66,7 +87,10 @@ export default function AdminOrdetailsView({ orderDetails }) {
             <ul className="grid gap-3">
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
-                    <li className="flex items-center justify-between">
+                    <li
+                      key={item._id}
+                      className="flex items-center justify-between"
+                    >
                       <span>Title: {item.title}</span>
                       <span>Quantity: {item.quantity}</span>
                       <span>Price: ${item.price}</span>

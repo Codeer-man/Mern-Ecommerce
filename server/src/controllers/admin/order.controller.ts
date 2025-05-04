@@ -49,7 +49,7 @@ export const updateOrderStatus = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { orderStatus } = req.body;
+    const { orderstatus } = req.body;
 
     const order = await Order.findById(id);
 
@@ -57,7 +57,7 @@ export const updateOrderStatus = async (
       throw new ErrorHandler("Order not found!", 404, false);
     }
 
-    await Order.findByIdAndUpdate(id, { orderStatus });
+    await Order.findByIdAndUpdate(id, { oderstatus: orderstatus });
 
     res.status(200).json({
       success: true,

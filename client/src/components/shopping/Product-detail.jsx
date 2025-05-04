@@ -14,8 +14,26 @@ import { setProductDetail } from "@/store/shop/product-slice";
 export default function ProductDetail({ open, setOpen, productDetail }) {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { cartItem } = useSelector((state) => state.shopCart);
 
-  function handleAddToCart(ProductId) {
+  function handleAddToCart(ProductId, getTotalStock) {
+    let getCartItems = cartItem.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.ProductId === ProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(
+            `Only ${getQuantity} quantity can be added for this item`
+          );
+          return;
+        }
+      }
+    }
+
     dispatch(
       addToCart({ userId: user._id, ProductId: ProductId, quantity: 1 })
     ).then((data) => {
@@ -82,12 +100,26 @@ export default function ProductDetail({ open, setOpen, productDetail }) {
                 <span className="text-muted-foreground"> (4.5)</span>
               </div>
               <div className="mt-4 mb-5">
-                <Button
-                  onClick={() => handleAddToCart(productDetail._id)}
-                  className={"w-full"}
-                >
-                  Add to cart
-                </Button>
+                {productDetail.totalStock === 0 ? (
+                  <Button
+                    className={"w-full"}
+                    disabled={productDetail.totalStock === 0}
+                  >
+                    Out of stock
+                  </Button>
+                ) : (
+                  <Button
+                    className={"w-full"}
+                    onClick={() =>
+                      handleAddToCart(
+                        productDetail._id,
+                        productDetail.totalStock
+                      )
+                    }
+                  >
+                    Add To Cart
+                  </Button>
+                )}
               </div>
               <Separator />
               <div className="max-h-[300px] overflow-auto">

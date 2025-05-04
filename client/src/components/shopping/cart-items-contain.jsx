@@ -7,10 +7,31 @@ import { toast } from "sonner";
 
 export default function UserCartItemContain({ cartItems }) {
   const { user } = useSelector((state) => state.auth);
+  const { products } = useSelector((state) => state.shoppingProduct);
+
+  console.log(products, "Product list ");
 
   const dispatch = useDispatch();
 
   function handleUpdateQuantity(cartItem, buttonType) {
+    if (buttonType === "plus") {
+      const currentProduct = products.find(
+        (product) => product._id === cartItem.ProductId
+      );
+
+      if (!currentProduct) {
+        toast.error("Product not found");
+        return;
+      }
+
+      const totalStock = currentProduct.totalStock;
+
+      if (cartItem.quantity + 1 > totalStock) {
+        toast.error(`Only ${totalStock} quantity is available in stock`);
+        return;
+      }
+    }
+
     dispatch(
       updateCartQuantity({
         userId: user._id,
@@ -37,6 +58,10 @@ export default function UserCartItemContain({ cartItems }) {
     });
   }
 
+  // dispatch(getSingleProduct(cartItems.ProductId))
+
+  console.log(cartItems, "cartItem");
+
   return (
     <div className="flex items-center space-x-4">
       <img
@@ -62,7 +87,7 @@ export default function UserCartItemContain({ cartItems }) {
             variant="outline"
             className="h-8 w-8 rounded-full"
             size="icon"
-            disabled={cartItems?.quantity === cartItems?.stock}
+            disabled={cartItems?.quantity === cartItems?.quantity.length}
             onClick={() => handleUpdateQuantity(cartItems, "plus")}
           >
             <Plus className="w-4 h-4" />

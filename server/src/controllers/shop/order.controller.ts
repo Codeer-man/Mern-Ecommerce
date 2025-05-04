@@ -3,6 +3,7 @@ import paypal from "../../helpers/paypal";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import Order from "../../model/order";
 import Cart from "../../model/Cart";
+import Product from "../../model/Product";
 
 export const createOrder = async (
   req: Request,
@@ -115,7 +116,19 @@ export const capturePayment = async (
     }
 
     (order.paymentStatus = "paid"), (order.oderstatus = "confirmed");
-    (order.payerId = paymentId), (order.payerId = payerId);
+    (order.paymentId = paymentId), (order.payerId = payerId);
+
+    for (let items of order.cartItems) {
+      const product = await Product.findById(items.productId);
+
+      if (!product) {
+        throw new ErrorHandler("No enough stocks", 404, false);
+      }
+
+      product.totalStock -= items.quantity;
+
+      await product.save();
+    }
 
     const getCartId = order.CartId;
     await Cart.findByIdAndDelete(getCartId);
