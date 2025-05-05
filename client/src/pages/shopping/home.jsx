@@ -189,14 +189,16 @@ export default function ShoppingHome() {
           </h2>
           <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products && products.length > 0
-              ? products.map((product) => (
-                  <ShopingProduct
-                    product={product}
-                    handleGetProductDetail={handleGetProductDetail}
-                    handleAddToCart={handleAddToCart}
-                    key={product._id}
-                  />
-                ))
+              ? products
+                  .slice(0, 4)
+                  .map((product) => (
+                    <ShopingProduct
+                      product={product}
+                      handleGetProductDetail={handleGetProductDetail}
+                      handleAddToCart={handleAddToCart}
+                      key={product._id}
+                    />
+                  ))
               : null}
           </div>
         </div>

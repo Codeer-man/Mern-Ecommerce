@@ -28,7 +28,7 @@ function MenuItem() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  //!filter need to learn
   function handleNavigate(getMenuItem) {
     sessionStorage.removeItem("filters");
     const filterNav =

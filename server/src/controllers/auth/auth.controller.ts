@@ -71,7 +71,7 @@ export const authLogin = async (
       throw new ErrorHandler("Password did not match", UNAUTHORIZED, false);
     }
 
-    const { accessToken, refreshAccessToken } =  tokenGenerate({
+    const { accessToken, refreshAccessToken } = tokenGenerate({
       id: findUser._id.toString(),
       email: findUser.email,
       role: findUser.role,
