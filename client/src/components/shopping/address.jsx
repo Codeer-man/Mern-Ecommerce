@@ -20,7 +20,7 @@ const intialAddressFormData = {
   City: "",
 };
 
-export default function Address({setCurrentSelectedAddress}) {
+export default function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setformdata] = useState(intialAddressFormData);
   const [currentEditedData, setCurrentEditedData] = useState(null);
   const dispatch = useDispatch();
@@ -106,6 +106,7 @@ export default function Address({setCurrentSelectedAddress}) {
           ? address.map((singleAddress, index) => (
               <AddressCard
                 key={index}
+                selectedId={selectedId}
                 addressInfo={singleAddress}
                 handleDeleteAddress={handleDeleteAddress}
                 handleEditAddress={handleEditAddress}

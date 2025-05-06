@@ -106,7 +106,9 @@ export default function ShoppingCheckout() {
           </div>
           <div className="mt-4 w-full">
             <Button onClick={handleInitiatePaypalPayment} className="w-full">
-              Check with paypal
+              {isPaymentStart
+                ? "Processing Paypal payment"
+                : "Checkout with paypal"}
             </Button>
           </div>
         </div>

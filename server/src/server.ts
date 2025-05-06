@@ -14,6 +14,7 @@ import addressRoutes from "./routes/shop/address.routes";
 import orderRouter from "./routes/shop/order.routes";
 import AdminOrderRouter from "./routes/admin/order.routes";
 import productSearchRoutes from "./routes/shop/search.routes";
+import productReview from "./routes/shop/review.route";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/shop/address", addressRoutes);
 app.use("/api/shop/order", orderRouter);
 app.use("/api/product/search", productSearchRoutes);
+app.use("/api/product/review", productReview);
 
 mongoose
   .connect("mongodb://localhost:27017/E-commerce")
