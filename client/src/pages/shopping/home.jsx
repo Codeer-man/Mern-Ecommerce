@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import ProductDetail from "@/components/shopping/Product-detail";
 import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
+import { getFeatuerImage } from "@/store/admin/feature-slice";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: FaMale },
@@ -46,6 +47,7 @@ export default function ShoppingHome() {
     (state) => state.shoppingProduct
   );
   const { user } = useSelector((state) => state.auth);
+  const { featureImage } = useSelector((state) => state.featureSlice);
 
   const slide = [img1, img2, img3, img4];
   const navigate = useNavigate();
@@ -78,11 +80,11 @@ export default function ShoppingHome() {
 
   useEffect(() => {
     const time = setInterval(() => {
-      setImageSlider((prev) => (prev + 1) % slide.length);
-    }, 5000);
+      setImageSlider((prev) => (prev + 1) % featureImage.length);
+    }, 3000);
 
     return () => clearInterval(time);
-  }, []);
+  }, [featureImage]);
 
   useEffect(() => {
     if (productDetail !== null) {
@@ -96,13 +98,17 @@ export default function ShoppingHome() {
     );
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getFeatuerImage());
+  }, [dispatch]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="relative w-full h-[600px] overflow-hidden">
-        {slide.map((slide, index) => (
+        {featureImage.map((slide, index) => (
           <img
-            src={slide}
-            alt={slide}
+            src={slide.image}
+            alt={"image"}
             key={index}
             className={`${
               index === imageSlider ? "opacity-100" : "opacity-0"
@@ -117,7 +123,8 @@ export default function ShoppingHome() {
           }
           onClick={() =>
             setImageSlider(
-              (prevData) => (prevData - 1 + slide.length) % slide.length
+              (prevData) =>
+                (prevData - 1 + featureImage.length) % featureImage.length
             )
           }
         >

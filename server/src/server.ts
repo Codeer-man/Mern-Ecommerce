@@ -15,6 +15,7 @@ import orderRouter from "./routes/shop/order.routes";
 import AdminOrderRouter from "./routes/admin/order.routes";
 import productSearchRoutes from "./routes/shop/search.routes";
 import productReview from "./routes/shop/review.route";
+import AdminFeatureRoute from "./routes/admin/feature.route";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(cookieParse());
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/product", adminProducts);
 app.use("/api/admin/order", AdminOrderRouter);
+app.use("/api/admin/feature", AdminFeatureRoute);
 
 app.use("/api", OauthRoutes);
 

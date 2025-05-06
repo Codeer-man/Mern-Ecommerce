@@ -15,9 +15,9 @@ export default function ProductImageUpload({
   setImageLoading,
   imageLoading,
   isEditedMode,
+  isCustomStyling = false,
 }) {
   const handleImageFileChange = (e) => {
-    // console.log(e.target.files, "e.target.files");
     const selectedFile = e.target.files?.[0];
     if (selectedFile) setImageFile(selectedFile);
   };
@@ -66,7 +66,9 @@ export default function ProductImageUpload({
 
   const inputref = useRef(null);
   return (
-    <div className="w-full max-w-md mx-auto mb-2">
+    <div
+      className={`w-full  mb-2 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
+    >
       <Label className="text-lg font-semibold mb-2 block">
         Product Image upload
       </Label>
