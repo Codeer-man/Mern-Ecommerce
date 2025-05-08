@@ -1,6 +1,6 @@
+import axiosInstance from "@/utils/refreshToken/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Cookie } from "lucide-react";
 
 const initialState = {
   isLoading: true,
@@ -15,7 +15,9 @@ export const registerUser = createAsyncThunk(
       const response = await axios.post(
         "http://localhost:8080/api/auth/register",
         formdata,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       return response.data;
     } catch (error) {
@@ -42,11 +44,9 @@ export const loginUser = createAsyncThunk(
   "/auth/login",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        formData,
-        { withCredentials: true }
-      );
+      const response = await axiosInstance.post("/auth/login", formData, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || { message: "Login failed" });
@@ -125,9 +125,11 @@ const authSlice = createSlice({
           (state.user = action.payload.data);
       })
       .addCase(loginUser.rejected, (state, action) => {
-        (state.isAuthenticated = false),
-          (state.isLoading = false),
-          (state.user = action.payload);
+        {
+          state.isAuthenticated = false;
+          state.isLoading = false;
+          state.user = action.payload;
+        }
       }) //check auth
       .addCase(checkauth.pending, (state) => {
         state.isLoading = true;
@@ -151,8 +153,6 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(oAuth.fulfilled, (state, action) => {
-        console.log(action.payload);
-
         state.isLoading = false;
         state.isAuthenticated = true;
         state.user = action.payload;

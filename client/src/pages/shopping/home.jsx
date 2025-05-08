@@ -1,8 +1,4 @@
 import { Button } from "@/components/ui/button";
-import img1 from "../../assets/img1.webp";
-import img2 from "../../assets/img2.png";
-import img3 from "../../assets/img3.png";
-import img4 from "../../assets/img4.png";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -48,8 +44,8 @@ export default function ShoppingHome() {
   );
   const { user } = useSelector((state) => state.auth);
   const { featureImage } = useSelector((state) => state.featureSlice);
+  const { cartItem } = useSelector((state) => state.shopCart);
 
-  const slide = [img1, img2, img3, img4];
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -58,7 +54,24 @@ export default function ShoppingHome() {
     dispatch(getSingleProduct(id));
   }
 
-  function handleAddToCart(productId) {
+  function handleAddToCart(productId, getTotalStock) {
+    let getCartItems = cartItem.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.ProductId === productId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(
+            `Only ${getQuantity} quantity can be added for this item`
+          );
+          return;
+        }
+      }
+    }
+
     dispatch(
       addToCart({ userId: user._id, ProductId: productId, quantity: 1 })
     ).then((data) => {
@@ -81,7 +94,7 @@ export default function ShoppingHome() {
   useEffect(() => {
     const time = setInterval(() => {
       setImageSlider((prev) => (prev + 1) % featureImage.length);
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(time);
   }, [featureImage]);
@@ -197,7 +210,7 @@ export default function ShoppingHome() {
           <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products && products.length > 0
               ? products
-                  .slice(0, 4)
+                  .slice(1, 5)
                   .map((product) => (
                     <ShopingProduct
                       product={product}

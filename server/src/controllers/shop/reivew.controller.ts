@@ -16,7 +16,7 @@ export const createProductReview = async (
     const order = await Order.findOne({
       userId: userId,
       "cartItems.productId": productId,
-      oderstatus: "confirmed",
+      oderstatus: { $in: ["confirmed", "delivered"] },
     });
 
     if (!order) {

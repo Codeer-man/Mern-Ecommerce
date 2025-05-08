@@ -69,6 +69,11 @@ export default function Address({ setCurrentSelectedAddress, selectedId }) {
             dispatch(fetchAddress(user._id));
             toast.success("Address has been added");
             setformdata(intialAddressFormData);
+          } else {
+            if (data.meta.requestStatus === "rejected") {
+              console.log(data, "address");
+              toast(data.payload.message);
+            }
           }
         });
   }

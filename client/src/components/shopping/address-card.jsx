@@ -10,6 +10,8 @@ export default function AddressCard({
   setCurrentSelectedAddress,
   selectedId,
 }) {
+  // console.log(selectedId, "selected");
+
   return (
     <Card
       onClick={
@@ -18,7 +20,7 @@ export default function AddressCard({
           : null
       }
       className={` cursor-pointer ${
-        selectedId._id === addressInfo._id
+        selectedId?._id === addressInfo._id
           ? " border-red-700 border-[2px]"
           : "border-black"
       }`}

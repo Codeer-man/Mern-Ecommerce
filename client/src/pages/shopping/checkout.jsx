@@ -10,9 +10,9 @@ import { toast } from "sonner";
 export default function ShoppingCheckout() {
   const { cartItem } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
-  const [isPaymentStart, setIsPaymentStart] = useState(false);
+  const [isPaymentStart, setIsPaymentStart] = useState("Checkout with paypal");
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
-  const { approveUrl, orderId } = useSelector((state) => state.shopOrder);
+  const { approveUrl } = useSelector((state) => state.shopOrder);
 
   const dispatch = useDispatch();
 
@@ -28,7 +28,6 @@ export default function ShoppingCheckout() {
           0
         )
       : 0;
-  console.log(cartItem);
 
   function handleInitiatePaypalPayment() {
     if (cartItem.items.length === 0) {
@@ -69,18 +68,13 @@ export default function ShoppingCheckout() {
     };
 
     dispatch(createNewOrder(orderData)).then((data) => {
-      if (data.paylaod.success === true) {
-        setIsPaymentStart(true);
-      } else {
-        setIsPaymentStart(false);
-      }
+      setIsPaymentStart("Processing Paypal payment");
     });
   }
 
   if (approveUrl) {
     window.location.href = approveUrl.approveURL;
   }
-  console.log(currentSelectedAddress, "address");
 
   return (
     <div className="flex flex-col">
@@ -106,9 +100,12 @@ export default function ShoppingCheckout() {
           </div>
           <div className="mt-4 w-full">
             <Button onClick={handleInitiatePaypalPayment} className="w-full">
-              {isPaymentStart
+              {
+                /* {isPaymentStart
                 ? "Processing Paypal payment"
-                : "Checkout with paypal"}
+                : "Checkout with paypal"} */
+                isPaymentStart
+              }
             </Button>
           </div>
         </div>

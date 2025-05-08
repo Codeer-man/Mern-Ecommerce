@@ -15,12 +15,14 @@ export const createProductReview = createAsyncThunk(
     try {
       const response = await axios.post(
         "http://localhost:8080/api/product/review/create",
-        { productId, userId, userName, reviewMessage, reviewValue }
+        { productId, userId, userName, reviewMessage, reviewValue },
+        { withCredentials: true }
       );
+      console.log(response.data);
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error?.message);
+      return rejectWithValue(error?.response.data);
     }
   }
 );
@@ -57,9 +59,9 @@ const ProductReviewSlice = createSlice({
       state.review = action.payload?.data;
     });
     builder
-      .addCase(createProductReview.rejected, (state) => {
+      .addCase(createProductReview.rejected, (state, action) => {
         state.isLoading = false;
-        state.review = [];
+        state.review = action.payload?.data;
       })
       .addCase(getProductReview.fulfilled, (state, action) => {
         state.isLoading = false;

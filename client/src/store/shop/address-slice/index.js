@@ -17,7 +17,9 @@ export const createAddress = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error?.message);
+      console.log(error.response.data.message);
+
+      return rejectWithValue(error?.response.data);
     }
   }
 );

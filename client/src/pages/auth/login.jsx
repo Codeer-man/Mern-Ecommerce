@@ -6,7 +6,7 @@ import { loginUser } from "@/store/authslice";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 const initialstate = {
   username: "",
@@ -18,22 +18,27 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(formData)).then((data) => {
-      if (data?.payload?.success === true) {
-        if (data.payload.data.role === "admin") {
-          toast.success(data.payload.message);
-          navigate("/admin/dashboard");
-        } else if (data.payload.data.role === "user") {
-          toast.success(data.payload.message);
-          navigate("/shop/home");
-        }
+
+    try {
+      const data = await dispatch(loginUser(formData)).unwrap();
+
+      toast.success(data.message);
+
+      const role = data.data.role;
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/shop/home");
       }
 
-      toast.error(data.payload.message);
-      // toast.error("hello world");
-    });
+      setFormData(initialstate);
+    } catch (err) {
+      console.log(err);
+
+      toast.error(err?.message || "Login failed");
+    }
   };
 
   return (
@@ -59,8 +64,6 @@ export default function Login() {
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
-
-      <Oauth />
     </div>
   );
 }

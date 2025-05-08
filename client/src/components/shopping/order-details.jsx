@@ -28,7 +28,7 @@ export default function ShoppingOrderDetailView({ orderDetail }) {
             <Label> {orderDetail.oderstatus}</Label>
           </div>
           <div className="flex mt-3 items-center justify-between">
-            <p className="font-medium">Order status</p>
+            <p className="font-medium">Payment method</p>
             <Label> {orderDetail.paymentMethod}</Label>
           </div>
         </div>

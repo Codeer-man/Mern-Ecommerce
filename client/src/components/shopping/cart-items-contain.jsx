@@ -9,8 +9,6 @@ export default function UserCartItemContain({ cartItems }) {
   const { user } = useSelector((state) => state.auth);
   const { products } = useSelector((state) => state.shoppingProduct);
 
-  console.log(products, "Product list ");
-
   const dispatch = useDispatch();
 
   function handleUpdateQuantity(cartItem, buttonType) {
@@ -57,10 +55,6 @@ export default function UserCartItemContain({ cartItems }) {
       }
     });
   }
-
-  // dispatch(getSingleProduct(cartItems.ProductId))
-
-  console.log(cartItems, "cartItem");
 
   return (
     <div className="flex items-center space-x-4">

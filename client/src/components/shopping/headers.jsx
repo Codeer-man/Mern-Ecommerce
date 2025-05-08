@@ -32,7 +32,9 @@ function MenuItem() {
   function handleNavigate(getMenuItem) {
     sessionStorage.removeItem("filters");
     const filterNav =
-      getMenuItem.id !== "home" && getMenuItem.id !== "products"
+      getMenuItem.id !== "home" &&
+      getMenuItem.id !== "products" &&
+      getMenuItem.id !== "search"
         ? { category: [getMenuItem.id] }
         : null;
     sessionStorage.setItem("filters", JSON.stringify(filterNav));

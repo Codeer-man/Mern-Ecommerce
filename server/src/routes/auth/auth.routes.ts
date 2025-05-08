@@ -4,6 +4,7 @@ import {
   authRegister,
   GetUserData,
   logout,
+  refreshToken,
 } from "../../controllers/auth/auth.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 import { loginSchema, registerSchema } from "../../validation/user.validation";
@@ -15,6 +16,7 @@ router.post("/register", validation(registerSchema), authRegister);
 router.post("/login", validation(loginSchema), authLogin);
 router.get("/getData", authMiddleware, GetUserData);
 router.post("/logout", authMiddleware, logout);
+router.post("/refreshToken", refreshToken);
 
 router.get("/check-auth", authMiddleware, (req, res) => {
   const user = (req as any).user;

@@ -52,7 +52,9 @@ app.use("/api/product/search", productSearchRoutes);
 app.use("/api/product/review", productReview);
 
 mongoose
-  .connect("mongodb://localhost:27017/E-commerce")
+  .connect(
+    "mongodb+srv://mdrmoney34:mdrmoney34@cluster0.klkq8ku.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  )
   .then(() => console.log("Database connectred"))
   .catch((e) => console.log("Datasebase not connected", e));
 

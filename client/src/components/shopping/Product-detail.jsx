@@ -31,23 +31,27 @@ export default function ProductDetail({ open, setOpen, productDetail }) {
     setRating(getRating);
   }
 
-  function handleAddReview() {
-    dispatch(
-      createProductReview({
-        productId: productDetail._id,
-        userId: user._id,
-        userName: user.username,
-        reviewMessage: reviewMsg,
-        reviewValue: rating,
-      })
-    ).then((data) => {
-      if (data.payload.success === true) {
-        setRating(0);
-        setReviewMsg("");
-        dispatch(getProductReview(productDetail._id));
-        toast.success("Review has been addded ");
-      }
-    });
+  async function handleAddReview() {
+    try {
+      await dispatch(
+        createProductReview({
+          productId: productDetail._id,
+          userId: user._id,
+          userName: user.username,
+          reviewMessage: reviewMsg,
+          reviewValue: rating,
+        })
+      ).unwrap();
+      setRating(0);
+      setReviewMsg("");
+      toast.success("Review has been addded ");
+    } catch (error) {
+      setRating(0);
+      setReviewMsg("");
+      toast.error(error?.message || "something error");
+    } finally {
+      dispatch(getProductReview(productDetail._id));
+    }
   }
 
   function handleAddToCart(ProductId, getTotalStock) {
@@ -88,7 +92,7 @@ export default function ProductDetail({ open, setOpen, productDetail }) {
     if (productDetail !== null) {
       dispatch(getProductReview(productDetail._id));
     }
-  }, [productDetail]);
+  }, [productDetail, dispatch]);
 
   const averageReview =
     review && review.length > 0
