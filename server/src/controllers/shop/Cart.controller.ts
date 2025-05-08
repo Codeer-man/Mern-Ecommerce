@@ -99,7 +99,6 @@ export const fetchCartItems = async (
     res.status(200).json({
       success: true,
       data: {
-        ...cart._doc,
         items: populateCartItem,
       },
     });
@@ -235,7 +234,6 @@ export const deleteCartItems = async (
     res.status(200).json({
       success: true,
       data: {
-        ...cart._doc,
         items: populateCartItem,
       },
     });
