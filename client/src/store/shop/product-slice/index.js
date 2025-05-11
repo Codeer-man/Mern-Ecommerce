@@ -67,7 +67,7 @@ const ShopProductSlicer = createSlice({
       })
       .addCase(getSingleProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.productDetail = action.payload.find;
+        state.productDetail = action.payload.data;
       })
       .addCase(getSingleProduct.rejected, (state, action) => {
         state.isLoading = false;

@@ -16,6 +16,10 @@ import AdminOrderRouter from "./routes/admin/order.routes";
 import productSearchRoutes from "./routes/shop/search.routes";
 import productReview from "./routes/shop/review.route";
 import AdminFeatureRoute from "./routes/admin/feature.route";
+import productPage from "./routes/shop/pagination.route";
+
+// db
+import { connectdb } from "./lib/db";
 
 const app = express();
 
@@ -50,13 +54,15 @@ app.use("/api/shop/address", addressRoutes);
 app.use("/api/shop/order", orderRouter);
 app.use("/api/product/search", productSearchRoutes);
 app.use("/api/product/review", productReview);
+app.use("/api/product", productPage);
 
-mongoose
-  .connect(
-    "mongodb+srv://mdrmoney34:mdrmoney34@cluster0.klkq8ku.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
-  .then(() => console.log("Database connectred"))
-  .catch((e) => console.log("Datasebase not connected", e));
+// mongoose
+//   .connect(
+//     "mongodb+srv://mdrmoney34:mdrmoney34@cluster0.klkq8ku.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+//   )
+//   .then(() => console.log("Database connectred"))
+//   .catch((e) => console.log("Datasebase not connected", e));
+connectdb();
 
 app.use(errorHandler);
 
