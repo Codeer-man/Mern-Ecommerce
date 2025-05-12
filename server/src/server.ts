@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import mongoose from "mongoose";
+
 import { errorHandler } from "./middleware/errorHandlin.middleware";
 import authRoutes from "./routes/auth/auth.routes";
 import adminProducts from "./routes/admin/product.routes";
@@ -16,30 +16,60 @@ import AdminOrderRouter from "./routes/admin/order.routes";
 import productSearchRoutes from "./routes/shop/search.routes";
 import productReview from "./routes/shop/review.route";
 import AdminFeatureRoute from "./routes/admin/feature.route";
-import productPage from "./routes/shop/pagination.route";
 
 // db
 import { connectdb } from "./lib/db";
+import Redis from "ioredis";
+import { RateLimiterRedis } from "rate-limiter-flexible";
+import corsConfig from "./helpers/corsConfig";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    credentials: true,
-  })
-);
+app.use(corsConfig());
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
+//     allowedHeaders: [
+//       "Content-Type",
+//       "Authorization",
+//       "Cache-Control",
+//       "Expires",
+//       "Pragma",
+//     ],
+//     credentials: true,
+//   })
+// );
 
 app.use(express.json());
 app.use(cookieParse());
+
+const redisUrl = process.env.REDIS_URL;
+if (!redisUrl) {
+  console.error("REDIS_URL is not defined in the .env file!");
+  process.exit(1);
+}
+
+const redisClient = new Redis(redisUrl);
+
+// ddos attack prevent
+const rateLimiterRedis = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: "my-app-rate-limiter",
+  points: 10,
+  duration: 1,
+});
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  rateLimiterRedis
+    .consume(req.ip as string)
+    .then(() => next())
+    .catch(() => {
+      console.error(`Rate limit exceeded for ${req.ip} on ${req.originalUrl}`);
+      res.status(429).json({ message: "Request limit exceeded" });
+    });
+});
+
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/product", adminProducts);
@@ -54,14 +84,7 @@ app.use("/api/shop/address", addressRoutes);
 app.use("/api/shop/order", orderRouter);
 app.use("/api/product/search", productSearchRoutes);
 app.use("/api/product/review", productReview);
-app.use("/api/product", productPage);
 
-// mongoose
-//   .connect(
-//     "mongodb+srv://mdrmoney34:mdrmoney34@cluster0.klkq8ku.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-//   )
-//   .then(() => console.log("Database connectred"))
-//   .catch((e) => console.log("Datasebase not connected", e));
 connectdb();
 
 app.use(errorHandler);

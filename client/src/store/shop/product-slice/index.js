@@ -9,7 +9,7 @@ const initialState = {
 
 export const getShopProduct = createAsyncThunk(
   "/shop/product",
-  async ({ filterParams, sortParams }, thunkAPI) => {
+  async ({ filterParams, sortParams, page, limit }, thunkAPI) => {
     try {
       const query = new URLSearchParams({
         ...filterParams,
@@ -17,8 +17,9 @@ export const getShopProduct = createAsyncThunk(
       });
 
       const result = await axios.get(
-        `http://localhost:8080/api/shop/product/filteredProduct?${query}`
+        `http://localhost:8080/api/shop/product/filteredProduct?${query}&page=${page}&limit=${limit}`
       );
+
       return result.data;
     } catch (error) {
       console.log(error);
@@ -56,7 +57,7 @@ const ShopProductSlicer = createSlice({
       })
       .addCase(getShopProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.products = action.payload.data;
+        state.products = action.payload;
       })
       .addCase(getShopProduct.rejected, (state, action) => {
         state.isLoading = false;

@@ -7,6 +7,8 @@ interface ProductFilterQuery {
   category?: string | string[];
   brand?: string | string[];
   sortBy?: string;
+  page?: string;
+  limit?: string;
 }
 
 export const getFilteredProduct: RequestHandler = async (
@@ -16,6 +18,8 @@ export const getFilteredProduct: RequestHandler = async (
 ): Promise<void> => {
   try {
     const { category = [], brand = [], sortBy = "price-lowtohigh" } = req.query;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 12;
 
     const filters: Record<string, any> = {};
 
@@ -53,12 +57,21 @@ export const getFilteredProduct: RequestHandler = async (
         break;
     }
 
-    const product = await Product.find(filters).sort(sort);
+    const skip = (page - 1) * limit;
+    const total = await Product.countDocuments(filters);
+
+    const product = await Product.find(filters)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
       message: "All the products",
       data: product,
+      totalPage: Math.ceil(total / limit),
+      currentpage: page,
+      limit,
     });
   } catch (error) {
     next(error);

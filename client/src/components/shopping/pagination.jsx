@@ -1,74 +1,62 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 
-export default function Pagination({ onProductChange }) {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(12);
-  const [totalPage, setTotalPage] = useState(1);
-
+export default function Pagination({ limit, page, totalPage, setPage }) {
+  console.log(limit, page, totalPage, "pagination");
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const fetchdata = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/product/pagination?page=${page}&limit=${limit}`
-        );
+    setPage(page);
+    setSearchParams({ page, limit });
+  }, [page, limit, setSearchParams]);
 
-        setTotalPage(response.data.totalpage);
-        setSearchParams({ page, limit });
-        if (onProductChange) {
-          onProductChange(response.data.product);
-        }
-      } catch (error) {
-        throw new Error(error);
-      }
-    };
-    fetchdata();
-  }, [page, limit]);
-
-  function handlePageChangeDec(nextpage) {
-    if (page > 1) setPage(nextpage);
+  function handlePageChangeDec() {
+    setPage((prevpage) => {
+      if (page > 1) return prevpage - 1;
+      return prevpage;
+    });
   }
-  function handlePageChangeAdd(nextpage) {
-    if (page < totalPage) setPage(nextpage + 1);
+  function handlePageChangeAdd() {
+    setPage((prevpage) => {
+      if (page < totalPage) return prevpage + 1;
+      return prevpage;
+    });
   }
 
   return (
-    <div className="w-full h-10 flex items-center justify-center ">
+    <div className="w-full h-10 flex items-center justify-center">
       <div>
         <div className="space-x-4 flex">
           <Button
             onClick={() => {
-              handlePageChangeDec(page - 1);
+              handlePageChangeDec();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            variant={"outline"}
-            className={"border-2 border-gray-500 cursor-pointer "}
+            variant="outline"
+            className="border-2 border-gray-500 cursor-pointer"
+            disabled={page === 1}
           >
-            Previous
+            {page === 1 ? "The Start" : "Previous"}
           </Button>
-          <Button
-            variant={"outline"}
-            className={"border-2 border-gray-500 cursor-pointer "}
-          >
+
+          <Label className="border-2 px-3 border-black rounded-sm">
             {page}
-          </Button>
+          </Label>
+
           <Button
             onClick={() => {
-              handlePageChangeAdd(page);
-              if (page < 5) {
+              handlePageChangeAdd();
+              if (page < totalPage) {
                 window.scrollTo({ top: 0, behavior: "smooth" });
-              } else {
-                null;
               }
             }}
-            variant={"outline"}
-            className={"border-2 border-gray-500 cursor-pointer "}
+            variant="outline"
+            className="border-2 border-gray-500 cursor-pointer"
+            disabled={page === totalPage}
           >
-            Next
+            {page === totalPage ? "The End" : "Next"}
           </Button>
         </div>
       </div>

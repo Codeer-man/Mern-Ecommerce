@@ -39,7 +39,6 @@ export default function ShoppingListing() {
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [opendetailDialogue, setOpenDetailDialogue] = useState(false);
-  const [productsFromPagination, setProductsFromPagination] = useState([]);
   const { products, productDetail } = useSelector(
     (state) => state.shoppingProduct
   );
@@ -47,14 +46,20 @@ export default function ShoppingListing() {
   const categorySearchParams = searchParams.get("category");
   const { user } = useSelector((state) => state.auth);
 
+  // paginaiton
+  const initalPage = parseInt(searchParams.get("page"));
+  const [page, setPage] = useState(initalPage);
+
   function handleGetProductDetail(id) {
     dispatch(getSingleProduct(id));
   }
 
   useEffect(() => {
     if (filter !== null && sort !== null)
-      dispatch(getShopProduct({ filterParams: filter, sortParams: sort }));
-  }, [dispatch, sort, filter]);
+      dispatch(
+        getShopProduct({ filterParams: filter, sortParams: sort, page })
+      );
+  }, [dispatch, sort, filter, page]);
 
   function handleSort(value) {
     setSort(value);
@@ -131,11 +136,8 @@ export default function ShoppingListing() {
     }
   }, [productDetail]);
 
-  function handleProductPageChange(product) {
-    setProductsFromPagination(product);
-  }
-
-  console.log(products, "product");
+  console.log(products, "products page");
+  console.log(page, "page listing");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
@@ -145,7 +147,7 @@ export default function ShoppingListing() {
           <h2 className="text-lg font-extrabold">All Products</h2>
           <div className="flex items-center gap-3">
             <span className="text-muted-foreground">
-              {productsFromPagination.length} Products
+              {products.length} Products
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -175,8 +177,8 @@ export default function ShoppingListing() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          {productsFromPagination && productsFromPagination.length > 0
-            ? productsFromPagination.map((products) => (
+          {products && products.data && products.data.length > 0
+            ? products.data.map((products) => (
                 <ShopingProduct
                   product={products}
                   handleGetProductDetail={handleGetProductDetail}
@@ -186,7 +188,12 @@ export default function ShoppingListing() {
               ))
             : null}
         </div>
-        <Pagination onProductChange={handleProductPageChange} />
+        <Pagination
+          limit={products.limit}
+          page={products.currentpage}
+          setPage={setPage}
+          totalPage={products.totalPage}
+        />
       </div>
       <ProductDetail
         open={opendetailDialogue}
