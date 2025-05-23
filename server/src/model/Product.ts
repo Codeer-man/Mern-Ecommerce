@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 interface ProductInfo extends Document {
   title: string;
@@ -9,6 +9,7 @@ interface ProductInfo extends Document {
   price: number;
   salePrice: number;
   totalStock: number;
+  list: boolean;
 }
 
 const productSchema = new mongoose.Schema<ProductInfo>(
@@ -21,6 +22,10 @@ const productSchema = new mongoose.Schema<ProductInfo>(
     price: Number,
     salePrice: Number,
     totalStock: Number,
+    list: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

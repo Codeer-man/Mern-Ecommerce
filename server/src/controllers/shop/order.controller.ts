@@ -131,6 +131,8 @@ export const capturePayment = async (
     }
 
     const getCartId = order.CartId;
+    console.log(getCartId);
+
     await Cart.findByIdAndDelete(getCartId);
 
     await order.save();

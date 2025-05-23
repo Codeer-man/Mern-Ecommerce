@@ -14,6 +14,7 @@ import {
   deleteProduct,
   editProduct,
   fetchAllProduct,
+  updateLabel,
 } from "@/store/admin/product";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +29,7 @@ const initialFormData = {
   category: "",
   salePrice: "",
   totalStock: "",
+  list: false,
 };
 
 export default function Adminproduct() {
@@ -82,7 +84,6 @@ export default function Adminproduct() {
   // console.log(isFormValid());
 
   function handleDelete(productId) {
-    console.log(productId);
     dispatch(deleteProduct(productId)).then((data) => {
       if (data.payload.success === true) {
         dispatch(fetchAllProduct());
@@ -94,6 +95,12 @@ export default function Adminproduct() {
   useEffect(() => {
     dispatch(fetchAllProduct());
   }, [dispatch]);
+
+  function handleToggleList(product) {
+    console.log(product._id, "product");
+
+    dispatch(updateLabel({ id: product._id, list: !product.list }));
+  }
 
   return (
     <Fragment>
@@ -112,6 +119,7 @@ export default function Adminproduct() {
                 product={productItem}
                 setFormData={setFormdata}
                 handleDelete={handleDelete}
+                handleToggleList={handleToggleList}
               />
             ))
           : null}

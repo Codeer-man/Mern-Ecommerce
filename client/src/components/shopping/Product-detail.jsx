@@ -65,7 +65,7 @@ export default function ProductDetail({ open, setOpen, productDetail }) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > getTotalStock) {
           toast.error(
-            `Only ${getQuantity} quantity can be added for this item`
+            `Only ${getTotalStock} quantity can be added for this item`
           );
           return;
         }

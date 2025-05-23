@@ -28,7 +28,10 @@ export const searchProduct = async (
       ],
     };
 
-    const searchResult = await Product.find(createSearchQuery);
+    const searchResult = await Product.find({
+      ...createSearchQuery,
+      list: true,
+    });
 
     res
       .status(200)

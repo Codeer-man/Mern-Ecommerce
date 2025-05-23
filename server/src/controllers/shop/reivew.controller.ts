@@ -16,7 +16,7 @@ export const createProductReview = async (
     const order = await Order.findOne({
       userId: userId,
       "cartItems.productId": productId,
-      oderstatus: { $in: ["confirmed", "delivered"] },
+      oderstatus: { $in: ["delivered"] },
     });
 
     if (!order) {
@@ -78,6 +78,84 @@ export const getProductReview = async (
       success: true,
       message: "review data",
       data: data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId, productId } = req.body;
+
+    const findUserReview = await Review.findOne({ productId, userId });
+
+    if (!findUserReview) {
+      throw new ErrorHandler("Review not found", 404, false);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Got user review",
+      data: findUserReview,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { reviewId } = req.params;
+
+    if (!reviewId) {
+      throw new ErrorHandler("Review not found", 404, false);
+    }
+
+    await Review.findByIdAndDelete(reviewId);
+    res.status(200).json({
+      success: true,
+      message: "Your review has been deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { reviewId } = req.params;
+    const { reviewMessage, reviewValue } = req.body;
+    if (!reviewId) {
+      throw new ErrorHandler("Review not found", 404, false);
+    }
+
+    const editReview = await Review.findById(reviewId);
+
+    if (!editReview) {
+      throw new ErrorHandler("Reciew not found", 404, false);
+    }
+
+    editReview.reviewMessage = reviewMessage || editReview.reviewMessage;
+    editReview.reviewValue = reviewValue || editReview.reviewValue;
+
+    await editReview.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Your review has been updated",
     });
   } catch (error) {
     next(error);

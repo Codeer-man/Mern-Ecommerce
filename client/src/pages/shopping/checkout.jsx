@@ -15,6 +15,7 @@ export default function ShoppingCheckout() {
   const { approveUrl } = useSelector((state) => state.shopOrder);
 
   const dispatch = useDispatch();
+  console.log(cartItem.cart?._id, "cart");
 
   const TotalCartAmount =
     cartItem && cartItem.items && cartItem.items.length > 0
@@ -41,7 +42,7 @@ export default function ShoppingCheckout() {
 
     const orderData = {
       userId: user._id,
-      CartId: cartItem._id,
+      CartId: cartItem.cart._id,
       cartItems: cartItem.items.map((items) => ({
         productId: items.ProductId,
         title: items.title,
@@ -67,7 +68,7 @@ export default function ShoppingCheckout() {
       payerId: "",
     };
 
-    dispatch(createNewOrder(orderData)).then((data) => {
+    dispatch(createNewOrder(orderData)).then(() => {
       setIsPaymentStart("Processing Paypal payment");
     });
   }

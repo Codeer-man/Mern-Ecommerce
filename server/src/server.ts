@@ -53,22 +53,22 @@ if (!redisUrl) {
 const redisClient = new Redis(redisUrl);
 
 // ddos attack prevent
-const rateLimiterRedis = new RateLimiterRedis({
-  storeClient: redisClient,
-  keyPrefix: "my-app-rate-limiter",
-  points: 10,
-  duration: 1,
-});
+// const rateLimiterRedis = new RateLimiterRedis({
+//   storeClient: redisClient,
+//   keyPrefix: "my-app-rate-limiter",
+//   points: 10,
+//   duration: 1,
+// });
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  rateLimiterRedis
-    .consume(req.ip as string)
-    .then(() => next())
-    .catch(() => {
-      console.error(`Rate limit exceeded for ${req.ip} on ${req.originalUrl}`);
-      res.status(429).json({ message: "Request limit exceeded" });
-    });
-});
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   rateLimiterRedis
+//     .consume(req.ip as string)
+//     .then(() => next())
+//     .catch(() => {
+//       console.error(`Rate limit exceeded for ${req.ip} on ${req.originalUrl}`);
+//       res.status(429).json({ message: "Request limit exceeded" });
+//     });
+// });
 
 // routes
 app.use("/api/auth", authRoutes);

@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 
 export default function Pagination({ limit, page, totalPage, setPage }) {
-  console.log(limit, page, totalPage, "pagination");
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     setPage(page);
     setSearchParams({ page, limit });
-  }, [page, limit, setSearchParams]);
+  }, [page, limit, setSearchParams, setPage]);
 
   function handlePageChangeDec() {
     setPage((prevpage) => {

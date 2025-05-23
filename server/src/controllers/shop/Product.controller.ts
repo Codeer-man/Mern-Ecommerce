@@ -60,7 +60,7 @@ export const getFilteredProduct: RequestHandler = async (
     const skip = (page - 1) * limit;
     const total = await Product.countDocuments(filters);
 
-    const product = await Product.find(filters)
+    const product = await Product.find({ ...filters, list: true })
       .sort(sort)
       .skip(skip)
       .limit(limit);

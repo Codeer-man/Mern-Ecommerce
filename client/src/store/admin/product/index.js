@@ -87,6 +87,30 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const updateLabel = createAsyncThunk(
+  "product/updateLabel",
+  async ({ id, list }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/admin/product/update/${id}/label`,
+        { list },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update label"
+      );
+    }
+  }
+);
+
 const AdminProductSlice = createSlice({
   name: "adminProductSlice",
   initialState,
@@ -103,6 +127,15 @@ const AdminProductSlice = createSlice({
       .addCase(fetchAllProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.productList = action.payload?.error;
+      })
+      .addCase(updateLabel.fulfilled, (state, action) => {
+        const updatedProduct = action.payload.product;
+        const index = state.productList.findIndex(
+          (p) => p._id === updatedProduct._id
+        );
+        if (index !== -1) {
+          state.productList[index] = updatedProduct;
+        }
       }),
 });
 

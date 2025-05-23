@@ -115,6 +115,7 @@ export default function ShoppingHome() {
     dispatch(getFeatuerImage());
   }, [dispatch]);
 
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="relative w-full h-[600px] overflow-hidden">
@@ -150,7 +151,7 @@ export default function ShoppingHome() {
             "absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"
           }
           onClick={() =>
-            setImageSlider((prevData) => (prevData + 1) % slide.length)
+            setImageSlider((prevData) => (prevData + 1) % featureImage.length)
           }
         >
           <ChevronRightIcon className="w-4 h-4" />
@@ -208,8 +209,8 @@ export default function ShoppingHome() {
             Featured Products
           </h2>
           <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products && products.length > 0
-              ? products
+            {products && products.data && products.data.length > 0
+              ? products.data
                   .slice(1, 5)
                   .map((product) => (
                     <ShopingProduct

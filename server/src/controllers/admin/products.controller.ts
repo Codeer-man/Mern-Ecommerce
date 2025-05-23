@@ -45,6 +45,7 @@ export const addProduct = async (
       price,
       salePrice,
       totalStock,
+      list,
     } = req.body;
 
     if (
@@ -69,6 +70,7 @@ export const addProduct = async (
       price,
       salePrice,
       totalStock,
+      list,
     });
 
     await newProduct.save();
@@ -90,7 +92,7 @@ export const fetchallProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const listOfProduct = await Product.find({});
+    const listOfProduct = await Product.find();
     res.status(200).json({
       sucess: true,
       message: "All Product has been fetched",
@@ -162,6 +164,29 @@ export const deleteProduct = async (
 
     res.status(200).json({ success: true, message: "Product deleted" });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const updateLabel = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { list } = req.body;
+    const updateLabel = await Product.findByIdAndUpdate(
+      id,
+      { list },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "Product label updated successfully.",
+      product: updateLabel,
+    });
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 };

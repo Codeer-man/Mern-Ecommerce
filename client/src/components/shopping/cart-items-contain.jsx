@@ -13,7 +13,7 @@ export default function UserCartItemContain({ cartItems }) {
 
   function handleUpdateQuantity(cartItem, buttonType) {
     if (buttonType === "plus") {
-      const currentProduct = products.find(
+      const currentProduct = products.data.find(
         (product) => product._id === cartItem.ProductId
       );
 

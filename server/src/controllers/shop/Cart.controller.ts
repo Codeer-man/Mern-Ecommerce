@@ -73,16 +73,6 @@ export const fetchCartItems = async (
       await cart.save();
     }
 
-    //! in test
-    // const populateCartItem = validItem.map((items) => ({
-    //   ProductId: items.ProductId._id,
-    //   image: items.ProductId.image,
-    //   title: items.ProductId.title,
-    //   price: items.ProductId.price,
-    //   salePrice: items.ProductId.salePrice,
-    //   quantity: items.quantity,
-    // }));
-
     const populateCartItem = validItem.map((items) => {
       const product = items.ProductId as IProduct;
 
@@ -99,6 +89,7 @@ export const fetchCartItems = async (
     res.status(200).json({
       success: true,
       data: {
+        cart: cart,
         items: populateCartItem,
       },
     });
@@ -141,15 +132,6 @@ export const updateCartItemsQty = async (
       select: "image title salePrice price",
     });
 
-    //! in test
-    // const populateCartItem = cart.items.map((items) => ({
-    //   ProductId: items.ProductId ? items.ProductId._id : null,
-    //   image: items.ProductId ? items.ProductId.image : null,
-    //   title: items.ProductId ? items.ProductId.title : null,
-    //   price: items.ProductId ? items.ProductId.price : null,
-    //   salePrice: items.ProductId ? items.ProductId.salePrice : null,
-    //   quantity: items.quantity,
-    // }));
 
     const populateCartItem = cart.items.map((items) => {
       const product = items.ProductId as IProduct;
@@ -207,16 +189,6 @@ export const deleteCartItems = async (
       path: "items.ProductId",
       select: "image title salePrice price",
     });
-
-    //! in test
-    // const populateCartItem = cart.items.map((items) => ({
-    //   ProductId: items.ProductId ? items.ProductId._id : null,
-    //   image: items.ProductId ? items.ProductId.image : null,
-    //   title: items.ProductId ? items.ProductId.title : null,
-    //   price: items.ProductId ? items.ProductId.price : null,
-    //   salePrice: items.ProductId ? items.ProductId.salePrice : null,
-    //   quantity: items.quantity,
-    // }));
 
     const populateCartItem = cart.items.map((items) => {
       const product = items.ProductId as IProduct;
