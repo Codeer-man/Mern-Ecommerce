@@ -18,6 +18,7 @@ import ProductDetail from "@/components/shopping/Product-detail";
 import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import { getFeatuerImage } from "@/store/admin/feature-slice";
+import AdsForShowing from "@/components/Advertisement/ads";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: FaMale },
@@ -114,7 +115,6 @@ export default function ShoppingHome() {
   useEffect(() => {
     dispatch(getFeatuerImage());
   }, [dispatch]);
-
 
   return (
     <div className="flex flex-col min-h-screen">

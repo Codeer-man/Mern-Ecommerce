@@ -23,6 +23,7 @@ import { toast } from "sonner";
 const initialFormData = {
   title: "",
   image: "",
+  publicId: "",
   price: "",
   description: "",
   brand: "",
@@ -37,20 +38,19 @@ export default function Adminproduct() {
     useState(false);
   const [formdata, setFormdata] = useState(initialFormData);
   const [imageFile, setImageFile] = useState(null);
+  const [imagePublicId, setImagePublicId] = useState("");
   const [uploadImageUrl, setUploadImageUrl] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
 
   const { productList } = useSelector((state) => state.adminProduct);
   const dispatch = useDispatch();
-
   const onSubmit = (e) => {
     e.preventDefault();
 
     currentEditedId !== null
       ? dispatch(editProduct({ id: currentEditedId, formdata })).then(
           (data) => {
-            console.log(data, "edit");
             if (data.payload?.success === true) {
               dispatch(fetchAllProduct());
               setCurrentEditedId(null),
@@ -63,6 +63,7 @@ export default function Adminproduct() {
           addNewProduct({
             ...formdata,
             image: uploadImageUrl,
+            publicId: imagePublicId,
           })
         ).then((data) => {
           if (data.payload.success === true) {
@@ -97,8 +98,6 @@ export default function Adminproduct() {
   }, [dispatch]);
 
   function handleToggleList(product) {
-    console.log(product._id, "product");
-
     dispatch(updateLabel({ id: product._id, list: !product.list }));
   }
 
@@ -147,6 +146,7 @@ export default function Adminproduct() {
               uploadImageUrl={uploadImageUrl}
               setUploadImageUrl={setUploadImageUrl}
               imageLoading={imageLoading}
+              setImagePublicId={setImagePublicId}
               setImageLoading={setImageLoading}
               isEditedMode={currentEditedId}
             />

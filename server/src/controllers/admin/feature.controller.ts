@@ -38,3 +38,15 @@ export const getFeatureImage = async (
     next(error);
   }
 };
+
+export const deleteImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+
+    await Feature.findByIdAndDelete(id);
+  } catch (error) {}
+};

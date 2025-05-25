@@ -12,6 +12,7 @@ import OauthRoutes from "./routes/oauth/google.routes";
 import cartRoutes from "./routes/cart/Cart.Routes";
 import addressRoutes from "./routes/shop/address.routes";
 import orderRouter from "./routes/shop/order.routes";
+import AdvertisementFeature from "./routes/admin/advertisement.routes";
 import AdminOrderRouter from "./routes/admin/order.routes";
 import productSearchRoutes from "./routes/shop/search.routes";
 import productReview from "./routes/shop/review.route";
@@ -53,28 +54,29 @@ if (!redisUrl) {
 const redisClient = new Redis(redisUrl);
 
 // ddos attack prevent
-// const rateLimiterRedis = new RateLimiterRedis({
-//   storeClient: redisClient,
-//   keyPrefix: "my-app-rate-limiter",
-//   points: 10,
-//   duration: 1,
-// });
+const rateLimiterRedis = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: "my-app-rate-limiter",
+  points: 10,
+  duration: 1,
+});
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   rateLimiterRedis
-//     .consume(req.ip as string)
-//     .then(() => next())
-//     .catch(() => {
-//       console.error(`Rate limit exceeded for ${req.ip} on ${req.originalUrl}`);
-//       res.status(429).json({ message: "Request limit exceeded" });
-//     });
-// });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  rateLimiterRedis
+    .consume(req.ip as string)
+    .then(() => next())
+    .catch(() => {
+      console.error(`Rate limit exceeded for ${req.ip} on ${req.originalUrl}`);
+      res.status(429).json({ message: "Request limit exceeded" });
+    });
+});
 
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/product", adminProducts);
 app.use("/api/admin/order", AdminOrderRouter);
 app.use("/api/admin/feature", AdminFeatureRoute);
+app.use("/api/admin/ads", AdvertisementFeature);
 
 app.use("/api", OauthRoutes);
 

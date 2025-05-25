@@ -229,3 +229,27 @@ export const addressFormControls = [
     placeholder: "Enter any additional notes",
   },
 ];
+
+export const AdsForm = [
+  {
+    name: "title",
+    label: "Title",
+    placeholder: "Enter the Title",
+    componentType: "input",
+    type: "text",
+  },
+  {
+    name: "targetUrl",
+    label: "Target Url",
+    placeholder: "Enter the Target Url",
+    componentType: "input",
+    type: "text",
+  },
+  {
+    name: "description",
+    label: "Description",
+    placeholder: "Enter the Ads Description",
+    componentType: "input",
+    type: "text",
+  },
+];

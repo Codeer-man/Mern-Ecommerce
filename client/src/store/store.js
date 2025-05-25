@@ -9,12 +9,14 @@ import shoppingOrderSlice from "./shop/order-slice";
 import shopSearchSlice from "./shop/search-slice";
 import shopProductReview from "./shop/product-review";
 import featureSlice from "./admin/feature-slice";
+import advertisementSlice from "./admin/advertisement";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     adminProduct: adminProductSlice,
     adminOrder: AdminOrderSlice,
+    adminAdvertisement: advertisementSlice,
     featureSlice: featureSlice,
     shoppingProduct: shoppingProductSlice,
     shopCart: shoppingCartSlice,

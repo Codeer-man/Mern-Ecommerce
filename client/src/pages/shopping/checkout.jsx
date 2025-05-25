@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import UserCartItemContain from "@/components/shopping/cart-items-contain";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { toast } from "sonner";
+import AdsForShowing from "@/components/Advertisement/ads";
 
 export default function ShoppingCheckout() {
   const { cartItem } = useSelector((state) => state.shopCart);

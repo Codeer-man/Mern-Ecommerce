@@ -10,11 +10,11 @@ import { Skeleton } from "../ui/skeleton";
 export default function ProductImageUpload({
   imageFile,
   setImageFile,
-  uploadImageUrl,
   setUploadImageUrl,
   setImageLoading,
   imageLoading,
   isEditedMode,
+  setImagePublicId,
   isCustomStyling = false,
 }) {
   const handleImageFileChange = (e) => {
@@ -49,9 +49,10 @@ export default function ProductImageUpload({
         "http://localhost:8080/api/admin/product/image-upload",
         data
       );
-
+      console.log(response, "image response");
       if (response.data.success === true) {
-        setUploadImageUrl(response.data.result.url);
+        setUploadImageUrl(response.data.result.secure_url);
+        setImagePublicId(response.data.result.public_id);
       }
     } catch (error) {
       return console.error("invalid server error", error);

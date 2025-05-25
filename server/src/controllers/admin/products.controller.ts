@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { imageUploadUtil } from "../../helpers/upload-cloudinary";
+import {
+  deleteFromCloudinary,
+  imageUploadUtil,
+} from "../../helpers/upload-cloudinary";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import Product from "../../model/Product";
 
@@ -46,6 +49,7 @@ export const addProduct = async (
       salePrice,
       totalStock,
       list,
+      publicId,
     } = req.body;
 
     if (
@@ -60,6 +64,7 @@ export const addProduct = async (
     ) {
       throw new ErrorHandler("Please fill all the field", 400, false);
     }
+    console.log(image);
 
     const newProduct = new Product({
       title,
@@ -70,6 +75,7 @@ export const addProduct = async (
       price,
       salePrice,
       totalStock,
+      publicId,
       list,
     });
 
@@ -161,6 +167,7 @@ export const deleteProduct = async (
     if (!delProduct) {
       throw new ErrorHandler("Product not found", 404, false);
     }
+    await deleteFromCloudinary(delProduct.publicId);
 
     res.status(200).json({ success: true, message: "Product deleted" });
   } catch (error) {

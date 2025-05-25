@@ -5,7 +5,7 @@ import Login from "./pages/auth/login";
 import Register from "./pages/auth/Register";
 import ShoppingLayout from "./components/shopping/layout";
 import AdminLayout from "./components/admin/layout";
-import Admindashboard from "./pages/admin/dashboard";
+import AdmindashboardLayout from "./pages/admin/dashboard";
 import AdminOrders from "./pages/admin/orders";
 import Adminproduct from "./pages/admin/product";
 import NotFound from "./pages/not-found";
@@ -21,6 +21,9 @@ import { Skeleton } from "./components/ui/skeleton";
 import PaypalReturn from "./pages/shopping/paypal-return";
 import PaymentSuccess from "./components/shopping/payment-success";
 import SearchProduct from "./pages/shopping/searhc";
+import ImageUploadDashBaord from "./pages/admin/ImageUpload";
+import Advertisement from "./pages/admin/Advertisement";
+import AdsForShowing from "./components/Advertisement/ads";
 
 export default function App() {
   const { isLoading, isAuthenticated, user } = useSelector(
@@ -35,14 +38,15 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div>
-        <Skeleton className="w-[800] bg-black h-[600px]" />
+      <div className="flex items-center justify-center h-screen">
+        <Skeleton className="w-[800px] h-[600px]" />
       </div>
     );
   }
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
+      {user?.role === "user" && <AdsForShowing />}
       <Routes>
         <Route
           path="/"
@@ -74,7 +78,9 @@ export default function App() {
             </CheckAuth>
           }
         >
-          <Route path="dashboard" element={<Admindashboard />} />
+          <Route path="dashboard" element={<AdmindashboardLayout />} />
+          <Route path="imageUpload" element={<ImageUploadDashBaord />} />
+          <Route path="ads" element={<Advertisement />} />
           <Route path="order" element={<AdminOrders />} />
           <Route path="product" element={<Adminproduct />} />
         </Route>

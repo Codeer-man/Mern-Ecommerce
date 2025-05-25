@@ -1,8 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import React from "react";
-import { useDispatch } from "react-redux";
-import { updateLabel } from "@/store/admin/product";
+
 
 export default function AdminProductTile({
   product,
@@ -12,13 +11,6 @@ export default function AdminProductTile({
   handleDelete,
   handleToggleList,
 }) {
-  const dispatch = useDispatch();
-
-  const handleToggleLabel = () => {
-    dispatch(updateLabel({ id: product._id, list: !product.list }));
-    console.log(product.list);
-  };
-
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div>

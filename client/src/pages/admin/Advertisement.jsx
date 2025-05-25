@@ -1,0 +1,176 @@
+import AdvertisementTile from "@/components/admin/AdvertisementTile";
+import ProductImageUpload from "@/components/admin/image-upload";
+import CommonForm from "@/components/common/form";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { AdsForm } from "@/config";
+import {
+  createAds,
+  DeleteAds,
+  getAllAds,
+  updateActive,
+  updateAds,
+} from "@/store/admin/advertisement";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+
+const initalState = {
+  title: "",
+  targetUrl: "",
+  imageUrl: "",
+  description: "",
+  isActive: false,
+  publicId: "",
+};
+
+export default function Advertisement() {
+  const [openCreateAdsDialogue, setOpenCreateAdsDialogue] = useState(false);
+  const [formdata, setFormData] = useState(initalState);
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadImageUrl, setUploadImageUrl] = useState("");
+  const [imageLoading, setImageLoading] = useState(false);
+  const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [ImagePublicId, setImagePublicId] = useState("");
+
+  const dispatch = useDispatch();
+  const { AdvertisementList } = useSelector(
+    (state) => state.adminAdvertisement
+  );
+
+  function onSubmit(e) {
+    e.preventDefault();
+
+    currentEditedId !== null
+      ? dispatch(updateAds({ id: currentEditedId, formdata })).then((data) => {
+          if (data.payload?.success === true) {
+            dispatch(getAllAds());
+            setOpenCreateAdsDialogue(false);
+            setCurrentEditedId(null);
+            toast.success(data.payload.message);
+          } else {
+            toast.error(data.payload.message);
+          }
+        })
+      : dispatch(
+          createAds({
+            ...formdata,
+            imageUrl: uploadImageUrl,
+            publicId: ImagePublicId,
+          })
+        ).then((data) => {
+          if (data.payload?.success === true) {
+            dispatch(getAllAds());
+            setOpenCreateAdsDialogue(false);
+            setFormData(initalState);
+            setImageFile(null);
+            setImageLoading(false);
+            setImagePublicId("");
+            toast.success(data.payload.message);
+          } else {
+            toast.error(data.payload.message);
+          }
+        });
+  }
+
+  function handleEditAdvertiesment(AdsDetail) {
+    dispatch(updateAds(AdsDetail._id)).then((res) => {
+      if (res.payload?.success === true) {
+        dispatch(getAllAds());
+        setOpenCreateAdsDialogue(false);
+        setCurrentEditedId(null);
+        toast.success(res.payload.message);
+      }
+    });
+  }
+
+  function handleDeleteAdvertiesment(Ad_id) {
+    dispatch(DeleteAds(Ad_id));
+  }
+
+  function handleToggleList(item) {
+    dispatch(updateActive({ id: item._id, isActive: !item.isActive }))
+  }
+
+  useEffect(() => {
+    dispatch(getAllAds());
+  }, [dispatch]);
+
+  return (
+    <div className="w-full h-full flex flex-col gap-2 p-6 bg-white shadow-md rounded-lg">
+      <div className=" w-full flex justify-end">
+        <Button
+          onClick={() => setOpenCreateAdsDialogue(!openCreateAdsDialogue)}
+          className={"cursor-pointer"}
+        >
+          Create Ads
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {AdvertisementList &&
+          AdvertisementList.length > 0 &&
+          AdvertisementList.map((item) => (
+            <AdvertisementTile
+              key={item._id}
+              item={item}
+              setOpenCreateAdsDialogue={setOpenCreateAdsDialogue}
+              handleEditAdvertiesment={handleEditAdvertiesment}
+              setCurrentEditedId={setCurrentEditedId}
+              setFormData={setFormData}
+              handleDeleteAdvertiesment={handleDeleteAdvertiesment}
+              handleToggleList={handleToggleList}
+            />
+          ))}
+      </div>
+
+      <Sheet
+        open={openCreateAdsDialogue}
+        onOpenChange={() => {
+          setOpenCreateAdsDialogue(false);
+          setCurrentEditedId(null);
+          setFormData(initalState);
+        }}
+      >
+        <SheetContent side="right" className={"p-4 rounded-sm w-[500px]"}>
+          <SheetHeader>
+            <SheetTitle>
+              {currentEditedId !== null
+                ? "Edit Advertisment"
+                : "Add Advertisment"}
+            </SheetTitle>
+          </SheetHeader>
+          <ProductImageUpload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            setUploadImageUrl={setUploadImageUrl}
+            setImageLoading={setImageLoading}
+            setImagePublicId={setImagePublicId}
+            imageLoading={imageLoading}
+            isEditedMode={currentEditedId}
+            isCustomStyling
+          />
+
+          <CommonForm
+            formControls={AdsForm}
+            formData={formdata}
+            setFormData={setFormData}
+            onSubmit={onSubmit}
+            buttonText={
+              currentEditedId !== null
+                ? "Update Advertisment"
+                : "Add Advertisment"
+            }
+            isBtnDisabled={false}
+          />
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
