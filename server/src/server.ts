@@ -17,6 +17,7 @@ import AdminOrderRouter from "./routes/admin/order.routes";
 import productSearchRoutes from "./routes/shop/search.routes";
 import productReview from "./routes/shop/review.route";
 import AdminFeatureRoute from "./routes/admin/feature.route";
+import ReviewRoutes from "./routes/admin/review.route";
 
 // db
 import { connectdb } from "./lib/db";
@@ -77,6 +78,7 @@ app.use("/api/admin/product", adminProducts);
 app.use("/api/admin/order", AdminOrderRouter);
 app.use("/api/admin/feature", AdminFeatureRoute);
 app.use("/api/admin/ads", AdvertisementFeature);
+app.use("/api/admin/review", ReviewRoutes);
 
 app.use("/api", OauthRoutes);
 

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 interface IReview extends Document {
   productId: string;
@@ -6,15 +6,25 @@ interface IReview extends Document {
   userName: string;
   reviewMessage: string;
   reviewValue: number;
+  reply?: string;
 }
 
 const productReviewSchema = new mongoose.Schema<IReview>(
   {
-    productId: String,
-    userId: String,
+    productId: {
+      type: mongoose.Schema.Types.String,
+      ref: "Product",
+      required: true,
+    },
+    userId: {
+      type: mongoose.Schema.Types.String,
+      ref: "User",
+      required: true,
+    },
     userName: String,
     reviewMessage: String,
     reviewValue: Number,
+    reply: String,
   },
   { timestamps: true }
 );
