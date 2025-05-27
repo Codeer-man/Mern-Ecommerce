@@ -136,9 +136,6 @@ export default function ShoppingListing() {
     }
   }, [productDetail]);
 
-  console.log(products, "products page");
-  console.log(page, "page listing");
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter filter={filter} handleFilter={handleFilter} />
@@ -199,6 +196,7 @@ export default function ShoppingListing() {
         open={opendetailDialogue}
         setOpen={setOpenDetailDialogue}
         productDetail={productDetail}
+        user={user}
       />
     </div>
   );

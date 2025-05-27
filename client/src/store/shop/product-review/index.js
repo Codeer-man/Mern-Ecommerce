@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   isLoading: false,
   review: [],
+  userReview: null,
 };
 
 export const createProductReview = createAsyncThunk(
@@ -42,6 +43,20 @@ export const getProductReview = createAsyncThunk(
   }
 );
 
+export const userReviewfetch = createAsyncThunk(
+  "/user/review",
+  async ({ userId, productId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/product/review/${productId}/${userId}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+
 const ProductReviewSlice = createSlice({
   name: "Product",
   initialState,
@@ -66,6 +81,19 @@ const ProductReviewSlice = createSlice({
       .addCase(getProductReview.fulfilled, (state, action) => {
         state.isLoading = false;
         state.review = action.payload.data;
+      })
+      .addCase(userReviewfetch.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(userReviewfetch.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userReview = action.payload.data;
+      })
+      .addCase(userReviewfetch.rejected, (state) => {
+        {
+          state.isLoading = false;
+          state.userReview = null;
+        }
       });
   },
 });

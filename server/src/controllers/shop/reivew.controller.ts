@@ -72,7 +72,6 @@ export const getProductReview = async (
     if (data.length === 0) {
       throw new ErrorHandler("No review Present", 404, false);
     }
-    console.log(data);
 
     res.status(200).json({
       success: true,
@@ -90,7 +89,7 @@ export const getUserReview = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { userId, productId } = req.body;
+    const { userId, productId } = req.params;
 
     const findUserReview = await Review.findOne({ productId, userId });
 
@@ -161,4 +160,3 @@ export const updateReview = async (
     next(error);
   }
 };
-

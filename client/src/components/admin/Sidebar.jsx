@@ -2,7 +2,9 @@ import {
   BadgeCheck,
   ChartNoAxesCombined,
   Image,
+  Kanban,
   LayoutDashboard,
+  Megaphone,
   ShoppingBasket,
 } from "lucide-react";
 import React, { Fragment } from "react";
@@ -38,7 +40,13 @@ const adminSidebarMenuItems = [
     id: "Ads",
     label: "Advertisement",
     path: "/admin/ads",
-    icon: <Image />,
+    icon: <Megaphone />,
+  },
+  {
+    id: "Review",
+    label: "Product Review",
+    path: "/admin/review",
+    icon: <Kanban />,
   },
 ];
 

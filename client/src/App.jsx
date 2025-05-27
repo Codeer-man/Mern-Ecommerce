@@ -24,6 +24,7 @@ import SearchProduct from "./pages/shopping/searhc";
 import ImageUploadDashBaord from "./pages/admin/ImageUpload";
 import Advertisement from "./pages/admin/Advertisement";
 import AdsForShowing from "./components/Advertisement/ads";
+import AdminReview from "./pages/admin/Review";
 
 export default function App() {
   const { isLoading, isAuthenticated, user } = useSelector(
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="ads" element={<Advertisement />} />
           <Route path="order" element={<AdminOrders />} />
           <Route path="product" element={<Adminproduct />} />
+          <Route path="review" element={<AdminReview />} />
         </Route>
         {/* shopping  */}
         <Route
