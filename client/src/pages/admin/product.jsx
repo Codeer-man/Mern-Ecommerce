@@ -1,6 +1,7 @@
 import ProductImageUpload from "@/components/admin/image-upload";
 import AdminProductTile from "@/components/admin/ProductTile";
 import CommonForm from "@/components/common/form";
+import PaginationComponent from "@/components/shopping/pagination";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -42,9 +43,16 @@ export default function Adminproduct() {
   const [uploadImageUrl, setUploadImageUrl] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [page, setPage] = useState(() => {
+    const savedPage = localStorage.getItem("admin-product-page");
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
 
-  const { productList } = useSelector((state) => state.adminProduct);
+  const { productList, pageProductList } = useSelector(
+    (state) => state.adminProduct
+  );
   const dispatch = useDispatch();
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -77,12 +85,12 @@ export default function Adminproduct() {
         });
   };
 
-  // function isFormValid() {
-  //   return Object.keys(formdata)
-  //     .map((key) => formdata[key] !== "")
-  //     .every((item) => item);
-  // }
-  // console.log(isFormValid());
+  function isFormValid() {
+    return Object.keys(formdata)
+      .map((key) => formdata[key] !== "")
+      .every((item) => item);
+  }
+  console.log(isFormValid());
 
   function handleDelete(productId) {
     dispatch(deleteProduct(productId)).then((data) => {
@@ -93,13 +101,15 @@ export default function Adminproduct() {
     });
   }
 
-  useEffect(() => {
-    dispatch(fetchAllProduct());
-  }, [dispatch]);
-
   function handleToggleList(product) {
     dispatch(updateLabel({ id: product._id, list: !product.list }));
   }
+
+  useEffect(() => {
+    localStorage.setItem("admin_Product_page", page.toString());
+    dispatch(fetchAllProduct({ page: page }));
+  }, [dispatch, page]);
+  console.log(pageProductList, "product");
 
   return (
     <Fragment>
@@ -123,6 +133,12 @@ export default function Adminproduct() {
             ))
           : null}
       </div>
+      <PaginationComponent
+        page={page}
+        setPage={setPage}
+        limit={pageProductList.limit}
+        totalPage={pageProductList.totalPage}
+      />
       <Sheet
         open={openCreateProductsDialoge}
         onOpenChange={() => {
@@ -156,7 +172,7 @@ export default function Adminproduct() {
               setFormData={setFormdata}
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
               onSubmit={onSubmit}
-              // isBtnDisabled={!isFormValid()}
+              isBtnDisabled={!isFormValid()}
             />
           </div>
         </SheetContent>

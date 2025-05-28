@@ -6,6 +6,7 @@ interface CartItem {
   image: string;
   price: number;
   quantity: number;
+  isReturned: boolean;
 }
 
 interface AddressInfo {
@@ -25,11 +26,13 @@ export interface IOrder extends Document {
   oderstatus: string;
   paymentMethod: string;
   paymentStatus: string;
+  deliveryCharge: number;
   totalAmount: number;
   orderDate?: Date;
   orderUpdate?: Date;
   paymentId?: string;
   payerId?: string;
+  createdAt: Date;
 }
 
 const orderSchema = new mongoose.Schema<IOrder>(
@@ -43,6 +46,10 @@ const orderSchema = new mongoose.Schema<IOrder>(
         image: String,
         price: Number,
         quantity: Number,
+        isReturned: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
     addressInfo: {
@@ -56,6 +63,7 @@ const orderSchema = new mongoose.Schema<IOrder>(
     oderstatus: String,
     paymentMethod: String,
     paymentStatus: String,
+    deliveryCharge: Number,
     totalAmount: Number,
     orderDate: {
       type: Date,
@@ -64,6 +72,10 @@ const orderSchema = new mongoose.Schema<IOrder>(
     orderUpdate: Date,
     paymentId: String,
     payerId: String,
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   { timestamps: true }
 );

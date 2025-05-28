@@ -16,6 +16,8 @@ export interface UserI extends Document {
   provider: "local" | "github" | "google";
   role: UserRole;
   avatar?: string;
+  phoneNo: number;
+  emailVerify: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -59,6 +61,10 @@ const UserSchema = new Schema<UserI>(
     },
     avatar: {
       type: String,
+    },
+    emailVerify: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

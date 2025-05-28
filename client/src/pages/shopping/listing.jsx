@@ -1,4 +1,4 @@
-import Pagination from "@/components/shopping/pagination";
+import PaginationComponent from "@/components/shopping/pagination";
 import ProductDetail from "@/components/shopping/Product-detail";
 import ShopingProduct from "@/components/shopping/Product-tile";
 import ProductFilter from "@/components/shopping/ProductFilter";
@@ -36,7 +36,6 @@ function createQueryParamsHelper(filter) {
 export default function ShoppingListing() {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState({});
-  const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [opendetailDialogue, setOpenDetailDialogue] = useState(false);
   const { products, productDetail } = useSelector(
@@ -47,6 +46,7 @@ export default function ShoppingListing() {
   const { user } = useSelector((state) => state.auth);
 
   // paginaiton
+  const [sort, setSort] = useState(null);
   const initalPage = parseInt(searchParams.get("page"));
   const [page, setPage] = useState(initalPage);
 
@@ -134,7 +134,7 @@ export default function ShoppingListing() {
     if (productDetail !== null) {
       setOpenDetailDialogue(true);
     }
-  }, [productDetail]);
+  }, [productDetail, page]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
@@ -185,7 +185,7 @@ export default function ShoppingListing() {
               ))
             : null}
         </div>
-        <Pagination
+        <PaginationComponent
           limit={products.limit}
           page={products.currentpage}
           setPage={setPage}

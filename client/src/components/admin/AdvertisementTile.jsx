@@ -1,6 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
+import { MdDeleteForever } from "react-icons/md";
+import { ClipboardEdit } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Switch } from "../ui/switch";
 
 export default function AdvertisementTile({
   item,
@@ -51,40 +60,60 @@ export default function AdvertisementTile({
             {item.isActive ? "Active" : "Inactive"}
           </span>
 
-          <div className="flex flex-wrap gap-2 justify-end">
-            <Button
-              onClick={() => {
-                setOpenCreateAdsDialogue(true);
-                setCurrentEditedId(item._id);
-                handleEditAdvertiesment(item);
-                setFormData(item);
-              }}
-              variant="outline"
-              size="sm"
-              className="text-xs sm:text-sm px-3 py-1"
-            >
-              Edit
-            </Button>
-            <Button
-              onClick={() => {
-                setCurrentEditedId(item._id);
-                handleDeleteAdvertiesment(item._id);
-              }}
-              variant="destructive"
-              size="sm"
-              className="text-xs sm:text-sm px-3 py-1"
-            >
-              Delete
-            </Button>
-            <Button
-              onClick={() => handleToggleList(item)}
-              size="sm"
-              variant={item.isActive ? "secondary" : "default"}
-              className="text-xs sm:text-sm px-3 py-1"
-            >
-              {item.isActive ? "Deactivate" : "Activate"}
-            </Button>
-          </div>
+          <TooltipProvider>
+            <div className="flex flex-wrap gap-2 justify-end">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => {
+                      setOpenCreateAdsDialogue(true);
+                      setCurrentEditedId(item._id);
+                      handleEditAdvertiesment(item);
+                      setFormData(item);
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs sm:text-sm px-3 py-1"
+                  >
+                    <ClipboardEdit />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Edit Advertisement</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => {
+                      setCurrentEditedId(item._id);
+                      handleDeleteAdvertiesment(item._id);
+                    }}
+                    variant="destructive"
+                    size="sm"
+                    className="text-xs sm:text-sm px-3 py-1 cursor-pointer"
+                  >
+                    <MdDeleteForever />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Delete Advertisement</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => handleToggleList(item)}
+                    size="sm"
+                    className="text-xs sm:text-sm px-3 py-1 bg-gray-400"
+                  >
+                    <Switch className={""} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {item.isActive ? "Deactivate Ad" : "Activate Ad"}
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         </div>
       </div>
     </div>

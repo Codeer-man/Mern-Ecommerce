@@ -89,7 +89,7 @@ export const fetchCartItems = async (
     res.status(200).json({
       success: true,
       data: {
-        cart: cart,
+        ...cart._doc,
         items: populateCartItem,
       },
     });
@@ -132,7 +132,6 @@ export const updateCartItemsQty = async (
       select: "image title salePrice price",
     });
 
-
     const populateCartItem = cart.items.map((items) => {
       const product = items.ProductId as IProduct;
 
@@ -149,6 +148,7 @@ export const updateCartItemsQty = async (
     res.status(200).json({
       success: true,
       data: {
+        ...cart._doc,
         items: populateCartItem,
       },
     });
@@ -206,6 +206,7 @@ export const deleteCartItems = async (
     res.status(200).json({
       success: true,
       data: {
+        ...cart._doc,
         items: populateCartItem,
       },
     });

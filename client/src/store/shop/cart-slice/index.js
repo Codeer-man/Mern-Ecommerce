@@ -66,7 +66,6 @@ export const updateCartQuantity = createAsyncThunk(
         "http://localhost:8080/api/cart/update-cart",
         { userId, ProductId, quantity }
       );
-      console.log(response.data);
 
       return response.data.data;
     } catch (error) {
@@ -109,8 +108,6 @@ const shoppingCartSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteCartItem.fulfilled, (state, action) => {
-        console.log(action.payload);
-
         state.isLoading = false;
         state.cartItem = action.payload.data;
       })
@@ -122,8 +119,6 @@ const shoppingCartSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(updateCartQuantity.fulfilled, (state, action) => {
-        console.log(action.payload, "update");
-
         state.isLoading = false;
         state.cartItem = action.payload;
       })

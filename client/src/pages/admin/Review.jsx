@@ -79,6 +79,7 @@ export default function AdminReview() {
       setOpenDialogId(null);
     }
   };
+  console.log(reviewList, "review list");
 
   return (
     <Fragment>

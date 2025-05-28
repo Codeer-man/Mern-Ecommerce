@@ -39,7 +39,10 @@ export default function ShoppingOrderDetailView({ orderDetail }) {
             <ul className="grid gap-3">
               {orderDetail?.cartItems && orderDetail?.cartItems.length > 0
                 ? orderDetail?.cartItems.map((item) => (
-                    <li className="flex items-center justify-between">
+                    <li
+                      key={item._id}
+                      className="flex items-center justify-between"
+                    >
                       <span>Title: {item.title}</span>
                       <span>Quantity: {item.quantity}</span>
                       <span>Price: ${item.price}</span>

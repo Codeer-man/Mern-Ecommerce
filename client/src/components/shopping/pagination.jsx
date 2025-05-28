@@ -1,64 +1,116 @@
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationLink,
+  PaginationEllipsis,
+} from "../ui/pagination";
 
-export default function Pagination({ limit, page, totalPage, setPage }) {
+export default function PaginationComponent({
+  limit,
+  page,
+  totalPage,
+  setPage,
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     setPage(page);
-    setSearchParams({ page, limit });
+    setSearchParams({ page: String(page), limit: String(limit) });
   }, [page, limit, setSearchParams, setPage]);
 
-  function handlePageChangeDec() {
-    setPage((prevpage) => {
-      if (page > 1) return prevpage - 1;
-      return prevpage;
-    });
-  }
-  function handlePageChangeAdd() {
-    setPage((prevpage) => {
-      if (page < totalPage) return prevpage + 1;
-      return prevpage;
-    });
-  }
+  const handleChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPage && newPage !== page) {
+      setPage(newPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const renderPages = () => {
+    const pages = [];
+
+    if (page > 2) {
+      pages.push(
+        <PaginationItem key={1}>
+          <PaginationLink onClick={() => handleChange(1)} isActive={page === 1}>
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+      if (page > 3) {
+        pages.push(
+          <PaginationItem key="ellipsis-start">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+    }
+
+    for (let i = page - 1; i <= page + 1; i++) {
+      if (i > 1 && i < totalPage) {
+        pages.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              onClick={() => handleChange(i)}
+              isActive={page === i}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    }
+
+    if (page < totalPage - 1) {
+      if (page < totalPage - 2) {
+        pages.push(
+          <PaginationItem key="ellipsis-end">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+      pages.push(
+        <PaginationItem key={totalPage}>
+          <PaginationLink
+            onClick={() => handleChange(totalPage)}
+            isActive={page === totalPage}
+          >
+            {totalPage}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return pages;
+  };
 
   return (
-    <div className="w-full h-10 flex items-center justify-center">
-      <div>
-        <div className="space-x-4 flex">
-          <Button
-            onClick={() => {
-              handlePageChangeDec();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            variant="outline"
-            className="border-2 border-gray-500 cursor-pointer"
-            disabled={page === 1}
-          >
-            {page === 1 ? "The Start" : "Previous"}
-          </Button>
+    <div className="w-full flex justify-center my-6">
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              className={page === 1 ? "pointer-events-none opacity-50" : ""}
+              onClick={() => handleChange(page - 1)}
+            />
+          </PaginationItem>
 
-          <Label className="border-2 px-3 border-black rounded-sm">
-            {page}
-          </Label>
+          {renderPages()}
 
-          <Button
-            onClick={() => {
-              handlePageChangeAdd();
-              if (page < totalPage) {
-                window.scrollTo({ top: 0, behavior: "smooth" });
+          <PaginationItem>
+            <PaginationNext
+              className={
+                page === totalPage ? "pointer-events-none opacity-50" : ""
               }
-            }}
-            variant="outline"
-            className="border-2 border-gray-500 cursor-pointer"
-            disabled={page === totalPage}
-          >
-            {page === totalPage ? "The End" : "Next"}
-          </Button>
-        </div>
-      </div>
+              onClick={() => handleChange(page + 1)}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

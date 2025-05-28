@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
   isLoading: false,
   productList: [],
+  pageProductList: [],
 };
 
 export const addNewProduct = createAsyncThunk(
@@ -32,16 +33,14 @@ export const addNewProduct = createAsyncThunk(
 );
 export const fetchAllProduct = createAsyncThunk(
   "/product/fetchProduct",
-  async (_, { rejectWithValue }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/admin/product/getProdct"
+        `http://localhost:8080/api/admin/product/getProdct?page=${page}&limit=${limit}`
       );
       return response?.data;
     } catch (error) {
       return rejectWithValue(
-        console.log(error),
-
         error.response?.data?.message || {
           message: "No Oeiduct fund",
         }
@@ -123,6 +122,7 @@ const AdminProductSlice = createSlice({
       .addCase(fetchAllProduct.fulfilled, (state, action) => {
         state.isLoading = false;
         state.productList = action.payload.data || [];
+        state.pageProductList = action.payload;
       })
       .addCase(fetchAllProduct.rejected, (state, action) => {
         state.isLoading = false;

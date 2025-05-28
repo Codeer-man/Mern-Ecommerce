@@ -1,9 +1,10 @@
 import { Minus, Plus, Trash } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
+import { getShopProduct } from "@/store/shop/product-slice";
 
 export default function UserCartItemContain({ cartItems }) {
   const { user } = useSelector((state) => state.auth);
@@ -11,37 +12,40 @@ export default function UserCartItemContain({ cartItems }) {
 
   const dispatch = useDispatch();
 
-  function handleUpdateQuantity(cartItem, buttonType) {
-    if (buttonType === "plus") {
-      const currentProduct = products.data.find(
-        (product) => product._id === cartItem.ProductId
-      );
+  function handleUpdateQuantity(getCartItem, buttonType) {
+    const productIndex =
+      products.data?.findIndex(
+        (product) => product._id === getCartItem?.ProductId
+      ) ?? -1;
 
-      if (!currentProduct) {
-        toast.error("Product not found");
-        return;
-      }
+    if (productIndex === -1) {
+      toast.error("Product not found in store");
+      return;
+    }
 
-      const totalStock = currentProduct.totalStock;
+    const currentQuantity = getCartItem.quantity;
+    const totalStock = products.data[productIndex].totalStock;
 
-      if (cartItem.quantity + 1 > totalStock) {
-        toast.error(`Only ${totalStock} quantity is available in stock`);
-        return;
-      }
+    if (buttonType === "plus" && currentQuantity + 1 > totalStock) {
+      toast.error(`Only ${totalStock} items available in stock`);
+      return;
+    }
+
+    if (buttonType === "minus" && currentQuantity <= 1) {
+      toast.warning("Minimum quantity is 1");
+      return;
     }
 
     dispatch(
       updateCartQuantity({
         userId: user._id,
-        ProductId: cartItem.ProductId,
+        ProductId: getCartItem.ProductId,
         quantity:
-          buttonType === "minus"
-            ? cartItem?.quantity - 1
-            : cartItem?.quantity + 1,
+          buttonType === "minus" ? currentQuantity - 1 : currentQuantity + 1,
       })
     ).then((data) => {
-      if (data.payload.success) {
-        toast.success("Quantity updated successfullt");
+      if (data.payload?.success) {
+        toast.success("Quantity updated successfully");
       }
     });
   }
@@ -55,6 +59,10 @@ export default function UserCartItemContain({ cartItems }) {
       }
     });
   }
+
+  useEffect(() => {
+    dispatch(getShopProduct());
+  }, [dispatch]);
 
   return (
     <div className="flex items-center space-x-4">

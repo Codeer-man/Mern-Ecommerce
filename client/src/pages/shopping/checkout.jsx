@@ -16,7 +16,7 @@ export default function ShoppingCheckout() {
   const { approveUrl } = useSelector((state) => state.shopOrder);
 
   const dispatch = useDispatch();
-  console.log(cartItem.cart?._id, "cart");
+  // console.log(cartItem, "cart");
 
   const TotalCartAmount =
     cartItem && cartItem.items && cartItem.items.length > 0
@@ -31,6 +31,13 @@ export default function ShoppingCheckout() {
         )
       : 0;
 
+  const deliveryCharge = 120;
+  const NumberOfProducts = cartItem?.items?.length;
+  const totalDeliveryCharge = deliveryCharge * NumberOfProducts;
+  const grandTotal = totalDeliveryCharge + TotalCartAmount;
+
+
+
   function handleInitiatePaypalPayment() {
     if (cartItem.items.length === 0) {
       toast.error("Your cart item is empty.Please add item to proceed");
@@ -43,7 +50,7 @@ export default function ShoppingCheckout() {
 
     const orderData = {
       userId: user._id,
-      CartId: cartItem.cart._id,
+      CartId: cartItem._id,
       cartItems: cartItem.items.map((items) => ({
         productId: items.ProductId,
         title: items.title,
@@ -62,7 +69,8 @@ export default function ShoppingCheckout() {
       oderstatus: "pending",
       paymentMethod: "paypal",
       paymentStatus: "pending",
-      totalAmount: TotalCartAmount,
+      deliveryCharge: totalDeliveryCharge,
+      totalAmount: grandTotal,
       orderDate: new Date(),
       orderUpdate: new Date(),
       paymentId: "",
@@ -95,9 +103,13 @@ export default function ShoppingCheckout() {
               ))
             : null}
           <div className="mt-8 space-y-4">
+            <div className="flex justify-between items-center font-semibold">
+              <h2>Delivery Charge</h2>
+              <h2>${totalDeliveryCharge} </h2>
+            </div>
             <div className="flex justify-between">
               <span className="font-bold">Total</span>
-              <span className="font-bold">${TotalCartAmount}</span>
+              <span className="font-bold">${grandTotal}</span>
             </div>
           </div>
           <div className="mt-4 w-full">

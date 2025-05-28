@@ -64,7 +64,6 @@ export const addProduct = async (
     ) {
       throw new ErrorHandler("Please fill all the field", 400, false);
     }
-    console.log(image);
 
     const newProduct = new Product({
       title,
@@ -98,11 +97,22 @@ export const fetchallProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const listOfProduct = await Product.find();
+    const limit = parseInt(req.query.limit as string) || 12;
+    const page = parseInt(req.query.page as string) || 1;
+
+    const total = await Product.countDocuments();
+    const skip = (page - 1) * limit;
+
+    const listOfProduct = await Product.find().skip(skip).limit(limit);
+    
     res.status(200).json({
-      sucess: true,
+      success: true,
       message: "All Product has been fetched",
       data: listOfProduct,
+      limit,
+      totalPage: Math.ceil(total / limit),
+      currentPage: page,
+      totalItem: total,
     });
   } catch (error) {
     next(error);

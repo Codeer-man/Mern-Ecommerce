@@ -9,7 +9,10 @@ const initialState = {
 
 export const getShopProduct = createAsyncThunk(
   "/shop/product",
-  async ({ filterParams, sortParams, page, limit }, thunkAPI) => {
+  async (
+    { filterParams = {}, sortParams = "createdAt", page = 1, limit = 12 } = {},
+    thunkAPI
+  ) => {
     try {
       const query = new URLSearchParams({
         ...filterParams,

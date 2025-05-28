@@ -103,8 +103,6 @@ export default function ProductDetail({ open, setOpen, productDetail, user }) {
     }
   }, [productDetail, dispatch]);
 
-  console.log(userReview, "reivew");
-
   const averageReview =
     review && review.length > 0
       ? review.reduce((sum, itemsReview) => sum + itemsReview.reviewValue, 0) /
