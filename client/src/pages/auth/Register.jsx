@@ -1,4 +1,5 @@
 import CommonForm from "@/components/common/form";
+import OAuth from "@/components/oauth/Oauth";
 import { registerFormControls } from "@/config";
 import { registerUser } from "@/store/authslice";
 import React, { useState } from "react";
@@ -53,6 +54,7 @@ export default function Register() {
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
+      <OAuth />
     </div>
   );
 }

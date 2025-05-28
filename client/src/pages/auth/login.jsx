@@ -1,4 +1,5 @@
 import CommonForm from "@/components/common/form";
+import OAuth from "@/components/oauth/Oauth";
 import Oauth from "@/components/oauth/Oauth";
 import { Button } from "@/components/ui/button";
 import { loginFormControls } from "@/config";
@@ -22,8 +23,9 @@ export default function Login() {
     e.preventDefault();
 
     try {
+      console.log("Dispatching loginUser");
       const data = await dispatch(loginUser(formData)).unwrap();
-
+      console.log("Login response:", data);
       toast.success(data.message);
 
       const role = data.data.role;
@@ -33,11 +35,10 @@ export default function Login() {
         navigate("/shop/home");
       }
 
-      setFormData(initialstate);
+      // setFormData(initialstate);
     } catch (err) {
-      console.log(err);
-
-      toast.error(err?.message || "Login failed");
+      console.error("Login error", err);
+      toast.error(err.message || "Login failed");
     }
   };
 
@@ -64,6 +65,7 @@ export default function Login() {
         setFormData={setFormData}
         onSubmit={onSubmit}
       />
+      <OAuth />
     </div>
   );
 }

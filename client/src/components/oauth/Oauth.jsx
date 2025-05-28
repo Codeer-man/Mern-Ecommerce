@@ -1,70 +1,63 @@
-// pages/auth/Login.jsx
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-// import { Spinner } from "@/components/ui/spinner";
-import { oAuth } from "@/store/authslice";
+import { checkauth } from "@/store/authslice";
+import { auth, provider } from "@/utils/firebase";
+import axios from "axios";
+import { signInWithPopup } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-export default function Oauth() {
-  const dispatch = useDispatch();
+export default function OAuth() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const dispatch = useDispatch();
+  async function handleGoogleLogin(e) {
+    e.preventDefault();
+    try {
+      const response = await signInWithPopup(auth, provider);
+      const user = response.user;
 
-  const { isAuthenticated, isLoading, error } = useSelector(
-    (state) => state.auth
-  );
-
-  const code = searchParams.get("code");
-  const state = searchParams.get("state");
-
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/api/google";
-  };
-
-  useEffect(() => {
-    // If user is already authenticated, redirect
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
-    // Handle OAuth callback if code and state exist
-    if (code && state && !isAuthenticated && !isProcessing) {
-      const processOAuth = async () => {
-        setIsProcessing(true);
-        try {
-          await dispatch(oAuth({ code, state })).unwrap();
-        } catch (err) {
-          console.error("OAuth failed:", err);
-        } finally {
-          setIsProcessing(false);
-        }
+      const newUserData = {
+        googleId: user.uid,
+        username: user.displayName,
+        email: user.email,
+        avatar: user.photoURL,
+        provider: "google",
+        phoneNumber: user.phoneNumber,
       };
-      processOAuth();
-    }
-  }, [code, state, dispatch, isAuthenticated]);
 
-  if (isLoading || isProcessing) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-4">
-          {/* <Spinner className="w-12 h-12" /> */}
-          <p className="text-lg">Signing in with Google...</p>
-        </div>
-      </div>
-    );
+      const res = await axios.post(
+        "http://localhost:8080/api/auth/o-auth/google-route",
+        newUserData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      dispatch(checkauth());
+      const role = res.data?.data?.role;
+      if (role === "admin") {
+        console.log("navigating to /admin/dashboard");
+        navigate("/admin/dashboard");
+      } else {
+        console.log("navigating to /shop/home");
+        navigate("/shop/home");
+      }
+      toast.success(res?.data.message);
+
+      // setTimeout(() => {
+      //   console.log("AFTER NAVIGATE:", window.location.pathname);
+      // }, 1000);
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center ">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow">
-        {error && (
-          <div className="p-4 text-red-600 bg-red-100 rounded-md">{error}</div>
-        )}
-
+    <div className="flex flex-col items-center justify-center cursor-pointer w-full">
+      <div className="w-full max-w-md space-y-8 bg-white rounded-lg">
         <Button
           onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-2"

@@ -80,7 +80,7 @@ app.use("/api/admin/feature", AdminFeatureRoute);
 app.use("/api/admin/ads", AdvertisementFeature);
 app.use("/api/admin/review", ReviewRoutes);
 
-app.use("/api", OauthRoutes);
+app.use("/api/auth/o-auth", OauthRoutes);
 
 app.use("/api/shop/product", shopProductRoutes);
 app.use("/api/cart", cartRoutes);

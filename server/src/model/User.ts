@@ -1,9 +1,14 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import bcrypt from "bcrypt";
+import { string } from "zod";
 
 enum UserRole {
   ADMIN = "admin",
   USER = "user",
+}
+enum Provider {
+  LOCAL = "local",
+  GOOGLE = "google",
 }
 
 export interface UserI extends Document {
@@ -12,12 +17,10 @@ export interface UserI extends Document {
   email: string;
   password?: string;
   googleId?: string;
-  githubId?: string;
-  provider: "local" | "github" | "google";
-  role: UserRole;
-  avatar?: string;
-  phoneNo: number;
+  provider: Provider;
   emailVerify: boolean;
+  role: UserRole;
+  avatar: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -38,34 +41,29 @@ const UserSchema = new Schema<UserI>(
     password: {
       type: String,
       required: function (this: UserI) {
-        return this.provider === "local"; // required only for local users
+        return this.provider === "local"; // password only required for local
       },
       trim: true,
-    },
-    role: {
-      type: String,
-      enum: Object.values(UserRole),
-      default: UserRole.USER,
-    },
-    githubId: {
-      type: String,
     },
     googleId: {
       type: String,
     },
     provider: {
       type: String,
-      enum: ["local", "google", "github"],
+      enum: Provider,
       required: true,
-      default: "local",
+      default: Provider.LOCAL,
     },
-    avatar: {
+    role: {
       type: String,
+      enum: UserRole,
+      default: UserRole.USER,
     },
     emailVerify: {
       type: Boolean,
       default: false,
     },
+    avatar: String,
   },
   { timestamps: true }
 );

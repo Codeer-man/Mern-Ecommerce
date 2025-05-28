@@ -1,4 +1,3 @@
-import axiosInstance from "@/utils/refreshToken/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -41,18 +40,23 @@ export const checkauth = createAsyncThunk("/auth/check-auth", async () => {
 });
 
 export const loginUser = createAsyncThunk(
-  "/auth/login",
+  "auth/loginUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/auth/login", formData, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || { message: "Login failed" });
     }
   }
 );
+
 export const logout = createAsyncThunk(
   "/auth/logout",
   async (_, { rejectWithValue }) => {
@@ -66,30 +70,6 @@ export const logout = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(
         err.response?.data || { message: "Logout failed" }
-      );
-    }
-  }
-);
-
-export const oAuth = createAsyncThunk(
-  "/oauth/callback",
-  async ({ code, state }, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/google/callback",
-        { code, state },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data || { message: "OAuth login failed" }
       );
     }
   }
@@ -120,9 +100,9 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        (state.isLoading = false),
-          (state.isAuthenticated = true),
-          (state.user = action.payload.data);
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.data;
       })
       .addCase(loginUser.rejected, (state, action) => {
         {
@@ -145,19 +125,6 @@ const authSlice = createSlice({
           (state.user = null);
       }) //log out
       .addCase(logout.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isAuthenticated = false;
-        state.user = null;
-      }) //oauth
-      .addCase(oAuth.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(oAuth.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isAuthenticated = true;
-        state.user = action.payload;
-      })
-      .addCase(oAuth.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;

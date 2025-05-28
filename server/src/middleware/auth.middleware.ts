@@ -14,6 +14,8 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     req.cookies?.accessToken ||
     req.header("Authorization")?.replace("Bearer", " ").trim();
 
+  console.log(token);
+
   if (!token) {
     throw new ErrorHandler("Token not received", UNAUTHORIZED, false);
   }
