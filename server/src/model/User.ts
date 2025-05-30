@@ -21,6 +21,7 @@ export interface UserI extends Document {
   emailVerify: boolean;
   role: UserRole;
   avatar: string;
+  verificationCode: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -63,6 +64,7 @@ const UserSchema = new Schema<UserI>(
       type: Boolean,
       default: false,
     },
+    verificationCode: String,
     avatar: String,
   },
   { timestamps: true }

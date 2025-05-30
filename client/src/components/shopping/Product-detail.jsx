@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Scroll, StarIcon } from "lucide-react";
+import { Edit, Scroll, StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
@@ -14,8 +14,10 @@ import { Label } from "../ui/label";
 import StarRatin from "../common/star-rating";
 import {
   createProductReview,
+  deleteReivew,
   getProductReview,
   resetReview,
+  updateReivew,
   userReviewfetch,
 } from "@/store/shop/product-review";
 import StarRating from "../common/star-rating";
@@ -26,6 +28,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { MdDelete } from "react-icons/md";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export default function ProductDetail({ open, setOpen, productDetail, user }) {
   // const { user } = useSelector((state) => state.auth);
@@ -109,6 +118,14 @@ export default function ProductDetail({ open, setOpen, productDetail, user }) {
         review.length
       : 0;
 
+  function handleDelete(reviewId) {
+    dispatch(deleteReivew({ reviewId: reviewId }));
+  }
+
+  function handleEdit(reviewId) {
+    dispatch(updateReivew({ reviewId: reviewId }));
+  }
+
   useEffect(() => {
     dispatch(
       userReviewfetch({ productId: productDetail?._id, userId: user?._id })
@@ -131,7 +148,24 @@ export default function ProductDetail({ open, setOpen, productDetail, user }) {
 
                   {userReview !== null ? (
                     <div className="mt-8">
-                      <h2 className="text-xl font-bold mb-4">Reviews</h2>
+                      <div>
+                        <h2 className="text-xl font-bold mb-4">Reviews</h2>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Edit onClick={() => handleEdit(userReview)} />
+                            </TooltipTrigger>
+                            <TooltipContent> Edit </TooltipContent>
+
+                            <TooltipTrigger asChild>
+                              <MdDelete
+                                onClick={() => handleDelete(userReview._id)}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent> Delete </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
 
                       <div className="flex gap-4">
                         <Avatar className="w-10 h-10 border">

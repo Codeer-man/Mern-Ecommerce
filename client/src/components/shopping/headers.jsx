@@ -1,4 +1,11 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import {
+  ClipboardCheck,
+  HousePlug,
+  LogOut,
+  Menu,
+  ShoppingCart,
+  UserCog,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -11,6 +18,7 @@ import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { shoppingViewHeaderMenuItems } from "@/config";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import { HiOutlineMailOpen } from "react-icons/hi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +31,8 @@ import { logout } from "@/store/authslice";
 import CartWrapper from "./cart-wrapper";
 import { fetchUserItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
+import axios from "axios";
+import { toast } from "sonner";
 
 function MenuItem() {
   const navigate = useNavigate();
@@ -63,6 +73,29 @@ function HeaderRightContent() {
   const dispatch = useDispatch();
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const { cartItem } = useSelector((state) => state.shopCart);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  async function handleVerifyEmail() {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `http://localhost:8080/api/email/send/verification/${user._id}`
+      );
+      if (response.status === 201) {
+        navigate("/verify/email");
+        console.log(response, "hanlder");
+        toast.success("Verification sent to your gmail");
+        return;
+      }
+      console.log(response, "hanlder");
+      toast.error("Something wend wrong");
+    } catch (error) {
+      console.error("Invalid server error ", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function handleLogOut() {
     dispatch(logout());
@@ -72,7 +105,9 @@ function HeaderRightContent() {
     dispatch(fetchUserItems(user._id));
   }, [dispatch]);
 
-  const navigate = useNavigate();
+  if (loading) {
+    return <div>...Loading</div>;
+  }
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -108,15 +143,34 @@ function HeaderRightContent() {
           </Avatar>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="w-56 mt-1 " side="right">
+        <DropdownMenuContent className="w-56 mt-1  " side="right">
           <DropdownMenuLabel>Logged in as {user?.username}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+          <DropdownMenuItem
+            className={"cursor-pointer"}
+            onClick={() => navigate("/shop/account")}
+          >
             <UserCog className="mr-2 w-4 h-4" />
             Account
           </DropdownMenuItem>
+          {user.emailVerify === false && loading === false ? (
+            <div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className={"cursor-pointer"}
+                onClick={handleVerifyEmail}
+              >
+                {" "}
+                <HiOutlineMailOpen /> Verify Your Email
+              </DropdownMenuItem>
+            </div>
+          ) : (
+            <h2>
+              <ClipboardCheck /> Your Email is verifyed
+            </h2>
+          )}
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogOut}>
+          <DropdownMenuItem className={"cursor-pointer"} onClick={handleLogOut}>
             <LogOut className="mr-2 w-4 h-5" />
             Logout
           </DropdownMenuItem>

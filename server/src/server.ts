@@ -18,6 +18,7 @@ import productSearchRoutes from "./routes/shop/search.routes";
 import productReview from "./routes/shop/review.route";
 import AdminFeatureRoute from "./routes/admin/feature.route";
 import ReviewRoutes from "./routes/admin/review.route";
+import verifyEmailRoute from "./routes/auth/email.route";
 
 // db
 import { connectdb } from "./lib/db";
@@ -74,6 +75,7 @@ const redisClient = new Redis(redisUrl);
 
 // routes
 app.use("/api/auth", authRoutes);
+app.use("/api/email", verifyEmailRoute);
 app.use("/api/admin/product", adminProducts);
 app.use("/api/admin/order", AdminOrderRouter);
 app.use("/api/admin/feature", AdminFeatureRoute);

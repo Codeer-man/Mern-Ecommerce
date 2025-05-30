@@ -20,7 +20,7 @@ export const tokenGenerate = (user: userData) => {
   const accessToken = jwt.sign(
     { email: user.email, id: user.id, role: user.role },
     accessTokenKey,
-    { expiresIn: "15m" }
+    { expiresIn: "1h" }
   );
 
   const refreshAccessToken = jwt.sign({ id: user.id }, refreshTokenKey, {

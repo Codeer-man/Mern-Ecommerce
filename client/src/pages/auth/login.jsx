@@ -25,7 +25,6 @@ export default function Login() {
     try {
       console.log("Dispatching loginUser");
       const data = await dispatch(loginUser(formData)).unwrap();
-      console.log("Login response:", data);
       toast.success(data.message);
 
       const role = data.data.role;

@@ -125,7 +125,11 @@ export const refreshToken = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const token = req.cookies.refreshAccessToken || req.body.refreshAccessToken;
+    const token =
+      req.cookies.refreshAccessToken ||
+      req.header("Authorization")?.replace("Bearer", " ").trim();
+
+    console.log(token, "controller");
 
     if (!token) {
       throw new ErrorHandler("token not received", 404, false);

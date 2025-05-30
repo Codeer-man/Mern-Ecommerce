@@ -25,6 +25,7 @@ import ImageUploadDashBaord from "./pages/admin/ImageUpload";
 import Advertisement from "./pages/admin/Advertisement";
 import AdsForShowing from "./components/Advertisement/ads";
 import AdminReview from "./pages/admin/Review";
+import VerifyEmail from "./pages/auth/verifyEmail";
 
 export default function App() {
   const { isLoading, isAuthenticated, user } = useSelector(
@@ -103,6 +104,14 @@ export default function App() {
           <Route path="payment-success" element={<PaymentSuccess />} />
           <Route path="search" element={<SearchProduct />} />
         </Route>
+        <Route
+          path="/verify/email"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <VerifyEmail />
+            </CheckAuth>
+          }
+        />
 
         <Route path="/unauth-page" element={<Unauth />} />
         <Route path="*" element={<NotFound />} />

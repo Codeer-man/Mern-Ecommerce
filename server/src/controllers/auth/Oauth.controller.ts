@@ -21,6 +21,7 @@ export const Oauth = async (
         avatar,
         provider,
         phoneNumber,
+        emailVerify: true,
       });
       await newluCreatedUser.save();
       user = newluCreatedUser;

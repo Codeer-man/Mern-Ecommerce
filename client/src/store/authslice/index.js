@@ -1,3 +1,4 @@
+import api from "@/utils/refreshtoken";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -43,20 +44,21 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.post("/auth/login", formData);
+
+      // Only store what's needed from the response
+      if (response.data.accessToken) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        console.log("Login successful, access token stored");
+      }
+
       return response.data;
     } catch (err) {
+      console.error("Login failed:", err);
       return rejectWithValue(err.response?.data || { message: "Login failed" });
     }
   }
 );
-
 export const logout = createAsyncThunk(
   "/auth/logout",
   async (_, { rejectWithValue }) => {

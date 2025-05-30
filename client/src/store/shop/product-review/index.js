@@ -57,6 +57,44 @@ export const userReviewfetch = createAsyncThunk(
   }
 );
 
+export const updateReivew = createAsyncThunk(
+  "/update/review",
+  async ({ reviewMessage, reviewValue, reviewId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/product/review/update/${reviewId}`,
+        {
+          reviewMessage,
+          reviewValue,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+
+export const deleteReivew = createAsyncThunk(
+  "/delete/review",
+  async (reviewId, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/product/review/delete/${reviewId}`
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+
 const ProductReviewSlice = createSlice({
   name: "Product",
   initialState,

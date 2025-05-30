@@ -18,24 +18,24 @@ interface AddressInfo {
   notes: string;
 }
 
+enum paymentMethod {
+  ESEWA = "esewa",
+  KHALTI = "khalti",
+}
+
 export interface IOrder extends Document {
   userId: string;
   CartId: string;
   cartItems: CartItem[];
-  addressInfo: AddressInfo;
-  oderstatus: string;
-  paymentMethod: string;
+  status: string;
+  paymentMethod: paymentMethod;
   paymentStatus: string;
   deliveryCharge: number;
-  totalAmount: number;
-  orderDate?: Date;
-  orderUpdate?: Date;
-  paymentId?: string;
-  payerId?: string;
-  createdAt: Date;
+  totalPrice: number;
+  purchaseDate?: Date;
 }
 
-const orderSchema = new mongoose.Schema<IOrder>(
+const purchaseItemSchema = new mongoose.Schema<IOrder>(
   {
     userId: String,
     CartId: String,
@@ -52,27 +52,16 @@ const orderSchema = new mongoose.Schema<IOrder>(
         },
       },
     ],
-    addressInfo: {
-      addressId: String,
-      address: String,
-      city: String,
-      pincode: Number,
-      phoneNo: Number,
-      notes: String,
+
+    status: String,
+    paymentMethod: {
+      type: String,
+      enum: paymentMethod,
     },
-    oderstatus: String,
-    paymentMethod: String,
     paymentStatus: String,
     deliveryCharge: Number,
-    totalAmount: Number,
-    orderDate: {
-      type: Date,
-      default: Date.now(),
-    },
-    orderUpdate: Date,
-    paymentId: String,
-    payerId: String,
-    createdAt: {
+    totalPrice: Number,
+    purchaseDate: {
       type: Date,
       default: Date.now(),
     },
@@ -80,5 +69,5 @@ const orderSchema = new mongoose.Schema<IOrder>(
   { timestamps: true }
 );
 
-const Order = mongoose.model("Order", orderSchema);
-export default Order;
+const PurchaseItem = mongoose.model("Order", purchaseItemSchema);
+export default PurchaseItem;

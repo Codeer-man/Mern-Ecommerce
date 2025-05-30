@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Order from "../../model/order";
+import Order from "../../model/PurchaseItems";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 
 export const getAllOrderByUser = async (
