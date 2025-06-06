@@ -1,4 +1,4 @@
-import ProductDetail from "@/components/shopping/Product-detail";
+import ProductDetail from "@/pages/shopping/Product-detail";
 import ShopingProduct from "@/components/shopping/Product-tile";
 import { Input } from "@/components/ui/input";
 import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";

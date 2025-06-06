@@ -14,9 +14,10 @@ export const createNewOrder = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/shop/order/create",
+        "http://localhost:8080/api/shop/order/payWithEsewa",
         orderData
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.message);
@@ -26,12 +27,13 @@ export const createNewOrder = createAsyncThunk(
 
 export const capturePayment = createAsyncThunk(
   "/capture/capturePayment",
-  async ({ orderId, paymentId, payerId }, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/shop/order/capture",
-        { orderId, paymentId, payerId }
+        `http://localhost:8080/api/shop/order/complete-payment?data=${data}`
       );
+      console.log(response, "index");
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.message);
@@ -80,7 +82,7 @@ const orderSlice = createSlice({
       })
       .addCase(createNewOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.approveUrl = action.payload;
+        state.approveUrl = action.payload.approve_Url;
         state.orderId = action.payload.orderId;
         sessionStorage.setItem(
           "currentOrderId",

@@ -87,7 +87,9 @@ app.use("/api/auth/o-auth", OauthRoutes);
 app.use("/api/shop/product", shopProductRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/shop/address", addressRoutes);
+
 app.use("/api/shop/order", orderRouter);
+
 app.use("/api/product/search", productSearchRoutes);
 app.use("/api/product/review", productReview);
 

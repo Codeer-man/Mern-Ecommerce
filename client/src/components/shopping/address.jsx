@@ -42,40 +42,42 @@ export default function Address({ setCurrentSelectedAddress, selectedId }) {
       return;
     }
 
-    currentEditedData !== null
-      ? dispatch(
-          updadateAddress({
-            userId: user._id,
-            addressId: currentEditedData,
-            formData,
-          })
-        ).then((data) => {
-          if (data.payload.success === true) {
-            dispatch(
-              fetchAddress(user._id),
-              setformdata(intialAddressFormData),
-              setCurrentEditedData(null)
-            );
-            toast.success("Address Added");
-          }
+    if (currentEditedData !== null) {
+      dispatch(
+        updadateAddress({
+          userId: user._id,
+          addressId: currentEditedData,
+          formData,
         })
-      : dispatch(
-          createAddress({
-            ...formData,
-            UserId: user._id,
-          })
-        ).then((data) => {
-          if (data.payload.success === true) {
-            dispatch(fetchAddress(user._id));
-            toast.success("Address has been added");
-            setformdata(intialAddressFormData);
-          } else {
-            if (data.meta.requestStatus === "rejected") {
-              console.log(data, "address");
-              toast(data.payload.message);
-            }
+      ).then((data) => {
+        if (data.payload.success === true) {
+          dispatch(
+            fetchAddress(user._id),
+            setformdata(intialAddressFormData),
+            setCurrentEditedData(null)
+          );
+          toast.success("Address Added");
+        }
+      });
+    } else {
+      dispatch(
+        createAddress({
+          ...formData,
+          UserId: user._id,
+        })
+      ).then((data) => {
+        if (data.payload.success === true) {
+          dispatch(fetchAddress(user._id));
+          toast.success("Address has been added");
+          setformdata(intialAddressFormData);
+        } else {
+          if (data.meta.requestStatus === "rejected") {
+            console.log(data, "address");
+            toast(data.payload.message);
           }
-        });
+        }
+      });
+    }
   }
 
   function handleEditAddress(getCurrentAddress) {

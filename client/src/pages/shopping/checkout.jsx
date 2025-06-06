@@ -11,12 +11,11 @@ import AdsForShowing from "@/components/Advertisement/ads";
 export default function ShoppingCheckout() {
   const { cartItem } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
-  const [isPaymentStart, setIsPaymentStart] = useState("Checkout with paypal");
+  const [isPaymentStart, setIsPaymentStart] = useState("Checkout with esewa");
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const { approveUrl } = useSelector((state) => state.shopOrder);
 
   const dispatch = useDispatch();
-  // console.log(cartItem, "cart");
 
   const TotalCartAmount =
     cartItem && cartItem.items && cartItem.items.length > 0
@@ -36,8 +35,6 @@ export default function ShoppingCheckout() {
   const totalDeliveryCharge = deliveryCharge * NumberOfProducts;
   const grandTotal = totalDeliveryCharge + TotalCartAmount;
 
-
-
   function handleInitiatePaypalPayment() {
     if (cartItem.items.length === 0) {
       toast.error("Your cart item is empty.Please add item to proceed");
@@ -49,41 +46,18 @@ export default function ShoppingCheckout() {
     }
 
     const orderData = {
-      userId: user._id,
-      CartId: cartItem._id,
-      cartItems: cartItem.items.map((items) => ({
-        productId: items.ProductId,
-        title: items.title,
-        image: items.image,
-        price: items.salePrice > 0 ? items.salePrice : items.price,
-        quantity: items.quantity,
-      })),
-      addressInfo: {
-        addressId: currentSelectedAddress?._id,
-        address: currentSelectedAddress.Address,
-        city: currentSelectedAddress.City,
-        pincode: currentSelectedAddress.Pincode,
-        phoneNo: currentSelectedAddress.PhoneNo,
-        notes: currentSelectedAddress.Notes,
-      },
-      oderstatus: "pending",
-      paymentMethod: "paypal",
-      paymentStatus: "pending",
-      deliveryCharge: totalDeliveryCharge,
-      totalAmount: grandTotal,
-      orderDate: new Date(),
-      orderUpdate: new Date(),
-      paymentId: "",
-      payerId: "",
+      cartId: cartItem._id,
+      addressId: currentSelectedAddress?._id,
+      deliveryCharge: 120,
     };
 
     dispatch(createNewOrder(orderData)).then(() => {
-      setIsPaymentStart("Processing Paypal payment");
+      setIsPaymentStart("Processing Esewa payment");
     });
   }
 
   if (approveUrl) {
-    window.location.href = approveUrl.approveURL;
+    window.location.href = approveUrl;
   }
 
   return (
@@ -114,12 +88,7 @@ export default function ShoppingCheckout() {
           </div>
           <div className="mt-4 w-full">
             <Button onClick={handleInitiatePaypalPayment} className="w-full">
-              {
-                /* {isPaymentStart
-                ? "Processing Paypal payment"
-                : "Checkout with paypal"} */
-                isPaymentStart
-              }
+              {isPaymentStart}
             </Button>
           </div>
         </div>

@@ -14,7 +14,7 @@ import { FaTshirt, FaShoppingBasket, FaStore } from "react-icons/fa";
 import { MdLocalLaundryService } from "react-icons/md";
 import { RiImageLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import ProductDetail from "@/components/shopping/Product-detail";
+import ProductDetail from "@/pages/shopping/Product-detail";
 import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import { getFeatuerImage } from "@/store/admin/feature-slice";

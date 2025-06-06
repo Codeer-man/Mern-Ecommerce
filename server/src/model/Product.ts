@@ -1,34 +1,44 @@
 import mongoose, { Document } from "mongoose";
-import { string } from "zod";
 
 interface ProductInfo extends Document {
   title: string;
+  subTitle: string;
   description: string;
-  image: string;
+  image: Array<{
+    url: string;
+    publicId: string;
+  }>;
   category: string;
   brand: string;
   price: number;
   salePrice: number;
   totalStock: number;
   list: boolean;
-  publicId: string;
+  size: number[];
 }
 
 const productSchema = new mongoose.Schema<ProductInfo>(
   {
     title: String,
+    subTitle: String,
     description: String,
-    image: String,
+    image: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
     category: String,
     brand: String,
     price: Number,
     salePrice: Number,
     totalStock: Number,
-    publicId: String,
+
     list: {
       type: Boolean,
       default: false,
     },
+    size: [Number],
   },
   { timestamps: true }
 );

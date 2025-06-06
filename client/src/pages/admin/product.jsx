@@ -38,9 +38,9 @@ export default function Adminproduct() {
   const [openCreateProductsDialoge, setOpenCreateProductsDialoge] =
     useState(false);
   const [formdata, setFormdata] = useState(initialFormData);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePublicId, setImagePublicId] = useState("");
-  const [uploadImageUrl, setUploadImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState([]);
+  const [imagePublicId, setImagePublicId] = useState([]);
+  const [uploadImageUrl, setUploadImageUrl] = useState({});
   const [imageLoading, setImageLoading] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const [page, setPage] = useState(() => {
@@ -52,45 +52,42 @@ export default function Adminproduct() {
     (state) => state.adminProduct
   );
   const dispatch = useDispatch();
+  console.log(uploadImageUrl, "product images");
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    currentEditedId !== null
-      ? dispatch(editProduct({ id: currentEditedId, formdata })).then(
-          (data) => {
-            if (data.payload?.success === true) {
-              dispatch(fetchAllProduct());
-              setCurrentEditedId(null),
-                setOpenCreateProductsDialoge(false),
-                setFormdata(initialFormData);
-            }
-          }
-        )
-      : dispatch(
-          addNewProduct({
-            ...formdata,
-            image: uploadImageUrl,
-            publicId: imagePublicId,
-          })
-        ).then((data) => {
-          if (data.payload.success === true) {
-            dispatch(fetchAllProduct());
-            setFormdata(initialFormData), setImageFile(null);
-            setOpenCreateProductsDialoge(false);
-            toast.success(
-              data.payload.message || "New product has been created"
-            );
-          }
-        });
+    if (currentEditedId !== null) {
+      dispatch(editProduct({ id: currentEditedId, formdata })).then((data) => {
+        if (data.payload?.success === true) {
+          dispatch(fetchAllProduct());
+          setCurrentEditedId(null),
+            setOpenCreateProductsDialoge(false),
+            setFormdata(initialFormData);
+        }
+      });
+    } else {
+      dispatch(
+        addNewProduct({
+          ...formdata,
+          image: uploadImageUrl,
+        })
+      ).then((data) => {
+        if (data.payload.success === true) {
+          dispatch(fetchAllProduct());
+          setFormdata(initialFormData), setImageFile(null);
+          setOpenCreateProductsDialoge(false);
+          toast.success(data.payload.message || "New product has been created");
+        }
+      });
+    }
   };
 
-  function isFormValid() {
-    return Object.keys(formdata)
-      .map((key) => formdata[key] !== "")
-      .every((item) => item);
-  }
-  console.log(isFormValid());
+  // function isFormValid() {
+  //   return Object.keys(formdata)
+  //     .map((key) => formdata[key] !== "")
+  //     .every((item) => item);
+  // }
 
   function handleDelete(productId) {
     dispatch(deleteProduct(productId)).then((data) => {
@@ -109,7 +106,8 @@ export default function Adminproduct() {
     localStorage.setItem("admin_Product_page", page.toString());
     dispatch(fetchAllProduct({ page: page }));
   }, [dispatch, page]);
-  console.log(pageProductList, "product");
+  // console.log(pageProductList, "product");
+  console.log(productList, "product list");
 
   return (
     <Fragment>
@@ -140,6 +138,7 @@ export default function Adminproduct() {
         totalPage={pageProductList.totalPage}
       />
       <Sheet
+        className={"w-screen"}
         open={openCreateProductsDialoge}
         onOpenChange={() => {
           setOpenCreateProductsDialoge(false);
@@ -147,20 +146,20 @@ export default function Adminproduct() {
           setCurrentEditedId(null);
         }}
       >
-        <SheetContent side="right" className="overflow-auto">
+        <SheetContent side="right" className="overflow-auto ">
           <SheetHeader>
             <SheetTitle>
               {currentEditedId !== null
                 ? "Edit the product"
-                : "Add new Product"}{" "}
+                : "Add new Product"}
             </SheetTitle>
           </SheetHeader>
           <div className=" p-5">
             <ProductImageUpload
-              imageFile={imageFile}
-              setImageFile={setImageFile}
+              imageFiles={imageFile}
+              setImageFiles={setImageFile}
               uploadImageUrl={uploadImageUrl}
-              setUploadImageUrl={setUploadImageUrl}
+              setUploadedUrls={setUploadImageUrl}
               imageLoading={imageLoading}
               setImagePublicId={setImagePublicId}
               setImageLoading={setImageLoading}
@@ -172,7 +171,7 @@ export default function Adminproduct() {
               setFormData={setFormdata}
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
               onSubmit={onSubmit}
-              isBtnDisabled={!isFormValid()}
+              // isBtnDisabled={!isFormValid()}
             />
           </div>
         </SheetContent>

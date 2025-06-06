@@ -100,3 +100,46 @@ export const getProductsById = async (
     next(error);
   }
 };
+
+export const relatedProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { productId } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const findProduct = await Product.findById(productId);
+
+    if (!findProduct) {
+      throw new ErrorHandler("Producrt not found", 404, false);
+    }
+
+    const filter = {
+      _id: { $ne: productId },
+      brand: findProduct.brand,
+      category: findProduct.category,
+    };
+
+    const total = await Product.countDocuments(filter);
+    const relatedProducts = await Product.find(filter).skip(skip).limit(limit);
+
+    if (relatedProducts.length === 0) {
+      throw new ErrorHandler("Product with same brands not found", 404, false);
+    }
+
+    res.status(200).json({
+      total,
+      currentPage: page,
+      limit,
+      totalPage: Math.ceil(total / limit),
+      relatedProducts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

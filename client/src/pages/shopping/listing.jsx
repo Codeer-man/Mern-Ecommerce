@@ -1,5 +1,5 @@
 import PaginationComponent from "@/components/shopping/pagination";
-import ProductDetail from "@/components/shopping/Product-detail";
+import ProductDetail from "@/pages/shopping/Product-detail";
 import ShopingProduct from "@/components/shopping/Product-tile";
 import ProductFilter from "@/components/shopping/ProductFilter";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { getShopProduct, getSingleProduct } from "@/store/shop/product-slice";
 import { ArrowUpDown } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast, Toaster } from "sonner";
 
 //! import to learn query
@@ -37,7 +37,8 @@ export default function ShoppingListing() {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
-  const [opendetailDialogue, setOpenDetailDialogue] = useState(false);
+  const navigate = useNavigate();
+
   const { products, productDetail } = useSelector(
     (state) => state.shoppingProduct
   );
@@ -51,7 +52,7 @@ export default function ShoppingListing() {
   const [page, setPage] = useState(initalPage);
 
   function handleGetProductDetail(id) {
-    dispatch(getSingleProduct(id));
+    navigate(`/shop/product-detail/${id}`);
   }
 
   useEffect(() => {
@@ -130,12 +131,6 @@ export default function ShoppingListing() {
     }
   }, [filter]);
 
-  useEffect(() => {
-    if (productDetail !== null) {
-      setOpenDetailDialogue(true);
-    }
-  }, [productDetail, page]);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter filter={filter} handleFilter={handleFilter} />
@@ -192,12 +187,7 @@ export default function ShoppingListing() {
           totalPage={products.totalPage}
         />
       </div>
-      <ProductDetail
-        open={opendetailDialogue}
-        setOpen={setOpenDetailDialogue}
-        productDetail={productDetail}
-        user={user}
-      />
+      {/* <ProductDetail productDetail={productDetail} user={user} /> */}
     </div>
   );
 }

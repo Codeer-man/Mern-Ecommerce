@@ -25,7 +25,6 @@ export default function Register() {
         toast.success(data.payload.message);
         return navigate("/auth/login");
       }
-      console.log(data);
 
       toast.error("hello world");
     });

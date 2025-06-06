@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import { NOT_FOUND } from "../../constants/http";
 import Address from "../../model/Address";
+import User from "../../model/User";
 
 export const addAddress = async (
   req: Request,
@@ -22,8 +23,11 @@ export const addAddress = async (
       throw new ErrorHandler("All the fields are required", NOT_FOUND, false);
     }
 
+    const findUser = await User.findById(UserId);
+
     const newAddress = new Address({
       UserId,
+      email: findUser?.email,
       Address: addressField,
       PhoneNo,
       Pincode,
@@ -141,4 +145,24 @@ export const deleteAddress = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const verifyNumber = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { addressId } = req.params;
+
+    const findAddress = await Address.findById(addressId);
+
+    if (!findAddress) {
+      throw new ErrorHandler("User address data not found", 404, false);
+    }
+
+    const otp = Math.ceil(100000 + Math.random() * 90000).toString();
+    findAddress.otp = otp;
+    await findAddress.save();
+  } catch (error) {}
 };

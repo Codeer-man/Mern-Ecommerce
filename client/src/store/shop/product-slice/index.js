@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   products: [],
   productDetail: null,
+  showRelatedProduct: [],
 };
 
 export const getShopProduct = createAsyncThunk(
@@ -45,6 +46,20 @@ export const getSingleProduct = createAsyncThunk(
   }
 );
 
+export const relatedProduct = createAsyncThunk(
+  "/related/product",
+  async ({ productId, page = 1, limit = 8 }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/shop/product/relatedProduct/${productId}?page=${page}&limit=${limit}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error?.message);
+    }
+  }
+);
+
 const ShopProductSlicer = createSlice({
   name: "shoppingProduct",
   initialState,
@@ -76,6 +91,11 @@ const ShopProductSlicer = createSlice({
       .addCase(getSingleProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.productDetail = null;
+      })
+      .addCase(relatedProduct.fulfilled, (state, action) => {
+        console.log(action.payload, "index");
+        state.isLoading = false;
+        state.showRelatedProduct = action.payload.relatedProducts;
       });
   },
 });

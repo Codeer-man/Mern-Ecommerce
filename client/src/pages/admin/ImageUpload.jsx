@@ -5,8 +5,8 @@ import ProductImageUpload from "../../components/admin/image-upload";
 import { Button } from "../../components/ui/button";
 
 export default function ImageUploadDashBaord() {
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState([]);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState([]);
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const { featureImage } = useSelector((state) => state.featureSlice);
   const [imagePublicId, setImagePublicId] = useState("");

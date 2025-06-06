@@ -11,7 +11,7 @@ const transpotar = nodemailer.createTransport({
   },
 });
 
-interface emailData {
+interface verifyData {
   email: string;
   verificationCode: string;
 }
@@ -19,7 +19,7 @@ interface emailData {
 export const sendVerificationCode = async ({
   email,
   verificationCode,
-}: emailData) => {
+}: verifyData) => {
   const info = await transpotar.sendMail({
     from: "E-commerce <mdrmoney34@gmail.com>",
     to: email,
@@ -30,4 +30,14 @@ export const sendVerificationCode = async ({
       verificationCode
     ),
   });
+};
+
+export const sendNumberVerificationCode = async ({
+  email,
+  verificationCode,
+}: verifyData) => {
+  const info = await transpotar.sendMail({
+    from:"mdrmoney34@gmail.com",
+    to:email
+  })
 };

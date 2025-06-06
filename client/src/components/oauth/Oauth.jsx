@@ -23,6 +23,7 @@ export default function OAuth() {
         avatar: user.photoURL,
         provider: "google",
         phoneNumber: user.phoneNumber,
+        emailVerify: true,
       };
 
       const res = await axios.post(
@@ -39,17 +40,11 @@ export default function OAuth() {
       dispatch(checkauth());
       const role = res.data?.data?.role;
       if (role === "admin") {
-        console.log("navigating to /admin/dashboard");
         navigate("/admin/dashboard");
       } else {
-        console.log("navigating to /shop/home");
         navigate("/shop/home");
       }
       toast.success(res?.data.message);
-
-      // setTimeout(() => {
-      //   console.log("AFTER NAVIGATE:", window.location.pathname);
-      // }, 1000);
     } catch (error) {
       console.error("Google login error:", error);
     }

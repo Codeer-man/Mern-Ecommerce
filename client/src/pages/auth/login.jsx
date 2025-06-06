@@ -23,7 +23,6 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      console.log("Dispatching loginUser");
       const data = await dispatch(loginUser(formData)).unwrap();
       toast.success(data.message);
 
@@ -33,10 +32,7 @@ export default function Login() {
       } else {
         navigate("/shop/home");
       }
-
-      // setFormData(initialstate);
     } catch (err) {
-      console.error("Login error", err);
       toast.error(err.message || "Login failed");
     }
   };

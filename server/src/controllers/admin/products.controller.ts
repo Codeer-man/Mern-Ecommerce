@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { v2 as cloudinary } from "cloudinary";
 import {
   deleteFromCloudinary,
   imageUploadUtil,
@@ -11,17 +12,31 @@ export const handleImageUpload = async (
   res: Response
 ): Promise<void> => {
   try {
-    if (!req.file) {
+    if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
       throw new ErrorHandler("No file uploaded", 400, false);
     }
 
-    const b64 = Buffer.from(req.file.buffer).toString("base64");
-    const url = "data:" + req.file.mimetype + ";base64," + b64;
-    const result = await imageUploadUtil(url);
+    const files = req.files as Express.Multer.File[];
+
+    let uploadedImages = [];
+    
+    for (const file of files) {
+      const base64 = file.buffer.toString("base64");
+      const dataUri = `data:${file.mimetype};base64,${base64}`;
+
+      const result = await cloudinary.uploader.upload(dataUri, {
+        resource_type: "image",
+      });
+
+      uploadedImages.push({
+        url: result.secure_url,
+        publicId: result.public_id,
+      });
+    }
 
     res.json({
       success: true,
-      result,
+      images: uploadedImages,
     });
   } catch (error) {
     console.log(error);
@@ -104,7 +119,7 @@ export const fetchallProduct = async (
     const skip = (page - 1) * limit;
 
     const listOfProduct = await Product.find().skip(skip).limit(limit);
-    
+
     res.status(200).json({
       success: true,
       message: "All Product has been fetched",
@@ -165,25 +180,25 @@ export const editProduct = async (
 };
 
 // delete a product
-export const deleteProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const delProduct = await Product.findByIdAndDelete(id);
+// export const deleteProduct = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<void> => {
+//   try {
+//     const { id } = req.params;
+//     const delProduct = await Product.findByIdAndDelete(id);
 
-    if (!delProduct) {
-      throw new ErrorHandler("Product not found", 404, false);
-    }
-    await deleteFromCloudinary(delProduct.publicId);
+//     if (!delProduct) {
+//       throw new ErrorHandler("Product not found", 404, false);
+//     }
+//     await deleteFromCloudinary(delProduct.publicId);
 
-    res.status(200).json({ success: true, message: "Product deleted" });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(200).json({ success: true, message: "Product deleted" });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 export const updateLabel = async (
   req: Request,

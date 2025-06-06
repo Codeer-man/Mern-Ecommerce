@@ -1,78 +1,93 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
-import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 
 export default function ProductImageUpload({
-  imageFile,
-  setImageFile,
-  setUploadImageUrl,
+  imageFiles,
+  setImageFiles,
+  setUploadedUrls,
   setImageLoading,
   imageLoading,
   isEditedMode,
-  setImagePublicId,
   isCustomStyling = false,
 }) {
+  const [previews, setPreviews] = useState([]);
+  const inputRef = useRef(null);
+
   const handleImageFileChange = (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) setImageFile(selectedFile);
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length > 0) {
+      setImageFiles(selectedFiles);
+      setPreviews(selectedFiles.map((file) => URL.createObjectURL(file)));
+    }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+  const handleDragOver = (e) => e.preventDefault();
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile) setImageFile(droppedFile);
-  };
-
-  const handleRemoveImage = () => {
-    setImageFile("");
-    if (inputref.current) {
-      inputref.current.value = "";
+    const droppedFiles = Array.from(e.dataTransfer.files || []);
+    if (droppedFiles.length > 0) {
+      setImageFiles(droppedFiles);
+      setPreviews(droppedFiles.map((file) => URL.createObjectURL(file)));
     }
   };
 
-  async function uploadImageToCloudinary() {
-    setImageLoading(true);
-    const data = new FormData();
-    data.append("Product", imageFile);
+  const handleRemoveImage = (index) => {
+    const newFiles = [...imageFiles];
+    const newPreviews = [...previews];
+    newFiles.splice(index, 1);
+    newPreviews.splice(index, 1);
+    setImageFiles(newFiles);
+    setPreviews(newPreviews);
+  };
 
+  const uploadImages = async () => {
+    setImageLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/admin/product/image-upload",
-        data
-      );
-      console.log(response, "image response");
-      if (response.data.success === true) {
-        setUploadImageUrl(response.data.result.secure_url);
-        setImagePublicId(response.data.result.public_id);
+      let uploaded = [];
+
+      for (const file of imageFiles) {
+        const data = new FormData();
+        data.append("images", file);
+
+        const response = await axios.post(
+          "http://localhost:8080/api/admin/product/image-upload",
+          data
+        );
+        console.log(response);
+
+        if (response.data.success) {
+          uploaded.push({
+            url: response.data.images[0].url,
+            publicId: response.data.images[0].publicId,
+          });
+        }
       }
-    } catch (error) {
-      return console.error("invalid server error", error);
+      console.log(uploaded, "uploaded");
+
+      setUploadedUrls(uploaded);
+    } catch (err) {
+      console.error("Upload error", err);
     } finally {
       setImageLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    if (imageFile !== null) uploadImageToCloudinary();
-  }, [imageFile]);
+    if (imageFiles?.length > 0) uploadImages();
+  }, [imageFiles]);
 
-  const inputref = useRef(null);
   return (
-    <div
-      className={`w-full  mb-2 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
-    >
+    <div className={`w-full mb-2 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}>
       <Label className="text-lg font-semibold mb-2 block">
-        Product Image upload
+        Product Image Upload
       </Label>
+
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -81,19 +96,21 @@ export default function ProductImageUpload({
         } border-2 border-dashed rounded-lg p-4`}
       >
         <Input
-          id={"image-upload"}
-          type={"file"}
+          type="file"
+          multiple
           className="hidden"
-          ref={inputref}
+          ref={inputRef}
           onChange={handleImageFileChange}
           disabled={isEditedMode}
         />
-        {!imageFile ? (
+
+        {imageFiles?.length === 0 ? (
           <label
             htmlFor="image-upload"
-            className={` ${
+            className={`${
               isEditedMode ? "cursor-not-allowed" : ""
             } flex flex-col justify-center items-center h-32 cursor-pointer`}
+            onClick={() => inputRef.current?.click()}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span>Drag & drop or click to upload</span>
@@ -101,23 +118,41 @@ export default function ProductImageUpload({
         ) : imageLoading ? (
           <Skeleton className="h-10 bg-gray-200" />
         ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <FileIcon className="w-8 text-primary mr-2 h-8" />
-            </div>
-            <p className="text-sm font-medium">{imageFile.name}</p>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={handleRemoveImage}
-            >
-              <XIcon className="w-4 h-4" />
-              <span className="sr-only">Remove File</span>
-            </Button>
+          <div className="space-y-3">
+            {imageFiles?.map((file, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between border p-2 rounded-md"
+              >
+                <div className="flex items-center gap-2">
+                  <FileIcon className="w-6 h-6 text-primary" />
+                  <span className="text-sm font-medium">{file.name}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleRemoveImage(index)}
+                >
+                  <XIcon className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
           </div>
         )}
       </div>
+
+      {previews.length > 0 && (
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          {previews.map((src, index) => (
+            <img
+              key={index}
+              src={src}
+              alt={`preview-${index}`}
+              className="w-full h-32 object-cover rounded"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
