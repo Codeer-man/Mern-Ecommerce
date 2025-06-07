@@ -23,8 +23,8 @@ import { toast } from "sonner";
 
 const initialFormData = {
   title: "",
-  image: "",
-  publicId: "",
+  subTitle: "",
+  image: [],
   price: "",
   description: "",
   brand: "",
@@ -32,6 +32,7 @@ const initialFormData = {
   salePrice: "",
   totalStock: "",
   list: false,
+  sizes: [],
 };
 
 export default function Adminproduct() {
@@ -39,10 +40,10 @@ export default function Adminproduct() {
     useState(false);
   const [formdata, setFormdata] = useState(initialFormData);
   const [imageFile, setImageFile] = useState([]);
-  const [imagePublicId, setImagePublicId] = useState([]);
   const [uploadImageUrl, setUploadImageUrl] = useState({});
   const [imageLoading, setImageLoading] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(() => {
     const savedPage = localStorage.getItem("admin-product-page");
     return savedPage ? parseInt(savedPage, 10) : 1;
@@ -52,7 +53,6 @@ export default function Adminproduct() {
     (state) => state.adminProduct
   );
   const dispatch = useDispatch();
-  console.log(uploadImageUrl, "product images");
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -60,7 +60,7 @@ export default function Adminproduct() {
     if (currentEditedId !== null) {
       dispatch(editProduct({ id: currentEditedId, formdata })).then((data) => {
         if (data.payload?.success === true) {
-          dispatch(fetchAllProduct());
+          dispatch(fetchAllProduct({ page: page }));
           setCurrentEditedId(null),
             setOpenCreateProductsDialoge(false),
             setFormdata(initialFormData);
@@ -73,9 +73,10 @@ export default function Adminproduct() {
           image: uploadImageUrl,
         })
       ).then((data) => {
-        if (data.payload.success === true) {
-          dispatch(fetchAllProduct());
-          setFormdata(initialFormData), setImageFile(null);
+        if (data.payload.success) {
+          dispatch(fetchAllProduct({ page: page }));
+          setFormdata(initialFormData), setImageFile([]);
+          setUploadImageUrl({});
           setOpenCreateProductsDialoge(false);
           toast.success(data.payload.message || "New product has been created");
         }
@@ -90,12 +91,20 @@ export default function Adminproduct() {
   // }
 
   function handleDelete(productId) {
-    dispatch(deleteProduct(productId)).then((data) => {
-      if (data.payload.success === true) {
-        dispatch(fetchAllProduct());
-        setCurrentEditedId(null);
-      }
-    });
+    setLoading(true);
+    try {
+      dispatch(deleteProduct(productId)).then((data) => {
+        if (data.payload.success) {
+          dispatch(fetchAllProduct({ page: page })).then((data) => {});
+          setCurrentEditedId(null);
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      toast("Product deleted successfully!");
+    }
   }
 
   function handleToggleList(product) {
@@ -106,8 +115,8 @@ export default function Adminproduct() {
     localStorage.setItem("admin_Product_page", page.toString());
     dispatch(fetchAllProduct({ page: page }));
   }, [dispatch, page]);
-  // console.log(pageProductList, "product");
-  console.log(productList, "product list");
+
+  if (loading) return <h1>Loading...</h1>;
 
   return (
     <Fragment>
@@ -116,7 +125,7 @@ export default function Adminproduct() {
           Add New Product
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {productList && productList.length > 0
           ? productList.map((productItem) => (
               <AdminProductTile
@@ -161,7 +170,6 @@ export default function Adminproduct() {
               uploadImageUrl={uploadImageUrl}
               setUploadedUrls={setUploadImageUrl}
               imageLoading={imageLoading}
-              setImagePublicId={setImagePublicId}
               setImageLoading={setImageLoading}
               isEditedMode={currentEditedId}
             />

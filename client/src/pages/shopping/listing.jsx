@@ -45,6 +45,7 @@ export default function ShoppingListing() {
   const { cartItem } = useSelector((state) => state.shopCart);
   const categorySearchParams = searchParams.get("category");
   const { user } = useSelector((state) => state.auth);
+  console.log(products, "listing");
 
   // paginaiton
   const [sort, setSort] = useState(null);
@@ -59,7 +60,7 @@ export default function ShoppingListing() {
     if (filter !== null && sort !== null)
       dispatch(
         getShopProduct({ filterParams: filter, sortParams: sort, page })
-      );
+      ).then((data) => console.log(data));
   }, [dispatch, sort, filter, page]);
 
   function handleSort(value) {
@@ -187,7 +188,6 @@ export default function ShoppingListing() {
           totalPage={products.totalPage}
         />
       </div>
-      {/* <ProductDetail productDetail={productDetail} user={user} /> */}
     </div>
   );
 }

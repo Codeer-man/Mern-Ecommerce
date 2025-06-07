@@ -4,6 +4,7 @@ const URL =
   "mongodb+srv://mdrmoney34:mdrmoney34@cluster0.klkq8ku.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 import Review from "../model/review";
+import Product from "../model/Product";
 
 export const connectdb = async () => {
   try {

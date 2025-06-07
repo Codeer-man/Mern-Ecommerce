@@ -9,6 +9,7 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 
 function CommonForm({
   formControls,
@@ -84,6 +85,34 @@ function CommonForm({
           />
         );
 
+        break;
+      case "checkbox":
+        element = (
+          <div className="flex gap-4 flex-wrap">
+            {getControlItem.options?.map((optionItem) => (
+              <div key={optionItem.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={optionItem.id}
+                  checked={formData[getControlItem.name]?.includes(
+                    optionItem.id
+                  )}
+                  onCheckedChange={(checked) => {
+                    const prev = formData[getControlItem.name] || [];
+                    const updated = checked
+                      ? [...prev, optionItem.id]
+                      : prev.filter((val) => val !== optionItem.id);
+
+                    setFormData({
+                      ...formData,
+                      [getControlItem.name]: updated,
+                    });
+                  }}
+                />
+                <Label htmlFor={optionItem.id}>{optionItem.label}</Label>
+              </div>
+            ))}
+          </div>
+        );
         break;
 
       default:

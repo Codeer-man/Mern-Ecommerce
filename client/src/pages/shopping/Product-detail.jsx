@@ -41,6 +41,7 @@ export default function ProductDetail() {
   const { showRelatedProduct } = useSelector((state) => state.shoppingProduct);
   const { user } = useSelector((state) => state.auth);
   const { productDetail } = useSelector((state) => state.shoppingProduct);
+  const [selectedSize, setSelectedSize] = useState("");
   const { id } = useParams();
 
   const [reviewMsg, setReviewMsg] = useState("");
@@ -135,28 +136,60 @@ export default function ProductDetail() {
     dispatch(getSingleProduct(id));
   }, [id]);
 
+  console.log(productDetail?.sizes);
+
   return (
-    <div className="w-screen h-screen bg-white rounded-lg shadow-lg   overflow-auto p-6 relative ">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="    rounded-lg">
+    <div className="w-screen h-screen bg-white rounded-lg shadow-lg   overflow-auto py-10 px-6 relative mt-11 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-20">
+        <div className="rounded-lg">
           <img
-            src={productDetail?.image}
+            src={productDetail?.image[0].url}
             alt={productDetail?.title}
-            className="w-full aspect-square object-cover rounded-lg"
+            className="w-full aspect-square object-contain rounded-lg"
           />
         </div>
 
         <div className="flex flex-col">
-          <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">
+          <h1 className="text-x text-centerl sm:text-3xl font-extrabold mb-2">
             {productDetail?.title}
           </h1>
-
-          <ScrollArea className="h-[200px] md:h-[250px] rounded-md border p-4">
+          <h4 className="text-muted-foreground text-sm md:text-base">
+            {productDetail?.subTitle}
+          </h4>{" "}
+          <div className="flex items-center gap-2">
+            <h3
+              className={`text-xl font-bold my-2 ${
+                productDetail?.salePrice > 0
+                  ? "line-through text-muted-foreground"
+                  : ""
+              }`}
+            >
+              $ {productDetail?.price}
+            </h3>
+            <h3 className="text-xl font-bold text-black">
+              {productDetail?.salePrice > 0 ? productDetail?.salePrice : null}{" "}
+            </h3>
+          </div>
+          <p className="font-semibold font-lg">
+            Category : {productDetail?.category} && Brand :{" "}
+            {productDetail?.brand}
+          </p>
+          <div className="my-4">
+            <h4 className="font-semibold mb-2">Select Size</h4>
+            <div className="flex flex-wrap gap-2">
+              <div></div>
+            </div>
+            {selectedSize && (
+              <p className="mt-2 text-sm text-gray-600">
+                Selected size: <strong>{selectedSize}</strong>
+              </p>
+            )}
+          </div>
+          <div className="">
             <p className="text-muted-foreground text-sm md:text-base">
               {productDetail?.description}
             </p>
-          </ScrollArea>
-
+          </div>
           <div className="flex items-center justify-between mt-4">
             <p
               className={`text-xl font-bold ${
@@ -173,14 +206,12 @@ export default function ProductDetail() {
               </p>
             )}
           </div>
-
           <div className="flex items-center gap-2 mt-2">
             <StarRating rating={averageReview} />
             <span className="text-sm text-muted-foreground">
               {averageReview.toFixed(2)}
             </span>
           </div>
-
           <div className="mt-4">
             <Button
               className="w-full"

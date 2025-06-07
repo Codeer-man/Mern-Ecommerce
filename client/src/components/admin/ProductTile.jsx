@@ -1,7 +1,9 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import React from "react";
-
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function AdminProductTile({
   product,
@@ -12,13 +14,13 @@ export default function AdminProductTile({
   handleToggleList,
 }) {
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-md mx-auto">
       <div>
         <div className="relative">
           <img
-            src={product.image}
+            src={product.image[0].url}
             alt={product.title}
-            className="w-full h-[300px] object-cover rounded-t-lg"
+            className="w-full h-[300px] object-contain rounded-t-lg"
           />
         </div>
 
@@ -30,7 +32,7 @@ export default function AdminProductTile({
         </div>
 
         <CardContent>
-          <h2 className="text-xl font-bold mb-2">{product.title}</h2>
+          <h2 className="text-lg font-bold mb-2">{product.title}</h2>
           <div className="flex justify-between items-center mb-2">
             <span
               className={`${
@@ -47,22 +49,40 @@ export default function AdminProductTile({
 
         <CardFooter className="flex flex-col gap-2 md:flex-row justify-between items-center px-4">
           <div className="flex gap-2">
-            <Button
-              onClick={() => {
-                setOpenCreateProductsDialoge(true);
-                setCurrentEditedId(product._id);
-                setFormData(product);
-              }}
-            >
-              Edit
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    className={"cursor-pointer flex items-center"}
+                    onClick={() => {
+                      setOpenCreateProductsDialoge(true);
+                      setCurrentEditedId(product._id);
+                      setFormData(product);
+                    }}
+                  >
+                    <FaEdit />
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Edit</TooltipContent>
+            </Tooltip>
 
-            <Button
-              variant="destructive"
-              onClick={() => handleDelete(product._id)}
-            >
-              Delete
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    className={"cursor-pointer"}
+                    variant="destructive"
+                    onClick={() => handleDelete(product._id)}
+                  >
+                    <MdDelete />
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <h3>Delete</h3>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <Button

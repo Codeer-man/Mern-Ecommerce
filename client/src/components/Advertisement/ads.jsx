@@ -7,7 +7,7 @@ export default function AdsForShowing() {
   const [showX, setShowX] = useState(false);
   const [timer, setTimer] = useState(5);
   const [ad, setAd] = useState(null);
-  const [isVisible, setIsVisible] = useState(true); // for controlling visibility
+  const [isVisible, setIsVisible] = useState(true); 
 
   useEffect(() => {
     const fetchData = async () => {

@@ -4,7 +4,7 @@ import {
   handleImageUpload,
   addProduct,
   fetchallProduct,
-  // deleteProduct,
+  deleteProduct,
   editProduct,
   updateLabel,
 } from "../../controllers/admin/products.controller";
@@ -15,7 +15,7 @@ const router = express.Router();
 router.post("/image-upload", uploadMultipleImagesMiddleware, handleImageUpload);
 router.post("/add", addProduct);
 router.put("/edit/:id", editProduct);
-// router.delete("/delete/:id", deleteProduct);
+router.delete("/delete/:id", deleteProduct);
 router.get("/getProdct", fetchallProduct);
 router.put("/update/:id/label", updateLabel);
 

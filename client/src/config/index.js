@@ -106,6 +106,20 @@ export const addProductFormElements = [
     type: "number",
     placeholder: "Enter sale price (optional)",
   },
+
+  {
+    name: "sizes",
+    label: "Available Sizes",
+    componentType: "checkbox",
+    options: [
+      { id: "S", label: "S" },
+      { id: "M", label: "M" },
+      { id: "L", label: "L" },
+      { id: "XL", label: "XL" },
+      { id: "XXL", label: "XXL" },
+    ],
+  },
+
   {
     label: "Total Stock",
     name: "totalStock",

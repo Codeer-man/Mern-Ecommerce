@@ -33,11 +33,13 @@ export const addNewProduct = createAsyncThunk(
 );
 export const fetchAllProduct = createAsyncThunk(
   "/product/fetchProduct",
-  async ({ page, limit }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 12 }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/admin/product/getProdct?page=${page}&limit=${limit}`
       );
+      console.log(response, "index");
+
       return response?.data;
     } catch (error) {
       return rejectWithValue(

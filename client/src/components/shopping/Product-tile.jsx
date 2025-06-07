@@ -14,7 +14,7 @@ export default function ShopingProduct({
       <div onClick={() => handleGetProductDetail(product._id)}>
         <div className="relative">
           <img
-            src={product.image}
+            src={product.image[0].url}
             alt={product.title}
             className="w-full h-[300px] object-cover rounded-t-lg"
           />

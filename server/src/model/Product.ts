@@ -14,7 +14,7 @@ interface ProductInfo extends Document {
   salePrice: number;
   totalStock: number;
   list: boolean;
-  size: number[];
+  sizes: string[];
 }
 
 const productSchema = new mongoose.Schema<ProductInfo>(
@@ -31,14 +31,20 @@ const productSchema = new mongoose.Schema<ProductInfo>(
     category: String,
     brand: String,
     price: Number,
-    salePrice: Number,
+    salePrice: {
+      type: Number,
+      default: 0,
+    },
     totalStock: Number,
 
     list: {
       type: Boolean,
       default: false,
     },
-    size: [Number],
+    sizes: {
+      type: [String],
+      required: true,
+    },
   },
   { timestamps: true }
 );

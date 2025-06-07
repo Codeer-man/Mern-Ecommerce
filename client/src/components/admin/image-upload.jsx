@@ -59,7 +59,6 @@ export default function ProductImageUpload({
           "http://localhost:8080/api/admin/product/image-upload",
           data
         );
-        console.log(response);
 
         if (response.data.success) {
           uploaded.push({
@@ -68,8 +67,6 @@ export default function ProductImageUpload({
           });
         }
       }
-      console.log(uploaded, "uploaded");
-
       setUploadedUrls(uploaded);
     } catch (err) {
       console.error("Upload error", err);

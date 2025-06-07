@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
-import {
-  deleteFromCloudinary,
-  imageUploadUtil,
-} from "../../helpers/upload-cloudinary";
+
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import Product from "../../model/Product";
+import { deleteFromCloudinary } from "../../helpers/upload-cloudinary";
 
 export const handleImageUpload = async (
   req: Request,
@@ -19,7 +17,7 @@ export const handleImageUpload = async (
     const files = req.files as Express.Multer.File[];
 
     let uploadedImages = [];
-    
+
     for (const file of files) {
       const base64 = file.buffer.toString("base64");
       const dataUri = `data:${file.mimetype};base64,${base64}`;
@@ -56,6 +54,7 @@ export const addProduct = async (
   try {
     const {
       title,
+      subTitle,
       description,
       image,
       category,
@@ -64,17 +63,19 @@ export const addProduct = async (
       salePrice,
       totalStock,
       list,
+      sizes,
       publicId,
     } = req.body;
 
     if (
       !title ||
+      !subTitle ||
       !image ||
       !description ||
       !category ||
       !brand ||
       !price ||
-      !salePrice ||
+      !sizes ||
       !totalStock
     ) {
       throw new ErrorHandler("Please fill all the field", 400, false);
@@ -82,6 +83,7 @@ export const addProduct = async (
 
     const newProduct = new Product({
       title,
+      subTitle,
       description,
       image,
       category,
@@ -90,6 +92,7 @@ export const addProduct = async (
       salePrice,
       totalStock,
       publicId,
+      sizes,
       list,
     });
 
@@ -180,25 +183,28 @@ export const editProduct = async (
 };
 
 // delete a product
-// export const deleteProduct = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const { id } = req.params;
-//     const delProduct = await Product.findByIdAndDelete(id);
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const delProduct = await Product.findByIdAndDelete(id);
 
-//     if (!delProduct) {
-//       throw new ErrorHandler("Product not found", 404, false);
-//     }
-//     await deleteFromCloudinary(delProduct.publicId);
+    if (!delProduct) {
+      throw new ErrorHandler("Product not found", 404, false);
+    }
 
-//     res.status(200).json({ success: true, message: "Product deleted" });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    for (const image of delProduct.image) {
+      await deleteFromCloudinary(image.publicId);
+    }
+
+    res.status(200).json({ success: true, message: "Product deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateLabel = async (
   req: Request,
