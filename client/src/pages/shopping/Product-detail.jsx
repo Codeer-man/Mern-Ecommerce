@@ -1,29 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
-import { Edit } from "lucide-react";
-import { Input } from "../../components/ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import { getSingleProduct, relatedProduct } from "@/store/shop/product-slice";
-import { Label } from "../../components/ui/label";
-import StarRating from "../../components/common/star-rating";
-import { ScrollArea } from "../../components/ui/scroll-area";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../../components/ui/accordion";
-import { MdDelete } from "react-icons/md";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../components/ui/tooltip";
-
 import RelatedProduct from "../../components/shopping/relatedProduct";
 import {
   createProductReview,
@@ -33,6 +14,8 @@ import {
   userReviewfetch,
 } from "@/store/shop/product-review";
 import { useParams } from "react-router-dom";
+import SelectSize from "@/components/shopping/selectsize";
+import AllReview from "@/components/shopping/reviewall";
 
 export default function ProductDetail() {
   const dispatch = useDispatch();
@@ -41,39 +24,41 @@ export default function ProductDetail() {
   const { showRelatedProduct } = useSelector((state) => state.shoppingProduct);
   const { user } = useSelector((state) => state.auth);
   const { productDetail } = useSelector((state) => state.shoppingProduct);
+  const [mainImage, setMainImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const { id } = useParams();
 
-  const [reviewMsg, setReviewMsg] = useState("");
-  const [rating, setRating] = useState(0);
+  // const [reviewMsg, setReviewMsg] = useState("");
+  // const [rating, setRating] = useState(0);
 
-  function handleRatingChange(getRating) {
-    setRating(getRating);
-  }
+  // function handleRatingChange(getRating) {
+  //   setRating(getRating);
+  // }
 
-  async function handleAddReview() {
-    try {
-      await dispatch(
-        createProductReview({
-          productId: productDetail._id,
-          userId: user._id,
-          userName: user.username,
-          reviewMessage: reviewMsg,
-          reviewValue: rating,
-          reply: "",
-        })
-      ).unwrap();
-      setRating(0);
-      setReviewMsg("");
-      toast.success("Review has been added");
-    } catch (error) {
-      setRating(0);
-      setReviewMsg("");
-      toast.error(error?.message || "Something went wrong");
-    } finally {
-      dispatch(getProductReview(productDetail._id));
-    }
-  }
+  //! handleReview
+  // async function handleAddReview() {
+  //   try {
+  //     await dispatch(
+  //       createProductReview({
+  //         productId: productDetail._id,
+  //         userId: user._id,
+  //         userName: user.username,
+  //         reviewMessage: reviewMsg,
+  //         reviewValue: rating,
+  //         reply: "",
+  //       })
+  //     ).unwrap();
+  //     setRating(0);
+  //     setReviewMsg("");
+  //     toast.success("Review has been added");
+  //   } catch (error) {
+  //     setRating(0);
+  //     setReviewMsg("");
+  //     toast.error(error?.message || "Something went wrong");
+  //   } finally {
+  //     dispatch(getProductReview(productDetail._id));
+  //   }
+  // }
 
   function handleAddToCart(ProductId, getTotalStock) {
     const getCartItems = cartItem.items || [];
@@ -93,14 +78,19 @@ export default function ProductDetail() {
       }
     }
 
-    dispatch(addToCart({ userId: user._id, ProductId, quantity: 1 })).then(
-      (data) => {
-        if (data.payload.success === true) {
-          dispatch(fetchUserItems(user._id));
-          toast.success("Product has been added");
-        }
+    dispatch(
+      addToCart({
+        userId: user._id,
+        ProductId,
+        quantity: 1,
+        size: selectedSize,
+      })
+    ).then((data) => {
+      if (data.payload.success) {
+        dispatch(fetchUserItems(user._id));
+        toast.success("Product has been added");
       }
-    );
+    });
   }
 
   useEffect(() => {
@@ -124,74 +114,70 @@ export default function ProductDetail() {
       ? review.reduce((sum, r) => sum + r.reviewValue, 0) / review.length
       : 0;
 
-  function handleDelete(reviewId) {
-    dispatch(deleteReivew({ reviewId }));
-  }
+  // function handleDelete(reviewId) {
+  //   dispatch(deleteReivew({ reviewId }));
+  // }
 
-  function handleEdit(reviewId) {
-    dispatch(updateReivew({ reviewId }));
-  }
+  // function handleEdit(reviewId) {
+  //   dispatch(updateReivew({ reviewId }));
+  // }
 
   useEffect(() => {
     dispatch(getSingleProduct(id));
   }, [id]);
 
-  console.log(productDetail?.sizes);
+  useEffect(() => {
+    if (productDetail?.image?.length > 0) {
+      setMainImage(productDetail?.image[0]?.url);
+    }
+  }, [productDetail]);
+
+  console.log(selectedSize, "product");
 
   return (
-    <div className="w-screen h-screen bg-white rounded-lg shadow-lg   overflow-auto py-10 px-6 relative mt-11 ">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-20">
-        <div className="rounded-lg">
-          <img
-            src={productDetail?.image[0].url}
-            alt={productDetail?.title}
-            className="w-full aspect-square object-contain rounded-lg"
-          />
+    <div className="w-screen min-h-screen bg-white py-10 px-4 md:px-10 mt-11 overflow-auto rounded-lg shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Left Section - Images */}
+        <div className="flex gap-4 md:grid-cols-1">
+          {/* Thumbnails */}
+          <div className="flex flex-col gap-2 ">
+            {productDetail?.image.map((img, index) => (
+              <div
+                key={index}
+                className="w-20 h-20 border rounded-md overflow-hidden"
+              >
+                <img
+                  src={img.url}
+                  alt={`thumbnail-${index}`}
+                  className="object-cover w-full h-full cursor-pointer"
+                  onMouseEnter={() => setMainImage(img?.url)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Main Image */}
+          <div className="flex-1 bg-gray-100 rounded-md overflow-hidden ">
+            <img
+              src={mainImage}
+              alt={productDetail?.title}
+              className="w-full aspect-square object-contain rounded-lg "
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <h1 className="text-x text-centerl sm:text-3xl font-extrabold mb-2">
+        {/* Right Section - Product Details */}
+        <div className="flex flex-col gap-4">
+          <h1 className="text-2xl md:text-3xl font-bold">
             {productDetail?.title}
           </h1>
           <h4 className="text-muted-foreground text-sm md:text-base">
             {productDetail?.subTitle}
-          </h4>{" "}
-          <div className="flex items-center gap-2">
+          </h4>
+
+          {/* Pricing */}
+          <div className="flex items-center gap-4">
             <h3
-              className={`text-xl font-bold my-2 ${
-                productDetail?.salePrice > 0
-                  ? "line-through text-muted-foreground"
-                  : ""
-              }`}
-            >
-              $ {productDetail?.price}
-            </h3>
-            <h3 className="text-xl font-bold text-black">
-              {productDetail?.salePrice > 0 ? productDetail?.salePrice : null}{" "}
-            </h3>
-          </div>
-          <p className="font-semibold font-lg">
-            Category : {productDetail?.category} && Brand :{" "}
-            {productDetail?.brand}
-          </p>
-          <div className="my-4">
-            <h4 className="font-semibold mb-2">Select Size</h4>
-            <div className="flex flex-wrap gap-2">
-              <div></div>
-            </div>
-            {selectedSize && (
-              <p className="mt-2 text-sm text-gray-600">
-                Selected size: <strong>{selectedSize}</strong>
-              </p>
-            )}
-          </div>
-          <div className="">
-            <p className="text-muted-foreground text-sm md:text-base">
-              {productDetail?.description}
-            </p>
-          </div>
-          <div className="flex items-center justify-between mt-4">
-            <p
               className={`text-xl font-bold ${
                 productDetail?.salePrice > 0
                   ? "line-through text-muted-foreground"
@@ -199,143 +185,59 @@ export default function ProductDetail() {
               }`}
             >
               ${productDetail?.price}
-            </p>
+            </h3>
             {productDetail?.salePrice > 0 && (
-              <p className="text-xl font-bold text-green-600">
+              <h3 className="text-xl font-bold text-green-600">
                 ${productDetail?.salePrice}
-              </p>
+              </h3>
             )}
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <StarRating rating={averageReview} />
-            <span className="text-sm text-muted-foreground">
-              {averageReview.toFixed(2)}
-            </span>
+
+          <p className="font-medium text-sm">
+            Category:{" "}
+            <span className="text-gray-700">{productDetail?.category}</span>{" "}
+            &nbsp; | Brand:{" "}
+            <span className="text-gray-700">{productDetail?.brand}</span>
+          </p>
+
+          {/* Size Selector */}
+          <div className="my-4">
+            <h4 className="font-semibold mb-2">Select Size</h4>
+            <div className="flex flex-wrap gap-2">
+              <SelectSize
+                size={productDetail?.sizes}
+                setSelectedSize={setSelectedSize}
+                selectSize={selectedSize}
+              />
+            </div>
           </div>
-          <div className="mt-4">
-            <Button
-              className="w-full"
-              disabled={productDetail?.totalStock === 0}
-              onClick={() =>
-                handleAddToCart(productDetail._id, productDetail.totalStock)
-              }
-            >
-              {productDetail?.totalStock === 0 ? "Out of stock" : "Add To Cart"}
-            </Button>
-          </div>
+
+          {/* Description */}
+          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+            {productDetail?.description}
+          </p>
+
+          {/* Add to Cart */}
+          <Button
+            className="w-full  mt-4"
+            disabled={productDetail?.totalStock === 0}
+            onClick={() =>
+              handleAddToCart(productDetail._id, productDetail.totalStock)
+            }
+          >
+            {productDetail?.totalStock === 0 ? "Out of stock" : "Add To Cart"}
+          </Button>
+
+          <AllReview review={review} />
         </div>
       </div>
 
       {/* Related Products */}
-      <div className="mt-8">
+      <div className="mt-10">
         <RelatedProduct
           className="w-full"
           showRelatedProduct={showRelatedProduct}
         />
-      </div>
-
-      {/* User Review */}
-      <div className="mt-10">
-        {userReview ? (
-          <>
-            <h2 className="text-xl font-bold mb-4">Your Review</h2>
-            <TooltipProvider>
-              <div className="flex items-center gap-3 mb-3">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Edit
-                      onClick={() => handleEdit(userReview)}
-                      className="cursor-pointer"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>Edit</TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <MdDelete
-                      onClick={() => handleDelete(userReview._id)}
-                      className="cursor-pointer text-red-500"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
-                </Tooltip>
-              </div>
-            </TooltipProvider>
-
-            <div className="flex gap-4 mt-3">
-              <Avatar className="w-10 h-10 border">
-                <AvatarFallback>
-                  {userReview.userName[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-bold">{userReview.userName}</h3>
-                <StarRating rating={userReview.reviewValue} />
-                <p className="text-muted-foreground">
-                  {userReview.reviewMessage}
-                </p>
-                {userReview.reply && (
-                  <Accordion className="mt-2 p-3 bg-gray-100 rounded-md">
-                    <AccordionItem value="reply">
-                      <AccordionTrigger className="font-semibold text-sm">
-                        Reply
-                      </AccordionTrigger>
-                      <AccordionContent className="text-sm text-gray-700">
-                        {userReview.reply}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                )}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-col gap-4 mt-4 space-y-3">
-            <Label>Write a review</Label>
-            <div className="flex gap-5">
-              <StarRating
-                rating={rating}
-                handleRatingChange={handleRatingChange}
-              />
-            </div>
-
-            <Input
-              placeholder="Write your review"
-              value={reviewMsg}
-              onChange={(e) => setReviewMsg(e.target.value)}
-            />
-            <Button
-              onClick={handleAddReview}
-              disabled={reviewMsg.trim() === ""}
-            >
-              Submit
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* All Reviews */}
-      <div className="mt-10">
-        <h2 className="text-xl font-bold mb-4">All Reviews</h2>
-        <div className="grid gap-5 max-h-[300px] overflow-y-auto pr-2">
-          {review && review.length > 0 ? (
-            review.map((r) => (
-              <div key={r._id} className="flex gap-4">
-                <Avatar className="w-10 h-10 border">
-                  <AvatarFallback>{r.userName[0].toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-bold">{r.userName}</h3>
-                  <StarRating rating={r.reviewValue} />
-                  <p className="text-muted-foreground">{r.reviewMessage}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-muted-foreground">No reviews yet.</p>
-          )}
-        </div>
       </div>
     </div>
   );

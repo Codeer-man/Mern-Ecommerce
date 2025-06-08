@@ -3,7 +3,6 @@ import Cart, { IProduct } from "../../model/Cart";
 import Product from "../../model/Product";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import { NOT_FOUND, UNAUTHORIZED } from "../../constants/http";
-import { Types } from "mongoose";
 
 export const addToCart = async (
   req: Request,
@@ -11,9 +10,9 @@ export const addToCart = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { userId, ProductId, quantity } = req.body;
+    const { userId, ProductId, quantity, size } = req.body;
 
-    if (!userId || !ProductId || quantity <= 0) {
+    if (!userId || !ProductId || !size || quantity <= 0) {
       throw new ErrorHandler("Invalid data", 400, false);
     }
 
@@ -34,7 +33,7 @@ export const addToCart = async (
     );
 
     if (findCurrentItemIndex === -1) {
-      cart.items.push({ ProductId, quantity });
+      cart.items.push({ ProductId, quantity, size });
     } else {
       cart.items[findCurrentItemIndex].quantity += quantity;
     }
@@ -83,13 +82,14 @@ export const fetchCartItems = async (
         price: product.price,
         salePrice: product.salePrice,
         quantity: items.quantity,
+        size: items.size,
       };
     });
 
     res.status(200).json({
       success: true,
       data: {
-        ...cart._doc,
+        ...cart,
         items: populateCartItem,
       },
     });
@@ -148,7 +148,7 @@ export const updateCartItemsQty = async (
     res.status(200).json({
       success: true,
       data: {
-        ...cart._doc,
+        ...cart,
         items: populateCartItem,
       },
     });
@@ -206,7 +206,7 @@ export const deleteCartItems = async (
     res.status(200).json({
       success: true,
       data: {
-        ...cart._doc,
+        ...cart,
         items: populateCartItem,
       },
     });

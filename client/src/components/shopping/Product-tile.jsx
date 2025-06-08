@@ -11,7 +11,11 @@ export default function ShopingProduct({
 }) {
   return (
     <Card className="w-full max-w-sm mx-auto">
-      <div onClick={() => handleGetProductDetail(product._id)}>
+      <div
+        onClick={() => {
+          handleGetProductDetail(product._id);
+        }}
+      >
         <div className="relative">
           <img
             src={product.image[0].url}

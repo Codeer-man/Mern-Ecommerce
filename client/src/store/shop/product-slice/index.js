@@ -26,7 +26,7 @@ export const getShopProduct = createAsyncThunk(
 
       return result.data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return thunkAPI.rejectWithValue(error.response.data);
     }
   }
@@ -93,7 +93,6 @@ const ShopProductSlicer = createSlice({
         state.productDetail = null;
       })
       .addCase(relatedProduct.fulfilled, (state, action) => {
-        console.log(action.payload, "index");
         state.isLoading = false;
         state.showRelatedProduct = action.payload.relatedProducts;
       });

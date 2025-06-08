@@ -14,6 +14,7 @@ export interface IProduct {
 interface CartItem {
   ProductId: IProduct;
   quantity: number;
+  size: string[];
 }
 
 const CartSchema = new mongoose.Schema<CartI>(
@@ -34,6 +35,9 @@ const CartSchema = new mongoose.Schema<CartI>(
           type: Number,
           require: true,
           min: 1,
+        },
+        size: {
+          type: [String],
         },
       },
     ],

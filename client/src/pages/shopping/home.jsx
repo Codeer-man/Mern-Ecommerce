@@ -51,6 +51,7 @@ export default function ShoppingHome() {
 
   const dispatch = useDispatch();
 
+
   function handleGetProductDetail(id) {
     dispatch(getSingleProduct(id));
   }
@@ -218,17 +219,14 @@ export default function ShoppingHome() {
                       handleGetProductDetail={handleGetProductDetail}
                       handleAddToCart={handleAddToCart}
                       key={product._id}
+                      show={show}
                     />
                   ))
               : null}
           </div>
         </div>
       </section>
-      <ProductDetail
-        open={opendetailDialogue}
-        setOpen={setOpenDetailDialogue}
-        productDetail={productDetail}
-      />
+      {show ? <ProductDetail /> : null}
     </div>
   );
 }

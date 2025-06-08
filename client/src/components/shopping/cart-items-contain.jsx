@@ -63,11 +63,12 @@ export default function UserCartItemContain({ cartItems }) {
   useEffect(() => {
     dispatch(getShopProduct());
   }, [dispatch]);
+  console.log(cartItems, "contienr");
 
   return (
     <div className="flex items-center space-x-4">
       <img
-        src={cartItems.image}
+        src={cartItems.image[0].url}
         alt={cartItems.title}
         className="w-20 h-20 rounded object-cover"
       />
@@ -95,6 +96,7 @@ export default function UserCartItemContain({ cartItems }) {
             <Plus className="w-4 h-4" />
             <span className="sr-only">Increase</span>
           </Button>
+          <div>Size: {cartItems?.size[0]}</div>
         </div>
       </div>
       <div className="flex flex-col items-end">

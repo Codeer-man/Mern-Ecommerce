@@ -33,6 +33,7 @@ import { fetchUserItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
 import axios from "axios";
 import { toast } from "sonner";
+import { Separator } from "../ui/separator";
 
 function MenuItem() {
   const navigate = useNavigate();
@@ -150,9 +151,10 @@ function HeaderRightContent() {
             className={"cursor-pointer"}
             onClick={() => navigate("/shop/account")}
           >
-            <UserCog className="mr-2 w-4 h-4" />
+            <UserCog className="mr-2 w-4 h-4 " />
             Account
           </DropdownMenuItem>
+          <Separator className={"my-1"} />
           {user.emailVerify === false && loading === false ? (
             <div>
               <DropdownMenuSeparator />
@@ -165,8 +167,8 @@ function HeaderRightContent() {
               </DropdownMenuItem>
             </div>
           ) : (
-            <h2>
-              <ClipboardCheck /> Your Email is verifyed
+            <h2 className="flex gap-2 ml-1 ">
+              <ClipboardCheck className="" /> Your Email is verifyed
             </h2>
           )}
           <DropdownMenuSeparator />
@@ -182,7 +184,7 @@ function HeaderRightContent() {
 
 export default function ShoppingHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full h-[10vh] border-b bg-background">
+    <header className="sticky top-0 z-40 w-full h-[10vh] border-b border-2 bg-gray-100">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link to="/shop/home" className=" flex items-center gap-2">
           <HousePlug className="h-6 w-6" />
