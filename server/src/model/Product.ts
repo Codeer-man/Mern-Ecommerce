@@ -15,6 +15,7 @@ interface ProductInfo extends Document {
   totalStock: number;
   list: boolean;
   sizes: string[];
+  tags: string[];
 }
 
 const productSchema = new mongoose.Schema<ProductInfo>(
@@ -44,6 +45,10 @@ const productSchema = new mongoose.Schema<ProductInfo>(
     sizes: {
       type: [String],
       required: true,
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
   },
   { timestamps: true }

@@ -85,11 +85,9 @@ function HeaderRightContent() {
       );
       if (response.status === 201) {
         navigate("/verify/email");
-        console.log(response, "hanlder");
         toast.success("Verification sent to your gmail");
         return;
       }
-      console.log(response, "hanlder");
       toast.error("Something wend wrong");
     } catch (error) {
       console.error("Invalid server error ", error);

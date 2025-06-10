@@ -19,7 +19,6 @@ export const createProductReview = createAsyncThunk(
         { productId, userId, userName, reviewMessage, reviewValue },
         { withCredentials: true }
       );
-      console.log(response.data);
 
       return response.data;
     } catch (error) {

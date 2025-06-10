@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 export default function AllReview() {
   const { review } = useSelector((state) => state.productReview);
-  console.log(review, "all review");
 
   return (
     <Fragment>

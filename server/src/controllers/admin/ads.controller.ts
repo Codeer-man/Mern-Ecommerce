@@ -9,17 +9,13 @@ export const createAds = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const {
-      title,
-      targetUrl,
-      imageUrl,
-      description,
-      isActive,
-      endDate,
-      publicId,
-    } = req.body;
+    const { title, targetUrl, description, isActive, endDate, image } =
+      req.body;
+    console.log(title);
+    console.log(targetUrl);
+    console.log(description);
 
-    if (!title || !targetUrl || !imageUrl || !publicId) {
+    if (!title || !targetUrl || !image) {
       res.status(400).json({ message: "Missing required fields" });
       return;
     }
@@ -27,11 +23,10 @@ export const createAds = async (
     const ads = new Ads({
       title,
       targetUrl,
-      imageUrl,
+      image,
       description,
-      isActive,
+      isActive: false,
       endDate,
-      publicId,
     });
     await ads.save();
     res
@@ -80,7 +75,7 @@ export const updateAds = async (
 
     findAds.title = title || findAds.title;
     findAds.targetUrl = targetUrl || findAds.targetUrl;
-    findAds.imageUrl = imageUrl || findAds.imageUrl;
+    findAds.image = imageUrl || findAds.image;
     findAds.description = description || findAds.description;
     findAds.isActive = isActive !== null ? isActive : findAds.isActive;
     findAds.endDate = endDate || findAds.endDate;
@@ -113,13 +108,8 @@ export const deleteAds = async (
       return next(new ErrorHandler("Ads not found", 404, false));
     }
 
-    if (findAds.publicId) {
-      try {
-        await deleteFromCloudinary(findAds.publicId);
-      } catch (cloudError) {
-        console.error("Cloudinary deletion failed:", cloudError);
-        return next(new ErrorHandler("Failed to delete ad image", 500, false));
-      }
+    for (let ads of findAds.image) {
+      await deleteFromCloudinary(ads.publicId);
     }
 
     await Ads.findByIdAndDelete(id);

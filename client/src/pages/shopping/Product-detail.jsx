@@ -132,8 +132,6 @@ export default function ProductDetail() {
     }
   }, [productDetail]);
 
-  console.log(selectedSize, "product");
-
   return (
     <div className="w-screen min-h-screen bg-white py-10 px-4 md:px-10 mt-11 overflow-auto rounded-lg shadow-lg">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

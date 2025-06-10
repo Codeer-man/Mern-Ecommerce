@@ -20,11 +20,13 @@ export default function AdvertisementTile({
   handleDeleteAdvertiesment,
   handleToggleList,
 }) {
+  console.log(item);
+
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 h-full">
       <div className="relative aspect-video overflow-hidden rounded-lg mb-4">
         <img
-          src={item.imageUrl}
+          src={item?.image[0]?.url}
           alt={item.title}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           loading="lazy"
@@ -64,49 +66,58 @@ export default function AdvertisementTile({
             <div className="flex flex-wrap gap-2 justify-end">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => {
-                      setOpenCreateAdsDialogue(true);
-                      setCurrentEditedId(item._id);
-                      handleEditAdvertiesment(item);
-                      setFormData(item);
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="text-xs sm:text-sm px-3 py-1"
-                  >
-                    <ClipboardEdit />
-                  </Button>
+                  <span>
+                    <Button
+                      onClick={() => {
+                        setOpenCreateAdsDialogue(true);
+                        setCurrentEditedId(item._id);
+                        handleEditAdvertiesment(item);
+                        setFormData(item);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs sm:text-sm px-3 py-1"
+                    >
+                      <ClipboardEdit />
+                    </Button>
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent>Edit Advertisement</TooltipContent>
               </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => {
-                      setCurrentEditedId(item._id);
-                      handleDeleteAdvertiesment(item._id);
-                    }}
-                    variant="destructive"
-                    size="sm"
-                    className="text-xs sm:text-sm px-3 py-1 cursor-pointer"
-                  >
-                    <MdDeleteForever />
-                  </Button>
+                  <span>
+                    <Button
+                      onClick={() => {
+                        setCurrentEditedId(item._id);
+                        handleDeleteAdvertiesment(item._id);
+                      }}
+                      variant="destructive"
+                      size="sm"
+                      className="text-xs sm:text-sm px-3 py-1 cursor-pointer"
+                    >
+                      <MdDeleteForever />
+                    </Button>
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent>Delete Advertisement</TooltipContent>
               </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    onClick={() => handleToggleList(item)}
-                    size="sm"
-                    className="text-xs sm:text-sm px-3 py-1 bg-gray-400"
-                  >
-                    <Switch className={""} />
-                  </Button>
+                  <span>
+                    <Button
+                      asChild
+                      onClick={() => handleToggleList(item)}
+                      size="sm"
+                      className="text-xs sm:text-sm px-3 py-1 bg-gray-400"
+                    >
+                      <span>
+                        <Switch className={""} />
+                      </span>
+                    </Button>
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent>
                   {item.isActive ? "Deactivate Ad" : "Activate Ad"}

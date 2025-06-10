@@ -47,10 +47,9 @@ export const loginUser = createAsyncThunk(
       const response = await api.post("/auth/login", formData);
 
       // Only store what's needed from the response
-      if (response.data.accessToken) {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        console.log("Login successful, access token stored");
-      }
+      // if (response.data.accessToken) {
+      //   localStorage.setItem("accessToken", response.data.accessToken);
+      // }
 
       return response.data;
     } catch (err) {

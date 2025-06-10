@@ -70,7 +70,6 @@ export default function SearchProduct() {
       setOpenDetailsDialog(true);
     }
   }, [productDetail]);
-  console.log(searchResult, "result");
 
   return (
     <div className="container mx-auto md:px-6 px-4 py-8">

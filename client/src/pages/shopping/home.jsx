@@ -51,9 +51,9 @@ export default function ShoppingHome() {
 
   const dispatch = useDispatch();
 
-
   function handleGetProductDetail(id) {
-    dispatch(getSingleProduct(id));
+    navigate(`/shop/product-detail/${id}`);
+    // dispatch(getSingleProduct(id));
   }
 
   function handleAddToCart(productId, getTotalStock) {
@@ -211,22 +211,20 @@ export default function ShoppingHome() {
           </h2>
           <div className="grid grid-col-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products && products.data && products.data.length > 0
-              ? products.data
-                  .slice(1, 5)
-                  .map((product) => (
-                    <ShopingProduct
-                      product={product}
-                      handleGetProductDetail={handleGetProductDetail}
-                      handleAddToCart={handleAddToCart}
-                      key={product._id}
-                      show={show}
-                    />
-                  ))
+              ? products.data.slice(1, 5).map((product) => (
+                  <ShopingProduct
+                    product={product}
+                    handleGetProductDetail={handleGetProductDetail}
+                    handleAddToCart={handleAddToCart}
+                    key={product._id}
+                    // show={show}
+                  />
+                ))
               : null}
           </div>
         </div>
       </section>
-      {show ? <ProductDetail /> : null}
+      {/* {show ? <ProductDetail /> : null}  */}
     </div>
   );
 }

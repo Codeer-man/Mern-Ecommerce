@@ -10,6 +10,7 @@ import {
 import React, { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
+import { BiSolidOffer } from "react-icons/bi";
 
 const adminSidebarMenuItems = [
   {
@@ -47,6 +48,12 @@ const adminSidebarMenuItems = [
     label: "Product Review",
     path: "/admin/review",
     icon: <Kanban />,
+  },
+  {
+    id: "offer",
+    label: "Create Offer",
+    path: "/admin/offer",
+    icon: <BiSolidOffer />,
   },
 ];
 

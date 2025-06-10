@@ -27,6 +27,8 @@ import AdsForShowing from "./components/Advertisement/ads";
 import AdminReview from "./pages/admin/Review";
 import VerifyEmail from "./pages/auth/verifyEmail";
 import ProductDetail from "./pages/shopping/Product-detail";
+import ScroolToTop from "./components/scroll/scrollTop";
+import CreateOffer from "./pages/admin/offer";
 
 export default function App() {
   const { isLoading, isAuthenticated, user } = useSelector(
@@ -50,6 +52,7 @@ export default function App() {
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       {user?.role === "user" && <AdsForShowing />}
+      <ScroolToTop />
       <Routes>
         <Route
           path="/"
@@ -87,6 +90,7 @@ export default function App() {
           <Route path="order" element={<AdminOrders />} />
           <Route path="product" element={<Adminproduct />} />
           <Route path="review" element={<AdminReview />} />
+          <Route path="offer" element={<CreateOffer />} />
         </Route>
         {/* shopping  */}
         <Route

@@ -19,6 +19,7 @@ import productReview from "./routes/shop/review.route";
 import AdminFeatureRoute from "./routes/admin/feature.route";
 import ReviewRoutes from "./routes/admin/review.route";
 import verifyEmailRoute from "./routes/auth/email.route";
+import AdminOfferRoute from "./routes/admin/offer.route";
 
 // db
 import { connectdb } from "./lib/db";
@@ -81,6 +82,7 @@ app.use("/api/admin/order", AdminOrderRouter);
 app.use("/api/admin/feature", AdminFeatureRoute);
 app.use("/api/admin/ads", AdvertisementFeature);
 app.use("/api/admin/review", ReviewRoutes);
+app.use("/api/admin/offer", AdminOfferRoute);
 
 app.use("/api/auth/o-auth", OauthRoutes);
 

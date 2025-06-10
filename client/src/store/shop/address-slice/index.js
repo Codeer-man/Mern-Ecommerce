@@ -18,7 +18,6 @@ export const createAddress = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.log(error.response.data.message);
-
       return rejectWithValue(error?.response.data);
     }
   }
@@ -93,33 +92,7 @@ const addressSlice = createSlice({
       .addCase(fetchAddress.rejected, (state) => {
         state.isLoading = false;
         state.address = [];
-      }); //delete address
-    //   .addCase(deleteAddress.pending, (state) => {
-    //     state.isLoading = true;
-    //   })
-    //   .addCase(deleteAddress.fulfilled, (state, action) => {
-    //     console.log(action.payload);
-
-    //     state.isLoading = false;
-    //     state.address = action.payload.data;
-    //   })
-    //   .addCase(deleteAddress.rejected, (state) => {
-    //     state.isLoading = false;
-    //     state.address = [];
-    //   }) // update address
-    //   .addCase(updadateAddress.pending, (state) => {
-    //     state.isLoading = true;
-    //   })
-    //   .addCase(updadateAddress.fulfilled, (state, action) => {
-    //     console.log(action.payload);
-
-    //     state.isLoading = false;
-    //     state.address = action.payload.data;
-    //   })
-    //   .addCase(updadateAddress.rejected, (state) => {
-    //     state.isLoading = false;
-    //     state.address = [];
-    //   });
+      });
   },
 });
 

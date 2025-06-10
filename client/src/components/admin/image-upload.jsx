@@ -81,9 +81,7 @@ export default function ProductImageUpload({
 
   return (
     <div className={`w-full mb-2 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}>
-      <Label className="text-lg font-semibold mb-2 block">
-        Product Image Upload
-      </Label>
+      <Label className="text-lg font-semibold mb-2 block">Image Upload</Label>
 
       <div
         onDragOver={handleDragOver}

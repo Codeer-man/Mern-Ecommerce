@@ -181,7 +181,6 @@ export const deleteCartItems = async (
     cart.items = cart.items.filter(
       (item) => item.ProductId._id.toString() !== ProductId
     );
-    console.log(cart.items);
 
     await cart.save();
 

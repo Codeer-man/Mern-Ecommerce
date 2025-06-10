@@ -45,7 +45,7 @@ export default function Adminproduct() {
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(() => {
-    const savedPage = localStorage.getItem("admin-product-page");
+    const savedPage = sessionStorage.getItem("admin-product-page");
     return savedPage ? parseInt(savedPage, 10) : 1;
   });
 
@@ -112,7 +112,7 @@ export default function Adminproduct() {
   }
 
   useEffect(() => {
-    localStorage.setItem("admin_Product_page", page.toString());
+    sessionStorage.setItem("admin_Product_page", page.toString());
     dispatch(fetchAllProduct({ page: page }));
   }, [dispatch, page]);
 

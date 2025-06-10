@@ -10,7 +10,7 @@ export default function AddressCard({
   setCurrentSelectedAddress,
   selectedId,
 }) {
-  // console.log(selectedId, "selected");
+
 
   return (
     <Card

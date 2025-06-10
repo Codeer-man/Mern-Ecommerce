@@ -38,7 +38,6 @@ export const fetchAllProduct = createAsyncThunk(
       const response = await axios.get(
         `http://localhost:8080/api/admin/product/getProdct?page=${page}&limit=${limit}`
       );
-      console.log(response, "index");
 
       return response?.data;
     } catch (error) {

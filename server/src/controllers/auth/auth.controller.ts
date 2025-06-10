@@ -111,7 +111,6 @@ export const GetUserData = async (
     if (!User) {
       throw new ErrorHandler("User not found in the controller ", 401, false);
     }
-    console.log(User);
 
     res.status(200).json({ sucess: false, message: "User found", data: User });
   } catch (error) {
@@ -128,8 +127,6 @@ export const refreshToken = async (
     const token =
       req.cookies.refreshAccessToken ||
       req.header("Authorization")?.replace("Bearer", " ").trim();
-
-    console.log(token, "controller");
 
     if (!token) {
       throw new ErrorHandler("token not received", 404, false);

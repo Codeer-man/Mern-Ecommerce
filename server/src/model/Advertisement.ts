@@ -1,14 +1,17 @@
 import mongoose, { Document } from "mongoose";
+interface ImageI {
+  url: string;
+  publicId: string;
+}
 
 export interface IAdvertiseMent extends Document {
   title: string;
   targetUrl: string;
-  imageUrl: string;
+  image: Array<ImageI>;
   description: string;
   isActive: boolean;
   startDate: Date;
   endDate: Date;
-  publicId: string;
 }
 
 const AdvertisementSchema = new mongoose.Schema<IAdvertiseMent>(
@@ -21,10 +24,12 @@ const AdvertisementSchema = new mongoose.Schema<IAdvertiseMent>(
       type: String,
       reqruied: true,
     },
-    imageUrl: {
-      type: String,
-      reqruied: true,
-    },
+    image: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
     description: {
       type: String,
       reqruied: true,
@@ -32,9 +37,6 @@ const AdvertisementSchema = new mongoose.Schema<IAdvertiseMent>(
     isActive: {
       type: Boolean,
       default: false,
-    },
-    publicId: {
-      type: String,
     },
     endDate: {
       type: Date,

@@ -45,6 +45,7 @@ export const handleImageUpload = async (
   }
 };
 
+// export const handleSingleImageUpload = async(req:Request,res:Response) => {}
 // add a product
 export const addProduct = async (
   req: Request,

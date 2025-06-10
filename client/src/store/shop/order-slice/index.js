@@ -32,8 +32,6 @@ export const capturePayment = createAsyncThunk(
       const response = await axios.post(
         `http://localhost:8080/api/shop/order/complete-payment?data=${data}`
       );
-      console.log(response, "index");
-
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.message);

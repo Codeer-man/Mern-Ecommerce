@@ -12,6 +12,8 @@ const initialState = {
 export const createAds = createAsyncThunk(
   "/create/ads",
   async (formdata, { rejewithValue }) => {
+    console.log(formdata);
+
     try {
       const response = await axios.post(
         "http://localhost:8080/api/admin/ads/create",
@@ -23,6 +25,8 @@ export const createAds = createAsyncThunk(
           withCredentials: true,
         }
       );
+      console.log(response);
+
       return response.data;
     } catch (error) {
       return rejewithValue(
@@ -108,7 +112,6 @@ export const updateActive = createAsyncThunk(
           withCredentials: true,
         }
       );
-      console.log(response, "index");
 
       return response.data;
     } catch (error) {

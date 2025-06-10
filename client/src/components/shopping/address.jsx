@@ -72,7 +72,6 @@ export default function Address({ setCurrentSelectedAddress, selectedId }) {
           setformdata(intialAddressFormData);
         } else {
           if (data.meta.requestStatus === "rejected") {
-            console.log(data, "address");
             toast(data.payload.message);
           }
         }

@@ -17,6 +17,7 @@ import {
   updateActive,
   updateAds,
 } from "@/store/admin/advertisement";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -24,20 +25,19 @@ import { toast } from "sonner";
 const initalState = {
   title: "",
   targetUrl: "",
-  imageUrl: "",
+  image: [],
   description: "",
   isActive: false,
-  publicId: "",
 };
 
 export default function Advertisement() {
   const [openCreateAdsDialogue, setOpenCreateAdsDialogue] = useState(false);
   const [formdata, setFormData] = useState(initalState);
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadImageUrl, setUploadImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState([]);
+  const [uploadImageUrl, setUploadImageUrl] = useState({});
   const [imageLoading, setImageLoading] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
-  const [ImagePublicId, setImagePublicId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const { AdvertisementList } = useSelector(
@@ -47,36 +47,39 @@ export default function Advertisement() {
   function onSubmit(e) {
     e.preventDefault();
 
-    currentEditedId !== null
-      ? dispatch(updateAds({ id: currentEditedId, formdata })).then((data) => {
-          if (data.payload?.success === true) {
-            dispatch(getAllAds());
-            setOpenCreateAdsDialogue(false);
-            setCurrentEditedId(null);
-            toast.success(data.payload.message);
-          } else {
-            toast.error(data.payload.message);
-          }
+    if (currentEditedId !== null) {
+      dispatch(updateAds({ id: currentEditedId, formdata })).then((data) => {
+        if (data.payload?.success === true) {
+          dispatch(getAllAds());
+          setOpenCreateAdsDialogue(false);
+          setCurrentEditedId(null);
+          toast.success(data.payload.message);
+        } else {
+          toast.error(data.payload.message);
+        }
+      });
+    } else {
+      dispatch(
+        createAds({
+          ...formdata,
+          image: uploadImageUrl,
         })
-      : dispatch(
-          createAds({
-            ...formdata,
-            imageUrl: uploadImageUrl,
-            publicId: ImagePublicId,
-          })
-        ).then((data) => {
-          if (data.payload?.success === true) {
+      )
+        .then((data) => {
+          if (data.payload?.success) {
             dispatch(getAllAds());
             setOpenCreateAdsDialogue(false);
             setFormData(initalState);
             setImageFile(null);
             setImageLoading(false);
-            setImagePublicId("");
-            toast.success(data.payload.message);
-          } else {
-            toast.error(data.payload.message);
+            toast.success(data.payload.message || "Ads created succesfully");
           }
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error(data.payload.message || "error while uploading ads");
         });
+    }
   }
 
   function handleEditAdvertiesment(AdsDetail) {
@@ -91,16 +94,28 @@ export default function Advertisement() {
   }
 
   function handleDeleteAdvertiesment(Ad_id) {
-    dispatch(DeleteAds(Ad_id));
+    setLoading(true);
+    try {
+      dispatch(DeleteAds(Ad_id)).then((data) => {
+        if (data.payload?.success) {
+          dispatch(getAllAds());
+        }
+      });
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   function handleToggleList(item) {
-    dispatch(updateActive({ id: item._id, isActive: !item.isActive }))
+    dispatch(updateActive({ id: item._id, isActive: !item.isActive }));
   }
 
   useEffect(() => {
     dispatch(getAllAds());
   }, [dispatch]);
+
+  console.log(AdvertisementList, "list");
 
   return (
     <div className="w-full h-full flex flex-col gap-2 p-6 bg-white shadow-md rounded-lg">
@@ -138,7 +153,11 @@ export default function Advertisement() {
           setFormData(initalState);
         }}
       >
-        <SheetContent side="right" className={"p-4 rounded-sm w-[500px]"}>
+        <ScrollArea></ScrollArea>
+        <SheetContent
+          side="right"
+          className={"p-4 rounded-sm w-[500px] overflow-auto"}
+        >
           <SheetHeader>
             <SheetTitle>
               {currentEditedId !== null
@@ -147,16 +166,14 @@ export default function Advertisement() {
             </SheetTitle>
           </SheetHeader>
           <ProductImageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            setUploadImageUrl={setUploadImageUrl}
-            setImageLoading={setImageLoading}
-            setImagePublicId={setImagePublicId}
+            imageFiles={imageFile}
+            setImageFiles={setImageFile}
+            uploadImageUrl={uploadImageUrl}
+            setUploadedUrls={setUploadImageUrl}
             imageLoading={imageLoading}
+            setImageLoading={setImageLoading}
             isEditedMode={currentEditedId}
-            isCustomStyling
           />
-
           <CommonForm
             formControls={AdsForm}
             formData={formdata}

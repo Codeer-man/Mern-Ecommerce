@@ -110,7 +110,7 @@ export default function ShoppingListing() {
     dispatch(
       addToCart({ userId: user._id, ProductId: productId, quantity: 1 })
     ).then((data) => {
-      if (data.payload.success === true) {
+      if (data.payload.success) {
         dispatch(fetchUserItems(user._id));
         toast.success("Product has been added to cart");
       }
@@ -168,7 +168,7 @@ export default function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
           {products && products.data && products.data.length > 0
             ? products.data.map((products) => (
                 <ShopingProduct

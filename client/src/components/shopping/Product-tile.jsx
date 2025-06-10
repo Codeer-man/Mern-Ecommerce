@@ -37,8 +37,11 @@ export default function ShopingProduct({
             </Badge>
           ) : null}
         </div>
-        <CardContent className="p-4">
+        <CardContent className="p-4 cursor-pointer">
           <h2 className="text-xl font-bold mb-2">{product?.title}</h2>
+          <span className="font-semibold text-muted-foreground">
+            {product.subTitle}
+          </span>
           <div className="flex justify-between items-center mb-2">
             <span className="text-[16px] text-muted-foreground">
               {categoryOptionsMap[product.category]}
@@ -62,7 +65,7 @@ export default function ShopingProduct({
           </div>
         </CardContent>
       </div>
-      <CardFooter>
+      {/* <CardFooter>
         {product.totalStock === 0 ? (
           <Button
             className={"w-full"}
@@ -79,7 +82,7 @@ export default function ShopingProduct({
             Add To Cart
           </Button>
         )}
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }
