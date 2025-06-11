@@ -118,7 +118,7 @@ export default function App() {
             </CheckAuth>
           }
         />
-
+        {/* for try  */}
         <Route path="/unauth-page" element={<Unauth />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

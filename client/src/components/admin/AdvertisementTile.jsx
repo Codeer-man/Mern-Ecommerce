@@ -20,7 +20,6 @@ export default function AdvertisementTile({
   handleDeleteAdvertiesment,
   handleToggleList,
 }) {
-  console.log(item);
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 h-full">

@@ -274,3 +274,27 @@ export const AdsForm = [
     type: "text",
   },
 ];
+
+export const createOfferForm = [
+  {
+    name: "name",
+    label: "Offer Title",
+    placeholder: "Enter offer Title",
+    componentType: "input",
+    type: "text",
+  },
+  {
+    name: "tags",
+    label: "Tags",
+    placeholder: "Enter the offer tags",
+    componentType: "input",
+    type: "text",
+  },
+  {
+    name: "discountPercentage",
+    label: "Discount Percentage",
+    placeholder: "Enter the discount percentage",
+    componentType: "input",
+    type: "number",
+  },
+];

@@ -103,7 +103,7 @@ export default function Advertisement() {
       });
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -114,8 +114,6 @@ export default function Advertisement() {
   useEffect(() => {
     dispatch(getAllAds());
   }, [dispatch]);
-
-  console.log(AdvertisementList, "list");
 
   return (
     <div className="w-full h-full flex flex-col gap-2 p-6 bg-white shadow-md rounded-lg">

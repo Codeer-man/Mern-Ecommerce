@@ -4,6 +4,7 @@ import React from "react";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminProductTile({
   product,
@@ -13,8 +14,10 @@ export default function AdminProductTile({
   handleDelete,
   handleToggleList,
 }) {
+  const naviagate = useNavigate();
+
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto cursor-pointer">
       <div>
         <div className="relative">
           <img

@@ -1,10 +1,16 @@
 import mongoose from "mongoose";
 
+interface ImageI {
+  url: string;
+  publicId: string;
+}
+
 interface offerI {
   name: string;
   tags: string;
   productId: mongoose.Schema.Types.ObjectId[];
   discountPercentage: number;
+  image: Array<ImageI>;
 }
 
 const offerSchema = new mongoose.Schema<offerI>(
@@ -21,6 +27,12 @@ const offerSchema = new mongoose.Schema<offerI>(
       type: Number,
       required: true,
     },
+    image: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
     productId: [
       {
         type: mongoose.Schema.Types.ObjectId,

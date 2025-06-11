@@ -12,7 +12,6 @@ const initialState = {
 export const createAds = createAsyncThunk(
   "/create/ads",
   async (formdata, { rejewithValue }) => {
-    console.log(formdata);
 
     try {
       const response = await axios.post(
@@ -25,7 +24,6 @@ export const createAds = createAsyncThunk(
           withCredentials: true,
         }
       );
-      console.log(response);
 
       return response.data;
     } catch (error) {

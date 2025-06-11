@@ -9,9 +9,10 @@ export const CreateOffer = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { name, tags, discountPercentage, productId } = req.body;
+    const { name, tags, discountPercentage, productId, image } = req.body;
+    console.log(name, tags, discountPercentage, productId, image);
 
-    if (!name || !tags || !discountPercentage) {
+    if (!name || !tags) {
       throw new ErrorHandler("please fill all the feilds", 404, false);
     }
 
@@ -20,19 +21,20 @@ export const CreateOffer = async (
       tags,
       discountPercentage,
       productId,
+      image,
     });
 
     const products = await Product.find({ _id: { $in: productId } });
     const discount = Number(discountPercentage);
 
     for (let product of products) {
-      const discountAmount = product.price - (product.price * discount) / 100;
-
-      product.salePrice = discountAmount;
+      if (discount > 0) {
+        const discountAmount = product.price - (product.price * discount) / 100;
+        product.salePrice = discountAmount;
+      }
       if (!product.tags.includes(tags)) {
         product.tags.push(tags);
       }
-
       await product.save();
     }
 
@@ -70,7 +72,7 @@ export const updateOffer = async (
         }
       }
 
-      if (discountPercentage !== undefined) {
+      if (discountPercentage !== undefined || discountPercentage > 0) {
         product.salePrice =
           product.price - (product.price * discountPercentage) / 100;
       }

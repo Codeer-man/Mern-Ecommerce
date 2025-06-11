@@ -33,10 +33,10 @@ export const addNewProduct = createAsyncThunk(
 );
 export const fetchAllProduct = createAsyncThunk(
   "/product/fetchProduct",
-  async ({ page = 1, limit = 12 }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 12, query }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/admin/product/getProdct?page=${page}&limit=${limit}`
+        `http://localhost:8080/api/admin/product/getProdct?search=${query}&page=${page}&limit=${limit}`
       );
 
       return response?.data;
