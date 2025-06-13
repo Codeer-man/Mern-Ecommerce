@@ -8,6 +8,7 @@ export const addFeatureImage = async (
 ): Promise<void> => {
   try {
     const { image } = req.body;
+    console.log(image);
 
     const upload = new Feature({
       image,

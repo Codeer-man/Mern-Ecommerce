@@ -118,23 +118,14 @@ export const fetchallProduct = async (
   try {
     const limit = parseInt(req.query.limit as string) || 12;
     const page = parseInt(req.query.page as string) || 1;
-    const { search } = req.query;
 
     const total = await Product.countDocuments();
     const skip = (page - 1) * limit;
 
-    const regex = new RegExp(search as string, "i");
-
-    const listOfProduct = await Product.find({
-      $or: [
-        { title: { $regex: regex } },
-        { category: { $regex: regex } },
-        { brand: { $regex: regex } },
-        { description: { $regex: regex } },
-      ],
-    })
+    const listOfProduct = await Product.find()
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,

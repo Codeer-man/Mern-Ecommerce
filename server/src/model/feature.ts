@@ -2,13 +2,24 @@ import mongoose from "mongoose";
 
 interface IFeature extends Document {
   image: string;
-  publicId:string
+  publicId: string;
+}
+
+interface ImageI {
+  url: string;
+  publicId: string;
+  image: Array<ImageI>;
 }
 
 const featureSchema = new mongoose.Schema<IFeature>(
   {
-    image: String,
-    publicId:String,
+    image: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
+    publicId: String,
   },
   { timestamps: true }
 );

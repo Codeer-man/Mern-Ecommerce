@@ -10,7 +10,6 @@ export const CreateOffer = async (
 ): Promise<void> => {
   try {
     const { name, tags, discountPercentage, productId, image } = req.body;
-    console.log(name, tags, discountPercentage, productId, image);
 
     if (!name || !tags) {
       throw new ErrorHandler("please fill all the feilds", 404, false);
@@ -22,6 +21,7 @@ export const CreateOffer = async (
       discountPercentage,
       productId,
       image,
+      publish: false,
     });
 
     const products = await Product.find({ _id: { $in: productId } });
@@ -50,7 +50,7 @@ export const updateOffer = async (
   next: NextFunction
 ) => {
   try {
-    const { name, tags, discountPercentage } = req.body;
+    const { name, tags, discountPercentage, publish } = req.body;
     const { offerId } = req.params;
 
     const findOffer = await Offer.findById(offerId);
@@ -76,6 +76,8 @@ export const updateOffer = async (
         product.salePrice =
           product.price - (product.price * discountPercentage) / 100;
       }
+
+      findOffer.publish = publish || findOffer.publish;
 
       await product.save();
     }
@@ -125,6 +127,20 @@ export const deleteOffer = async (
     }
 
     res.send({ success: true, message: { data: findOffer } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllOffer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const offer = await Offer.find();
+
+    res.json({ data: offer });
   } catch (error) {
     next(error);
   }

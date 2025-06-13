@@ -19,7 +19,7 @@ export const getFilteredProduct: RequestHandler = async (
   try {
     const { category = [], brand = [], sortBy = "price-lowtohigh" } = req.query;
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 12;
+    const limit = parseInt(req.query.limit as string) || 6;
 
     const filters: Record<string, any> = {};
 

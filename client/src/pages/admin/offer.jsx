@@ -15,6 +15,7 @@ import { createOffer } from "@/store/admin/offer-slice";
 import { fetchAllProduct } from "@/store/admin/product";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const iniitalState = {
   name: "",
@@ -53,6 +54,8 @@ export default function CreateOffer() {
         setFormData(iniitalState);
         setUploadedUrls({});
         setSelectProduct([]);
+        setImageFiles([]);
+        toast("New Offer created");
       }
     });
   }
@@ -62,7 +65,6 @@ export default function CreateOffer() {
       prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
   }
-  console.log(selectProduct, "selected Product");
 
   useEffect(() => {
     const timeout = setTimeout(() => {

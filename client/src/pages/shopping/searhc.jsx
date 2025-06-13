@@ -6,7 +6,7 @@ import { getSingleProduct } from "@/store/shop/product-slice";
 import { resetSearchResult, searchProduct } from "@/store/shop/search-slice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function SearchProduct() {
@@ -16,6 +16,7 @@ export default function SearchProduct() {
   const { cartItem } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const { productDetail } = useSelector((state) => state.shoppingProduct);
+  const navigate = useNavigate();
 
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ export default function SearchProduct() {
     });
   }
   function handleGetProductDetail(id) {
-    dispatch(getSingleProduct(id));
+    navigate(`/shop/product-detail/${id}`);
   }
 
   useEffect(() => {
@@ -97,11 +98,6 @@ export default function SearchProduct() {
           />
         ))}
       </div>
-      <ProductDetail
-        open={openDetailsDialog}
-        setOpen={setOpenDetailsDialog}
-        productDetail={productDetail}
-      />
     </div>
   );
 }

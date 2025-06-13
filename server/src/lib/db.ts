@@ -5,10 +5,12 @@ const URL =
 
 import Review from "../model/review";
 import Product from "../model/Product";
+import Offer from "../model/offer";
 
 export const connectdb = async () => {
   try {
     await mongoose.connect(URL);
+
     console.log("Database connected");
   } catch (error) {
     console.error("Connection error:", error);

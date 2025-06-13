@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getShopProduct, getSingleProduct } from "@/store/shop/product-slice";
 import ShopingProduct from "@/components/shopping/Product-tile";
@@ -19,6 +19,7 @@ import { addToCart, fetchUserItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import { getFeatuerImage } from "@/store/admin/feature-slice";
 import AdsForShowing from "@/components/Advertisement/ads";
+import gsap from "gsap";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: FaMale },
@@ -38,6 +39,8 @@ const brandsWithIcon = [
 ];
 
 export default function ShoppingHome() {
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
   const [imageSlider, setImageSlider] = useState(0);
   const [opendetailDialogue, setOpenDetailDialogue] = useState(false);
   const { products, productDetail } = useSelector(
@@ -53,8 +56,22 @@ export default function ShoppingHome() {
 
   function handleGetProductDetail(id) {
     navigate(`/shop/product-detail/${id}`);
-    // dispatch(getSingleProduct(id));
   }
+
+  useEffect(() => {
+    const tl = gsap.timeline({ delay: 0.2 });
+
+    tl.fromTo(
+      titleRef.current,
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+    ).fromTo(
+      subtitleRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
+      "-=0.5"
+    );
+  }, []);
 
   function handleAddToCart(productId, getTotalStock) {
     let getCartItems = cartItem.items || [];
@@ -95,8 +112,8 @@ export default function ShoppingHome() {
 
   useEffect(() => {
     const time = setInterval(() => {
-      setImageSlider((prev) => (prev + 1) % featureImage.length);
-    }, 2000);
+      setImageSlider((prev) => (prev + 1) % featureImage[0].image.length);
+    }, 3000);
 
     return () => clearInterval(time);
   }, [featureImage]);
@@ -119,10 +136,10 @@ export default function ShoppingHome() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative w-full h-[600px] overflow-hidden">
-        {featureImage.map((slide, index) => (
+      <div className="relative w-full h-[600px] overflow-hidden ">
+        {featureImage[0]?.image.map((slide, index) => (
           <img
-            src={slide.image}
+            src={slide?.url}
             alt={"image"}
             key={index}
             className={`${
@@ -158,6 +175,22 @@ export default function ShoppingHome() {
           <ChevronRightIcon className="w-4 h-4" />
         </Button>
       </div>
+      <div className="absolute shadow-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 text-center">
+        <h1
+          ref={titleRef}
+          className="text-4xl md:text-6xl font-extrabold tracking-wider text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mb-4"
+        >
+          Fashion That Speaks
+        </h1>
+        <h3
+          ref={subtitleRef}
+          className="text-lg md:text-2xl font-medium text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)] max-w-2xl mx-auto"
+        >
+          Bold designs, premium fabrics — made for your unique expression and
+          everyday confidence.
+        </h3>
+      </div>
+
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">

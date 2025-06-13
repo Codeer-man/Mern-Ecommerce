@@ -11,6 +11,7 @@ interface offerI {
   productId: mongoose.Schema.Types.ObjectId[];
   discountPercentage: number;
   image: Array<ImageI>;
+  publish: boolean;
 }
 
 const offerSchema = new mongoose.Schema<offerI>(
@@ -39,6 +40,7 @@ const offerSchema = new mongoose.Schema<offerI>(
         ref: "Product",
       },
     ],
+    publish: Boolean,
   },
   { timestamps: true }
 );
