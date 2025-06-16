@@ -5,18 +5,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import { getShopProduct } from "@/store/shop/product-slice";
+import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
 
 export default function UserCartItemContain({ cartItems }) {
   const { user } = useSelector((state) => state.auth);
   const { products } = useSelector((state) => state.shoppingProduct);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   function handleUpdateQuantity(getCartItem, buttonType) {
-    const productIndex =
-      products.data?.findIndex(
-        (product) => product._id === getCartItem?.ProductId
-      ) ?? -1;
+    console.log(products, "intesm");
+
+    const productIndex = products?.data.findIndex(
+      (product) => product._id === getCartItem?.ProductId
+    );
+    console.log(products);
 
     if (productIndex === -1) {
       toast.error("Product not found in store");
@@ -60,10 +65,14 @@ export default function UserCartItemContain({ cartItems }) {
     });
   }
 
+  function navigateToProductD(id) {
+    navigate(`/shop/product-detail/${id}`);
+  }
   useEffect(() => {
     dispatch(getShopProduct());
   }, [dispatch]);
 
+  console.log(cartItems);
 
   return (
     <div className="flex items-center space-x-4">
@@ -108,11 +117,24 @@ export default function UserCartItemContain({ cartItems }) {
               : cartItems?.price) * cartItems?.quantity
           ).toFixed(2)}
         </p>
-        <Trash
-          onClick={() => handleCartItemDelete(cartItems)}
-          className="cursor-pointer mt-1"
-          size={20}
-        />
+        <div className="flex gap-3 justify-center items-center w-full ">
+          <div className="relative group text-center cursor-pointer">
+            <FaEye
+              size={20}
+              onClick={() => navigateToProductD(cartItems.ProductId)}
+            />
+
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition bg-gray-800 text-white text-sm rounded px-2 py-1 z-10 whitespace-nowrap">
+              view the product
+            </div>
+          </div>
+
+          <Trash
+            onClick={() => handleCartItemDelete(cartItems)}
+            className="cursor-pointer mt-1"
+            size={20}
+          />
+        </div>
       </div>
     </div>
   );

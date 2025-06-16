@@ -54,7 +54,7 @@ if (!redisUrl) {
   process.exit(1);
 }
 
-const redisClient = new Redis(redisUrl);
+export const redisClient = new Redis(redisUrl);
 
 // ddos attack prevent
 const rateLimiterRedis = new RateLimiterRedis({

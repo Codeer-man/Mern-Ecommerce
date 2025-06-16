@@ -56,7 +56,7 @@ export default function ProductImageUpload({
         data.append("images", file);
 
         const response = await axios.post(
-          "http://localhost:8080/api/admin/product/image-upload",
+          "localhost://8080/api/admin/product/image-upload",
           data
         );
 

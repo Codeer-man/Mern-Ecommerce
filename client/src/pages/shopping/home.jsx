@@ -112,7 +112,7 @@ export default function ShoppingHome() {
 
   useEffect(() => {
     const time = setInterval(() => {
-      setImageSlider((prev) => (prev + 1) % featureImage[0].image.length);
+      setImageSlider((prev) => (prev + 1) % featureImage[0]?.image?.length);
     }, 3000);
 
     return () => clearInterval(time);
@@ -169,7 +169,7 @@ export default function ShoppingHome() {
             "absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"
           }
           onClick={() =>
-            setImageSlider((prevData) => (prevData + 1) % featureImage.length)
+            setImageSlider((prevData) => (prevData + 1) % featureImage?.length)
           }
         >
           <ChevronRightIcon className="w-4 h-4" />

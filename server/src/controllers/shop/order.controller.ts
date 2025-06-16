@@ -1,7 +1,7 @@
 // import { NextFunction, Request, Response } from "express";
 // import paypal from "../../helpers/paypal";
 // import { ErrorHandler } from "../../utils/ErrorHandler";
-// import Order from "../../model/PurchaseItems";
+import Order from "../../model/PurchaseItems";
 // import Cart from "../../model/Cart";
 // import Product from "../../model/Product";
 
@@ -160,47 +160,47 @@ import { verifyEmail } from "../auth/email-veify.controller";
 //   }
 // };
 
-// export const getAllOrderByUser = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const { userId } = req.params;
+export const getAllOrderByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
 
-//     const order = await Order.find({ userId });
+    const order = await Order.find({ userId });
 
-//     if (!order) {
-//       throw new ErrorHandler("Order data not found", 404, false);
-//     }
+    if (!order) {
+      throw new ErrorHandler("Order data not found", 404, false);
+    }
 
-//     res
-//       .status(200)
-//       .json({ success: true, message: "user order data ", data: order });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res
+      .status(200)
+      .json({ success: true, message: "user order data ", data: order });
+  } catch (error) {
+    next(error);
+  }
+};
 
-// export const getOrderDetail = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const { id } = req.params;
-//     const order = await Order.findById(id);
-//     if (!order) {
-//       throw new ErrorHandler("order not found", 404, false);
-//     }
+export const getOrderDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findById(id);
+    if (!order) {
+      throw new ErrorHandler("order not found", 404, false);
+    }
 
-//     res
-//       .status(200)
-//       .json({ success: true, message: "Ordered confirmed ", data: order });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res
+      .status(200)
+      .json({ success: true, message: "Ordered confirmed ", data: order });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const initializeEsewa = async (
   req: Request,
@@ -301,7 +301,6 @@ export const completePayment = async (
 ): Promise<void> => {
   const { data } = req.query;
 
-  console.log(data, "data");
   try {
     const paymentInfo = await verifyEsewaPayment(data);
 
@@ -342,93 +341,3 @@ export const completePayment = async (
     next(error);
   }
 };
-
-// export const payWithEsewa = async (req: Request, res: Response) => {
-//   const { payload } = req.body;
-
-//   try {
-//     const response = await fetch(
-//       // "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
-//       "https://rc-epay.esewa.com.np",
-//       {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(payload),
-//       }
-//     );
-//     const result = await response.json();
-//     res.json(result);
-//   } catch (error) {
-//     console.error("Error forwarding request to eSewa:", error);
-//     res.status(500).json({ error: "Payment request failed" });
-//   }
-// };
-
-// export const completePayment = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     // 1. Extract the 'data' and 'transaction_uuid' from query params
-//     const { data, transaction_uuid } = req.query;
-
-//     // 2. Decode the base64 'data' from Esewa's response
-//     const decodedData = JSON.parse(
-//       Buffer.from(data as string, "base64").toString("utf-8")
-//     );
-//     console.log(decodedData);
-
-//     // 3. Check if the decoded status is 'COMPLETE'
-//     if (decodedData.status !== "COMPLETE") {
-//       res.status(400).json({ message: "Payment failed" });
-//     }
-
-//     // 4. Find the purchase order using transaction_uuid
-//     const purchaseItemData = await PurchaseItem.findById(transaction_uuid);
-
-//     if (!purchaseItemData) {
-//       //  res.status(404).json({ message: "Purchase order not found" });
-//       throw new ErrorHandler("Purchase order not found", 404, false);
-//     }
-
-//     // 5. Create the payment record in the database
-//     const paymentData = await Payment.create({
-//       pidx: decodedData.transaction_code,
-//       transactionId: decodedData.transaction_code,
-//       productId: purchaseItemData._id,
-//       amount: purchaseItemData.totalPrice,
-//       dataFromVerificationReq: decodedData,
-//       apiQueryFromUser: req.query,
-//       paymentGateway: "esewa",
-//       status: "success",
-//     });
-
-//     // 6. Update the order status to 'Completed'
-//     await PurchaseItem.findByIdAndUpdate(transaction_uuid, {
-//       $set: { status: "completed" },
-//     });
-
-//     // 7. Update product stock and delete the cart after successful payment
-//     for (let item of purchaseItemData.cartItems) {
-//       const product = await Product.findById(item.productId);
-//       if (!product) {
-//         throw new ErrorHandler("Product not found", 404, false);
-//       }
-//       product.totalStock -= item.quantity;
-//       await product.save();
-//     }
-
-//     const cartId = purchaseItemData.cartId;
-//     await Cart.findByIdAndDelete(cartId);
-
-//     // 8. Return success response
-//     res.json({
-//       success: true,
-//       message: "Payment Successful",
-//       paymentData,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };

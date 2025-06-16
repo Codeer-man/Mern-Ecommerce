@@ -37,7 +37,7 @@ const offerSchema = new mongoose.Schema<offerI>(
     productId: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        ref: "Cart",
       },
     ],
     publish: Boolean,

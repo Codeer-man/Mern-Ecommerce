@@ -65,6 +65,35 @@ export const getOrderDetail = createAsyncThunk(
   }
 );
 
+export const cashOndelivery = createAsyncThunk(
+  "/cashOn/payment",
+  async (
+    { cartId, deliveryCharge, totalPrice, addressId },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/shop/order/cash_on_delivbery",
+        {
+          cartId,
+          deliveryCharge,
+          totalPrice,
+          addressId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error?.message);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "shoppingOrderSlice",
   initialState,

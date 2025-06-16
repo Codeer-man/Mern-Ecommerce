@@ -23,6 +23,7 @@ interface AddressInfo {
 enum paymentMethod {
   ESEWA = "esewa",
   KHALTI = "khalti",
+  DELIVERY = "cash on delivery",
 }
 export enum statusI {
   PENDING = " pending",
@@ -39,6 +40,7 @@ export interface IOrder extends Document {
   totalPrice: number;
   addressInfo: AddressInfo;
   purchaseDate?: Date;
+  userId: string;
 }
 
 const purchaseItemSchema = new mongoose.Schema<IOrder>(
@@ -46,6 +48,7 @@ const purchaseItemSchema = new mongoose.Schema<IOrder>(
     cartId: {
       type: mongoose.Schema.Types.ObjectId,
     },
+    userId: String,
     cartItems: [
       {
         productId: String,

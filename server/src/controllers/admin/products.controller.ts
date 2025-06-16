@@ -4,6 +4,17 @@ import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import Product from "../../model/Product";
 import { deleteFromCloudinary } from "../../helpers/upload-cloudinary";
+import { redisClient } from "../../server";
+
+const invalidRedis = async (input: string) => {
+  const cacheKey = `product:${input}`;
+  await redisClient.del(cacheKey);
+
+  const key = await redisClient.keys("product:*");
+  if (key && key.length > 0) {
+    await redisClient.del(...key);
+  }
+};
 
 export const handleImageUpload = async (
   req: Request,
@@ -98,6 +109,7 @@ export const addProduct = async (
     });
 
     await newProduct.save();
+    await invalidRedis(newProduct.id);
 
     res.status(200).json({
       success: true,

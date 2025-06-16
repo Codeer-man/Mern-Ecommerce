@@ -1,14 +1,12 @@
 import mongoose from "mongoose";
 
-const URL =
-  "mongodb+srv://mdrmoney34:mdrmoney34@cluster0.klkq8ku.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-import Review from "../model/review";
-import Product from "../model/Product";
-import Offer from "../model/offer";
+const URL = process.env.DATABASE_URL!;
 
 export const connectdb = async () => {
   try {
+    if (!URL) {
+      throw new Error("URL not found");
+    }
     await mongoose.connect(URL);
 
     console.log("Database connected");

@@ -49,6 +49,7 @@ export default function ShoppingOrders() {
     setSelectedOrderId(null);
     dispatch(resetOrderDetail());
   }
+  console.log(orderList);
 
   return (
     <Card>

@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import Product from "../../model/Product";
 import { ErrorHandler } from "../../utils/ErrorHandler";
+import { redisClient } from "../../server";
 
 // Type-safe query interface
 interface ProductFilterQuery {

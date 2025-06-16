@@ -11,9 +11,6 @@ export const createAds = async (
   try {
     const { title, targetUrl, description, isActive, endDate, image } =
       req.body;
-    console.log(title);
-    console.log(targetUrl);
-    console.log(description);
 
     if (!title || !targetUrl || !image) {
       res.status(400).json({ message: "Missing required fields" });

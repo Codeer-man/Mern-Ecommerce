@@ -27,8 +27,6 @@ export default function ImageUploadDashBaord() {
     dispatch(getFeatuerImage());
   }, [dispatch]);
 
-  console.log(featureImage[0].image);
-
   return (
     <div>
       <ProductImageUpload

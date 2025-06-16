@@ -1,7 +1,6 @@
 // import axios from "axios";
 // import crypto from "crypto";
 // import { Request, Response, NextFunction } from "express";
-// // import Booking from "../models/Booking"; // Adjust path as needed
 // import PurchaseItem, { statusI } from "../../model/PurchaseItems";
 // import { ErrorHandler } from "../../utils/ErrorHandler";
 

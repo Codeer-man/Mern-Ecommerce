@@ -97,27 +97,27 @@ export default function AdminReview() {
         <TableBody>
           {reviewList?.length > 0 &&
             reviewList.map((review) => (
-              <TableRow key={review._id}>
-                <TableCell>{review.userName}</TableCell>
-                <TableCell>{review.reviewValue}</TableCell>
+              <TableRow key={review?._id}>
+                <TableCell>{review?.userName}</TableCell>
+                <TableCell>{review?.reviewValue}</TableCell>
                 <TableCell>
                   <HoverCard>
                     <HoverCardTrigger className="text-left max-w-[250px] line-clamp-2 cursor-pointer">
                       <Badge className={"p-1.5 bg-gray-500"}>
-                        {review.reviewMessage}
+                        {review?.reviewMessage}
                       </Badge>
                     </HoverCardTrigger>
-                    <HoverCardContent>{review.reviewMessage}</HoverCardContent>
+                    <HoverCardContent>{review?.reviewMessage}</HoverCardContent>
                   </HoverCard>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      {review.productId.title}
+                      {review?.productId?.title}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem>
-                        {review.productId.title}
+                        {review.productId?.title}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem>

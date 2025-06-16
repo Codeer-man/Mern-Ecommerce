@@ -64,6 +64,9 @@ export default function ProductDetail() {
     const getCartItems = cartItem.items || [];
 
     if (getCartItems.length) {
+      if (selectedSize === "") {
+        return toast("please select a cloth size first");
+      }
       const indexOfCurrentItem = getCartItems.findIndex(
         (item) => item.ProductId === ProductId
       );
