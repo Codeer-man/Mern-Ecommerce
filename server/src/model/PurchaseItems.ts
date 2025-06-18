@@ -1,5 +1,4 @@
 import mongoose, { Types } from "mongoose";
-import { string } from "zod";
 
 interface CartItem {
   productId: string;
@@ -27,8 +26,16 @@ enum paymentMethod {
 }
 export enum statusI {
   PENDING = " pending",
-  CONFIRMED = "confirmed",
+  PAID = "Paid",
   FAILED = " failed",
+}
+
+export enum ProductI {
+  PENDING = "pending",
+  INPROCESS = "In Process",
+  INSHIPPING = "In Shipping",
+  DELIVERED = "Delivered",
+  REJECTED = "Rejected",
 }
 
 export interface IOrder extends Document {
@@ -41,6 +48,7 @@ export interface IOrder extends Document {
   addressInfo: AddressInfo;
   purchaseDate?: Date;
   userId: string;
+  productStatus: ProductI;
 }
 
 const purchaseItemSchema = new mongoose.Schema<IOrder>(
@@ -71,6 +79,11 @@ const purchaseItemSchema = new mongoose.Schema<IOrder>(
     paymentMethod: {
       type: String,
       enum: paymentMethod,
+    },
+    productStatus: {
+      type: String,
+      enum: ProductI,
+      default: ProductI.PENDING,
     },
     deliveryCharge: Number,
     totalPrice: Number,

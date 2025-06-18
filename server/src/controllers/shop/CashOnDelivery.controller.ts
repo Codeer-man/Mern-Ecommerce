@@ -14,57 +14,61 @@ export const CashOnDelivery = async (
     const { cartId, deliveryCharge, totalPrice, addressId } = req.body;
 
     if (!cartId || !deliveryCharge || !totalPrice || !addressId) {
-      throw new ErrorHandler("Please fill all the fields ", 401, false);
+      throw new ErrorHandler("Please fill all the fields", 400, false);
     }
 
-    const cartItem = await Cart.findById(cartId);
-    
-    if (!cartItem) {
+    const cart = await Cart.findById(cartId).populate("items.ProductId");
+
+    if (!cart) {
       throw new ErrorHandler("Cart not found", 404, false);
     }
 
-    console.log(cartItem);
+    const cartItems = cart.items.map((item) => {
+      const product: any = item.ProductId;
+      return {
+        productId: product._id.toString(),
+        title: product.title,
+        image: product.image[0].url,
+        price:
+          product.salePrice && product.salePrice > 0
+            ? product.salePrice
+            : product.price,
+        quantity: item.quantity,
+        isReturned: false,
+      };
+    });
 
-    for (let products of cartItem.items) {
-      const findProduct = await Product.findById(products.ProductId);
-
-      if (!findProduct) {
-        throw new ErrorHandler("User product not found", 404, false);
+    for (let item of cart.items) {
+      const product: any = item.ProductId;
+      if (!product) {
+        throw new ErrorHandler("Product not found", 404, false);
       }
 
-      findProduct.totalStock -= products.quantity;
+      product.totalStock -= item.quantity;
 
-      await findProduct.save();
+      if (product.totalStock < 0) {
+        throw new ErrorHandler(
+          `Product ${product.title} is out of stock`,
+          400,
+          false
+        );
+      }
+
+      await product.save();
     }
 
-    const item = cartItem.items.map((item) => ({
-      productId: item.ProductId.toString(),
-      title: item.ProductId.title,
-      image: item.ProductId.image,
-      price:
-        item?.ProductId?.salePrice! > 0
-          ? item.ProductId.salePrice
-          : item.ProductId.price,
-      quantity: item.quantity,
-      isReturned: false,
-    }));
-
-    cartItem.items = [];
-    await cartItem.save();
-
     const addressInfo = await Address.findById(addressId);
-
     if (!addressInfo) {
-      throw new ErrorHandler("Address data not found", 404, false);
+      throw new ErrorHandler("Address not found", 404, false);
     }
 
     const purchaseItemData = new PurchaseItem({
       cartId: cartId,
-      cartItems: item,
-      userId: cartItem.userId.toString(),
+      cartItems: cartItems,
+      userId: cart.userId.toString(),
       paymentMethod: "cash on delivery",
-      deliveryCharge: deliveryCharge,
-      totalPrice: totalPrice,
+      deliveryCharge,
+      totalPrice,
       addressInfo: {
         addressId: addressInfo._id,
         address: addressInfo.Address,
@@ -77,9 +81,12 @@ export const CashOnDelivery = async (
 
     await purchaseItemData.save();
 
+    cart.items = [];
+    await cart.save();
+
     res.status(201).json({
       success: true,
-      message: "Order Placed Successfully",
+      message: "Order placed successfully with Cash on Delivery",
       data: purchaseItemData,
     });
   } catch (error) {

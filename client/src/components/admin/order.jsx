@@ -44,6 +44,8 @@ export default function AdminOrdersView() {
     dispatch(resetOrderDetail());
   }
 
+  console.log(orderList);
+
   return (
     <Card>
       <CardHeader>
@@ -53,9 +55,10 @@ export default function AdminOrdersView() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
+              <TableHead>Product Name</TableHead>
               <TableHead>Order Date</TableHead>
-              <TableHead>Order Status</TableHead>
+              <TableHead>Payment Status</TableHead>
+              <TableHead>Payment Method</TableHead>
               <TableHead>Order Price</TableHead>
               <TableHead>
                 <span className="sr-only">Details</span>
@@ -64,24 +67,25 @@ export default function AdminOrdersView() {
           </TableHeader>
           <TableBody>
             {orderList && orderList.length > 0 ? (
-              orderList.map((list) => (
+              orderList.map((list, index) => (
                 <TableRow key={list._id}>
-                  <TableCell>{list._id}</TableCell>
-                  <TableCell>{list.orderDate?.split("T")[0]}</TableCell>
+                  <TableCell>{list.cartItems[index].title}</TableCell>
+                  <TableCell>{list.createdAt?.split("T")[0]}</TableCell>
                   <TableCell>
                     <Badge
                       className={`py-1 px-3 ${
-                        list?.oderstatus === "confirmed"
+                        list?.productStatus === "confirmed"
                           ? "bg-green-500"
-                          : list?.oderstatus === "rejected"
+                          : list?.productStatus === "rejected"
                           ? "bg-red-600"
                           : "bg-black"
                       }`}
                     >
-                      {list?.oderstatus}
+                      {list?.productStatus}
                     </Badge>
                   </TableCell>
-                  <TableCell>${list.totalAmount}</TableCell>
+                  <TableCell>{list.paymentMethod} </TableCell>
+                  <TableCell>${list.totalPrice}</TableCell>
                   <TableCell>
                     <Button onClick={() => handleFetchOrderDetail(list._id)}>
                       View details

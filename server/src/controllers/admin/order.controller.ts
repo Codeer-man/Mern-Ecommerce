@@ -57,7 +57,24 @@ export const updateOrderStatus = async (
       throw new ErrorHandler("Order not found!", 404, false);
     }
 
-    await Order.findByIdAndUpdate(id, { oderstatus: orderstatus });
+    if (orderstatus === "delivered") {
+      await Order.findByIdAndUpdate(
+        id,
+        {
+          productStatus: orderstatus,
+          paymentStatus: "Paid",
+        },
+        { new: true }
+      );
+    } else {
+      await Order.findByIdAndUpdate(
+        id,
+        {
+          productStatus: orderstatus,
+        },
+        { new: true }
+      );
+    }
 
     res.status(200).json({
       success: true,

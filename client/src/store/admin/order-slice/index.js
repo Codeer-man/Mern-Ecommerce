@@ -13,6 +13,8 @@ export const getAllOrderForAdmin = createAsyncThunk(
       const response = await axios.get(
         "http://localhost:8080/api/admin/order/get"
       );
+      console.log(response.data);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.message);

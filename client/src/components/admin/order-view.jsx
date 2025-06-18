@@ -49,11 +49,11 @@ export default function AdminOrdetailsView({ orderDetails }) {
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Date</p>
-            <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
+            <Label>{orderDetails?.createdAt.split("T")[0]}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Price</p>
-            <Label>${orderDetails?.totalAmount}</Label>
+            <Label>${orderDetails?.totalPrice}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Payment method</p>
@@ -68,14 +68,14 @@ export default function AdminOrdetailsView({ orderDetails }) {
             <Label>
               <Badge
                 className={`py-1 px-3 ${
-                  orderDetails?.oderstatus === "confirmed"
+                  orderDetails?.paymentStatus === "confirmed"
                     ? "bg-green-500"
-                    : orderDetails?.oderstatus === "rejected"
+                    : orderDetails?.paymentStatus === "rejected"
                     ? "bg-red-600"
                     : "bg-black"
                 }`}
               >
-                {orderDetails?.oderstatus}
+                {orderDetails?.productStatus}
               </Badge>
             </Label>
           </div>

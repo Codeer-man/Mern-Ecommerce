@@ -22,6 +22,7 @@ import { Badge } from "../ui/badge";
 export default function ShoppingOrders() {
   const [openDetails, setOpenDetail] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [expandedOrders, setExpandedOrders] = useState({}); // new state
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -49,7 +50,15 @@ export default function ShoppingOrders() {
     setSelectedOrderId(null);
     dispatch(resetOrderDetail());
   }
-  console.log(orderList);
+
+  function toggleExpanded(orderId) {
+    setExpandedOrders((prev) => ({
+      ...prev,
+      [orderId]: !prev[orderId],
+    }));
+  }
+
+  console.log(orderList[4]?.cartItems[0].image);
 
   return (
     <Card>
@@ -61,9 +70,10 @@ export default function ShoppingOrders() {
           <TableHeader>
             <TableRow>
               <TableHead>Order ID</TableHead>
-              <TableHead>Order Date</TableHead>
-              <TableHead>Order Status</TableHead>
-              <TableHead>Order Price</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Total Price</TableHead>
+              <TableHead>Items</TableHead>
               <TableHead>
                 <span className="sr-only">Details</span>
               </TableHead>
@@ -71,34 +81,65 @@ export default function ShoppingOrders() {
           </TableHeader>
           <TableBody>
             {orderList && orderList.length > 0 ? (
-              orderList.map((list) => (
-                <TableRow key={list._id}>
-                  <TableCell>{list._id}</TableCell>
-                  <TableCell>{list.orderDate?.split("T")[0]}</TableCell>
-                  <TableCell>
-                    <Badge
-                      className={`py-1 px-3 ${
-                        list?.oderstatus === "confirmed"
-                          ? "bg-green-500"
-                          : list?.oderstatus === "rejected"
-                          ? "bg-red-600"
-                          : "bg-black"
-                      }`}
-                    >
-                      {list?.oderstatus}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>${list.totalAmount}</TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleFetchOrderDetail(list._id)}>
-                      View details
-                    </Button>
-                  </TableCell>
-                </TableRow>
+              orderList.map((order) => (
+                <React.Fragment key={order._id}>
+                  <TableRow>
+                    <TableCell>{order._id}</TableCell>
+                    <TableCell>{order.purchaseDate?.split("T")[0]}</TableCell>
+                    <TableCell>
+                      <Badge
+                        className={`py-1 px-3 ${
+                          order.productstatus?.trim() === "confirmed"
+                            ? "bg-green-500"
+                            : order.paymentStatus?.trim() === "rejected"
+                            ? "bg-red-600"
+                            : "bg-yellow-500"
+                        }`}
+                      >
+                        {order.paymentStatus?.trim()}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>${order.totalPrice}</TableCell>
+                    <TableCell>
+                      {order.cartItems?.length} item
+                      {order.cartItems?.length > 1 ? "s" : ""}
+                    </TableCell>
+                    <TableCell className="space-x-2">
+                      <Button onClick={() => toggleExpanded(order._id)}>
+                        {expandedOrders[order._id]
+                          ? "Hide Items"
+                          : "Show Items"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+
+                  {expandedOrders[order._id] &&
+                    order.cartItems?.map((item, index) => (
+                      <TableRow
+                        key={item._id || index}
+                        onClick={() => handleFetchOrderDetail(order._id)}
+                      >
+                        <TableCell colSpan={6}>
+                          <div className="flex items-center gap-4 ml-4">
+                            <img
+                              src={item.image}
+                              alt={item.title}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                            <div>
+                              <p className="font-semibold">{item.title}</p>
+                              <p>Quantity: {item.quantity}</p>
+                              <p>Price: ${item.price}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </React.Fragment>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center">
+                <TableCell colSpan={6} className="text-center">
                   No orders found.
                 </TableCell>
               </TableRow>

@@ -16,6 +16,7 @@ import Product from "../../model/Product";
 import { getEsewaPaymentHash, verifyEsewaPayment } from "../../utils/esewa";
 import User from "../../model/User";
 import { verifyEmail } from "../auth/email-veify.controller";
+import { formToJSON } from "axios";
 
 // export const createOrder = async (
 //   req: Request,
@@ -173,6 +174,7 @@ export const getAllOrderByUser = async (
     if (!order) {
       throw new ErrorHandler("Order data not found", 404, false);
     }
+    console.log(order, "order");
 
     res
       .status(200)
@@ -202,142 +204,142 @@ export const getOrderDetail = async (
   }
 };
 
-export const initializeEsewa = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { cartId, deliveryCharge, addressId } = req.body;
+// export const initializeEsewa = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { cartId, deliveryCharge, addressId } = req.body;
 
-    const cart = await Cart.findById(cartId).populate("items.ProductId");
+//     const cart = await Cart.findById(cartId).populate("items.ProductId");
 
-    if (!cart) {
-      throw new ErrorHandler("User product cart id not found", 404, false);
-    }
+//     if (!cart) {
+//       throw new ErrorHandler("User product cart id not found", 404, false);
+//     }
 
-    const cartItems = cart.items.map((items) => ({
-      productId: items.ProductId._id.toString(),
-      title: items.ProductId.title,
-      image: items.ProductId.image,
-      price: items.ProductId.price,
-      quanity: items.quantity,
-      isReturned: false,
-    }));
+//     const cartItems = cart.items.map((items) => ({
+//       productId: items.ProductId._id.toString(),
+//       title: items.ProductId.title,
+//       image: items.ProductId.image,
+//       price: items.ProductId.price,
+//       quanity: items.quantity,
+//       isReturned: false,
+//     }));
 
-    const productTotal = cartItems.reduce(
-      (sum, items) => sum + items.price * items.quanity,
-      0
-    );
+//     const productTotal = cartItems.reduce(
+//       (sum, items) => sum + items.price * items.quanity,
+//       0
+//     );
 
-    const totalDeliveryCharge = cartItems.length * deliveryCharge;
-    const totalPrice = productTotal + totalDeliveryCharge;
+//     const totalDeliveryCharge = cartItems.length * deliveryCharge;
+//     const totalPrice = productTotal + totalDeliveryCharge;
 
-    const addressInfo = await Address.findById(addressId);
-    if (!addressInfo) {
-      throw new ErrorHandler("user address not found", 404, false);
-    }
+//     const addressInfo = await Address.findById(addressId);
+//     if (!addressInfo) {
+//       throw new ErrorHandler("user address not found", 404, false);
+//     }
 
-    // if (!addressInfo.verifyNumber) {
-    //   throw new ErrorHandler(
-    //     "Your phone number must be verified to order a purchase",
-    //     401,
-    //     false
-    //   );
-    // }
+// if (!addressInfo.verifyNumber) {
+//   throw new ErrorHandler(
+//     "Your phone number must be verified to order a purchase",
+//     401,
+//     false
+//   );
+// }
 
-    const userI = cart.userId;
-    const findUser = await User.findById(userI);
+//     const userI = cart.userId;
+//     const findUser = await User.findById(userI);
 
-    if (!findUser) {
-      throw new ErrorHandler("User not found", 404, false);
-    }
+//     if (!findUser) {
+//       throw new ErrorHandler("User not found", 404, false);
+//     }
 
-    if (!findUser.emailVerify) {
-      res.json("Please verify your email");
-    }
+//     if (!findUser.emailVerify) {
+//       res.json("Please verify your email");
+//     }
 
-    const purchaseItemData = await PurchaseItem.create({
-      userId: cart.userId,
-      cartId,
-      cartItems,
-      paymentMethod: "esewa",
-      deliveryCharge: totalDeliveryCharge,
-      totalPrice,
-      addressInfo: {
-        addressId: addressInfo._id,
-        address: addressInfo.Address,
-        city: addressInfo.City,
-        pincode: addressInfo.Pincode,
-        phoneNo: addressInfo.PhoneNo,
-        notes: addressInfo.Notes,
-      },
-    });
+//     const purchaseItemData = await PurchaseItem.create({
+//       userId: cart.userId,
+//       cartId,
+//       cartItems,
+//       paymentMethod: "esewa",
+//       deliveryCharge: totalDeliveryCharge,
+//       totalPrice,
+//       addressInfo: {
+//         addressId: addressInfo._id,
+//         address: addressInfo.Address,
+//         city: addressInfo.City,
+//         pincode: addressInfo.Pincode,
+//         phoneNo: addressInfo.PhoneNo,
+//         notes: addressInfo.Notes,
+//       },
+//     });
 
-    const paymentInitiate = await getEsewaPaymentHash({
-      amount: totalPrice,
-      transaction_uuid: purchaseItemData._id,
-    });
+//     const paymentInitiate = await getEsewaPaymentHash({
+//       amount: totalPrice,
+//       transaction_uuid: purchaseItemData._id,
+//     });
 
-    const approve_Url: string = `${process.env.ESEWA_GATEWAY_URL_SECOND}`;
+//     const approve_Url: string = `${process.env.ESEWA_GATEWAY_URL_SECOND}`;
 
-    res.status(201).json({
-      success: true,
-      message: "Order Placed Successfully",
-      paymentInitiate,
-      purchaseItemData,
-      cart,
-      approve_Url,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(201).json({
+//       success: true,
+//       message: "Order Placed Successfully",
+//       paymentInitiate,
+//       purchaseItemData,
+//       cart,
+//       approve_Url,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
-export const completePayment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const { data } = req.query;
+// export const completePayment = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<void> => {
+//   const { data } = req.query;
 
-  try {
-    const paymentInfo = await verifyEsewaPayment(data);
+//   try {
+//     const paymentInfo = await verifyEsewaPayment(data);
 
-    const purchaseItemData = await PurchaseItem.findById(
-      paymentInfo.response.transaction_uuid
-    );
+//     const purchaseItemData = await PurchaseItem.findById(
+//       paymentInfo.response.transaction_uuid
+//     );
 
-    if (!purchaseItemData) {
-      throw new ErrorHandler("purchase items not found", 404, false);
-    }
+//     if (!purchaseItemData) {
+//       throw new ErrorHandler("purchase items not found", 404, false);
+//     }
 
-    const paymentData = await Payment.create({
-      pidx: paymentInfo.decodedData.transaction_code,
-      transactionId: paymentInfo.decodedData.transaction_code,
-      productId: paymentInfo.response.transaction_uuid,
-      amount: purchaseItemData.totalPrice,
-      dataFromVerificationReq: paymentInfo,
-      apiQueryFromUser: req.query,
-      paymentGateway: "esewa",
-      status: "success",
-    });
+//     const paymentData = await Payment.create({
+//       pidx: paymentInfo.decodedData.transaction_code,
+//       transactionId: paymentInfo.decodedData.transaction_code,
+//       productId: paymentInfo.response.transaction_uuid,
+//       amount: purchaseItemData.totalPrice,
+//       dataFromVerificationReq: paymentInfo,
+//       apiQueryFromUser: req.query,
+//       paymentGateway: "esewa",
+//       status: "success",
+//     });
 
-    await PurchaseItem.findByIdAndUpdate(
-      paymentInfo.response.transaction_uuid,
-      {
-        $set: {
-          status: "completed",
-        },
-      }
-    );
+//     await PurchaseItem.findByIdAndUpdate(
+//       paymentInfo.response.transaction_uuid,
+//       {
+//         $set: {
+//           status: "completed",
+//         },
+//       }
+//     );
 
-    res.json({
-      success: true,
-      message: "Payment Successful",
-      paymentData,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.json({
+//       success: true,
+//       message: "Payment Successful",
+//       paymentData,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
