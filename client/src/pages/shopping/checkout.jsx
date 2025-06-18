@@ -67,8 +67,6 @@ export default function ShoppingCheckout() {
     };
 
     dispatch(createNewOrder(orderData)).then((data) => {
-      console.log(data, "esewq data");
-
       setIsPaymentStart("Processing Esewa payment");
     });
   }

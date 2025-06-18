@@ -138,9 +138,7 @@ export default function ProductDetail() {
   return (
     <div className="w-screen min-h-screen bg-white py-10 px-4 md:px-10 mt-11 overflow-auto rounded-lg shadow-lg">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Left Section - Images */}
         <div className="flex gap-4 md:grid-cols-1">
-          {/* Thumbnails */}
           <div className="flex flex-col gap-2 ">
             {productDetail?.image.map((img, index) => (
               <div
@@ -157,7 +155,6 @@ export default function ProductDetail() {
             ))}
           </div>
 
-          {/* Main Image */}
           <div className="flex-1 bg-gray-100 rounded-md overflow-hidden ">
             <img
               src={mainImage}
@@ -167,7 +164,6 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* Right Section - Product Details */}
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl md:text-3xl font-bold">
             {productDetail?.title}
@@ -176,7 +172,6 @@ export default function ProductDetail() {
             {productDetail?.subTitle}
           </h4>
 
-          {/* Pricing */}
           <div className="flex items-center gap-4">
             <h3
               className={`text-xl font-bold ${
@@ -201,7 +196,6 @@ export default function ProductDetail() {
             <span className="text-gray-700">{productDetail?.brand}</span>
           </p>
 
-          {/* Size Selector */}
           <div className="my-4">
             <h4 className="font-semibold mb-2">Select Size</h4>
             <div className="flex flex-wrap gap-2">
@@ -213,12 +207,10 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {/* Description */}
           <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
             {productDetail?.description}
           </p>
 
-          {/* Add to Cart */}
           <Button
             className="w-full  mt-4"
             disabled={productDetail?.totalStock === 0}
@@ -233,7 +225,6 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Related Products */}
       <div className="mt-10">
         <RelatedProduct
           className="w-full"

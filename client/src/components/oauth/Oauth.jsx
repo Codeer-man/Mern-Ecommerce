@@ -27,7 +27,7 @@ export default function OAuth() {
       };
 
       const res = await axios.post(
-        `http://localhost:8080/api/auth/o-auth/google-route`,
+        `${import.meta.env.VITE_API_URL}/api/auth/o-auth/google-route`,
         newUserData,
         {
           headers: {

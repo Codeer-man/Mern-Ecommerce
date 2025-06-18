@@ -9,7 +9,7 @@
     "dev": "concurrently -k \" tsc -w \" \" nodemon delay 1.5s dist/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mainsh",
   "license": "ISC",
   "description": "",
   "dependencies": {

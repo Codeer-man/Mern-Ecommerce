@@ -9,11 +9,9 @@ const initialState = {
 export const createOffer = createAsyncThunk(
   "create/offer",
   async ({ formdata, image, productId }, { rejectWithValue }) => {
-    console.log(formdata, image, productId, "index");
-
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/admin/offer/create",
+        `${import.meta.env.VITE_API_URL}/api/admin/offer/create`,
         { ...formdata, image, productId },
         {
           headers: {
@@ -22,7 +20,6 @@ export const createOffer = createAsyncThunk(
           withCredentials: true,
         }
       );
-      console.log(response);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -44,7 +41,6 @@ const offerSlice = createSlice({
       })
       .addCase(createOffer.fulfilled, (state, action) => {
         {
-          console.log(action);
           state.isLoading = false;
           state.offer = action.payload.data;
         }

@@ -39,7 +39,6 @@ export default function CreateOffer() {
   const [selectProduct, setSelectProduct] = useState([]);
 
   const dispatch = useDispatch();
-  console.log(selectProduct, "products");
 
   function onSubmit(e) {
     e.preventDefault();
@@ -79,8 +78,6 @@ export default function CreateOffer() {
 
     return () => clearTimeout(timeout);
   }, [searchQuery, page, dispatch]);
-
-  console.log(formData);
 
   return (
     <div className="">

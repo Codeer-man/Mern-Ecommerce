@@ -21,7 +21,7 @@ export const getShopProduct = createAsyncThunk(
       });
 
       const result = await axios.get(
-        `http://localhost:8080/api/shop/product/filteredProduct?${query}&page=${page}&limit=${limit}`
+        `${import.meta.env.VITE_API_URL}/api/shop/product/filteredProduct?${query}&page=${page}&limit=${limit}`
       );
 
       return result.data;
@@ -37,7 +37,7 @@ export const getSingleProduct = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/shop/product/productData/${id}`
+        `${import.meta.env.VITE_API_URL}/api/shop/product/productData/${id}`
       );
       return response.data;
     } catch (error) {
@@ -51,7 +51,7 @@ export const relatedProduct = createAsyncThunk(
   async ({ productId, page = 1, limit = 8 }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/shop/product/relatedProduct/${productId}?page=${page}&limit=${limit}`
+        `${import.meta.env.VITE_API_URL}/api/shop/product/relatedProduct/${productId}?page=${page}&limit=${limit}`
       );
       return response.data;
     } catch (error) {

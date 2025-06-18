@@ -58,8 +58,6 @@ export default function ShoppingOrders() {
     }));
   }
 
-  console.log(orderList[4]?.cartItems[0].image);
-
   return (
     <Card>
       <CardHeader>
@@ -117,20 +115,29 @@ export default function ShoppingOrders() {
                     order.cartItems?.map((item, index) => (
                       <TableRow
                         key={item._id || index}
-                        onClick={() => handleFetchOrderDetail(order._id)}
+                        // onClick={() => handleFetchOrderDetail(order._id)}
                       >
                         <TableCell colSpan={6}>
-                          <div className="flex items-center gap-4 ml-4">
-                            <img
-                              src={item.image}
-                              alt={item.title}
-                              className="w-12 h-12 object-cover rounded"
-                            />
-                            <div>
-                              <p className="font-semibold">{item.title}</p>
-                              <p>Quantity: {item.quantity}</p>
-                              <p>Price: ${item.price}</p>
+                          <div className="flex items-center justify-between w-full py-4">
+                            <div className="flex items-center gap-4 ml-4 ">
+                              <img
+                                src={item.image}
+                                alt={item.title}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div>
+                                <p className="font-semibold">{item.title}</p>
+                                <p>Quantity: {item.quantity}</p>
+                                <p>Price: ${item.price}</p>
+                              </div>
                             </div>
+                            {order.paymentStatus === "Paid" ? (
+                              <div className="font-semibold hover:underline">
+                                Give a review
+                              </div>
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

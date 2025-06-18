@@ -16,12 +16,9 @@ export default function UserCartItemContain({ cartItems }) {
   const dispatch = useDispatch();
 
   function handleUpdateQuantity(getCartItem, buttonType) {
-    console.log(products, "intesm");
-
     const productIndex = products?.data.findIndex(
       (product) => product._id === getCartItem?.ProductId
     );
-    console.log(products);
 
     if (productIndex === -1) {
       toast.error("Product not found in store");
@@ -71,8 +68,6 @@ export default function UserCartItemContain({ cartItems }) {
   useEffect(() => {
     dispatch(getShopProduct());
   }, [dispatch]);
-
-  console.log(cartItems);
 
   return (
     <div className="flex items-center space-x-4">

@@ -12,10 +12,9 @@ const initialState = {
 export const createAds = createAsyncThunk(
   "/create/ads",
   async (formdata, { rejewithValue }) => {
-
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/admin/ads/create",
+        `${import.meta.env.VITE_API_URL}/api/admin/ads/create`,
         formdata,
         {
           headers: {
@@ -41,7 +40,7 @@ export const getAllAds = createAsyncThunk(
   async (_, { rejewithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/admin/ads/get/all"
+        `${import.meta.env.VITE_API_URL}/api/admin/ads/get/all`
       );
       return response.data;
     } catch (error) {
@@ -58,7 +57,7 @@ export const updateAds = createAsyncThunk(
   async ({ id, formdata }, { rejewithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/ads/update/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/ads/update/${id}`,
         formdata,
         {
           headers: {
@@ -83,7 +82,7 @@ export const DeleteAds = createAsyncThunk(
   async (id, { rejewithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/admin/ads/delete/${id}`
+        `${import.meta.env.VITE_API_URL}/api/admin/ads/delete/${id}`
       );
       return response.data;
     } catch (error) {
@@ -101,7 +100,7 @@ export const updateActive = createAsyncThunk(
   async ({ id, isActive }, { rejewithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/ads/isactive/update/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/ads/isactive/update/${id}`,
         { isActive },
         {
           headers: {

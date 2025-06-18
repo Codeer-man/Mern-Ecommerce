@@ -40,7 +40,7 @@ export default function VerifyEmail() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/email/check/verification/code/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/email/check/verification/code/${user._id}`,
         { code },
         {
           headers: {
@@ -65,7 +65,7 @@ export default function VerifyEmail() {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8080/api/email/send/verification/${user._id}`
+        `${import.meta.env.VITE_API_URL}/api/email/send/verification/${user._id}`
       );
       toast.success("Verification code resent!");
       setDisButton(true);

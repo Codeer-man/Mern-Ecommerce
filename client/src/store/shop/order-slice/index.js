@@ -14,7 +14,7 @@ export const createNewOrder = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/shop/order/payWithEsewa",
+        `${import.meta.env.VITE_API_URL}/api/shop/order/payWithEsewa`,
         orderData
       );
 
@@ -30,7 +30,7 @@ export const capturePayment = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/shop/order/complete-payment?data=${data}`
+        `${import.meta.env.VITE_API_URL}/api/shop/order/complete-payment?data=${data}`
       );
       return response.data;
     } catch (error) {
@@ -43,7 +43,7 @@ export const getAllOrderByUser = createAsyncThunk(
   async (orderId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/shop/order/list/${orderId}`
+        `${import.meta.env.VITE_API_URL}/api/shop/order/list/${orderId}`
       );
       return response.data;
     } catch (error) {
@@ -56,7 +56,7 @@ export const getOrderDetail = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/shop/order/detail/${id}`
+        `${import.meta.env.VITE_API_URL}/api/shop/order/detail/${id}`
       );
       return response.data;
     } catch (error) {
@@ -73,7 +73,7 @@ export const cashOndelivery = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/shop/order/cash_on_delivbery",
+        `${import.meta.env.VITE_API_URL}/api/shop/order/cash_on_delivbery`,
         {
           cartId,
           deliveryCharge,
@@ -86,7 +86,6 @@ export const cashOndelivery = createAsyncThunk(
           },
         }
       );
-      console.log(response);
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.message);

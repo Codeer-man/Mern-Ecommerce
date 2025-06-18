@@ -23,3 +23,27 @@ export default function StarRating({ rating, handleRatingChange }) {
     </Button>
   ));
 }
+
+export const ShowStarRating = ({ rating }) => {
+  const star = Array.from({ length: 5 });
+
+  return (
+    <div className="flex w-full items-center justify-around">
+      {star.map((star, index) => {
+        index++;
+        return (
+          <div key={index}>
+            <StarIcon
+              className={`${
+                index <= rating
+                  ? "fill-yellow-500 text-yellow-500"
+                  : "text-black"
+              } border rounded-full`}
+              size={20}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};

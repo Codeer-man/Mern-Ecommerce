@@ -11,7 +11,7 @@ export const addFeatuerImage = createAsyncThunk(
   async (image, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/admin/feature/post",
+        `${import.meta.env.VITE_API_URL}/api/admin/feature/post`,
         { image }
       );
       return response.data;
@@ -26,7 +26,7 @@ export const getFeatuerImage = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/admin/feature/get"
+        `${import.meta.env.VITE_API_URL}/api/admin/feature/get`
       );
       return response.data;
     } catch (error) {

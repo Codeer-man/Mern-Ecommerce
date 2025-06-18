@@ -12,7 +12,7 @@ export const addNewProduct = createAsyncThunk(
   async (formdata, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/admin/product/add",
+        `${import.meta.env.VITE_API_URL}/api/admin/product/add`,
         formdata,
         {
           headers: {
@@ -36,7 +36,7 @@ export const fetchAllProduct = createAsyncThunk(
   async ({ page = 1, limit = 6 }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/admin/product/getProdct?page=${page}&limit=${limit}`
+        `${import.meta.env.VITE_API_URL}/api/admin/product/getProdct?page=${page}&limit=${limit}`
       );
 
       return response?.data;
@@ -54,7 +54,7 @@ export const editProduct = createAsyncThunk(
   async ({ formdata, id }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/product/edit/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/product/edit/${id}`,
         formdata,
         {
           headers: {
@@ -76,7 +76,7 @@ export const deleteProduct = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/admin/product/delete/${id}`
+        `${import.meta.env.VITE_API_URL}/api/admin/product/delete/${id}`
       );
       return response?.data;
     } catch (error) {
@@ -92,7 +92,7 @@ export const updateLabel = createAsyncThunk(
   async ({ id, list }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/product/update/${id}/label`,
+        `${import.meta.env.VITE_API_URL}/api/admin/product/update/${id}/label`,
         { list },
         {
           headers: {

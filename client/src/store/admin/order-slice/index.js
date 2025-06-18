@@ -11,10 +11,8 @@ export const getAllOrderForAdmin = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/admin/order/get"
+        `${import.meta.env.VITE_API_URL}/api/admin/order/get`
       );
-      console.log(response.data);
-
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.message);
@@ -27,7 +25,7 @@ export const getOrderDetailForAdmin = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/admin/order/details/${id}`
+        `${import.meta.env.VITE_API_URL}/api/admin/order/details/${id}`
       );
       return response.data;
     } catch (error) {
@@ -41,7 +39,7 @@ export const updateOrderStatus = createAsyncThunk(
   async ({ id, orderstatus }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/order/update/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/order/update/${id}`,
         {
           orderstatus,
         }

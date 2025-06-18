@@ -14,7 +14,7 @@ export default function AdsForShowing() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/admin/ads/toShow/ads"
+          `${import.meta.env.VITE_API_URL}/api/admin/ads/toShow/ads`
         );
         setAd(response.data?.data);
       } catch (error) {

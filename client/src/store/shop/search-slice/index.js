@@ -11,7 +11,7 @@ export const searchProduct = createAsyncThunk(
   async (keyboard, { rejectWithValue }) => {
     try {
       const response = await axios(
-        `http://localhost:8080/api/product/search/${keyboard}`
+        `${import.meta.env.VITE_API_URL}/api/product/search/${keyboard}`
       );
 
       return response.data;

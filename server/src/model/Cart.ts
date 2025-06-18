@@ -1,7 +1,7 @@
 import mongoose, { Document, Types } from "mongoose";
 
 interface CartItem {
-  ProductId: Types.ObjectId;
+  ProductId: Types.ObjectId | IProduct;
   quantity: number;
   size: string[];
 }
@@ -9,6 +9,14 @@ interface CartItem {
 interface CartI extends Document {
   userId: Types.ObjectId;
   items: CartItem[];
+}
+
+export interface IProduct {
+  _id: string;
+  image: string;
+  title: string;
+  price: number;
+  salePrice: number;
 }
 
 const CartSchema = new mongoose.Schema<CartI>(

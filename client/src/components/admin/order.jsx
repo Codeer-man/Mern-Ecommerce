@@ -44,8 +44,6 @@ export default function AdminOrdersView() {
     dispatch(resetOrderDetail());
   }
 
-  console.log(orderList);
-
   return (
     <Card>
       <CardHeader>

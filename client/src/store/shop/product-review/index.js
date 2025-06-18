@@ -15,7 +15,7 @@ export const createProductReview = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/product/review/create",
+        `${import.meta.env.VITE_API_URL}/api/product/review/create`,
         { productId, userId, userName, reviewMessage, reviewValue },
         { withCredentials: true }
       );
@@ -32,7 +32,7 @@ export const getProductReview = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/product/review/get/${productId}`
+        `${import.meta.env.VITE_API_URL}/api/product/review/get/${productId}`
       );
 
       return response.data;
@@ -47,7 +47,7 @@ export const userReviewfetch = createAsyncThunk(
   async ({ userId, productId }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/product/review/${productId}/${userId}`
+        `${import.meta.env.VITE_API_URL}/api/product/review/${productId}/${userId}`
       );
       return response.data;
     } catch (error) {
@@ -61,7 +61,7 @@ export const updateReivew = createAsyncThunk(
   async ({ reviewMessage, reviewValue, reviewId }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/product/review/update/${reviewId}`,
+        `${import.meta.env.VITE_API_URL}/api/product/review/update/${reviewId}`,
         {
           reviewMessage,
           reviewValue,
@@ -84,7 +84,7 @@ export const deleteReivew = createAsyncThunk(
   async (reviewId, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/product/review/delete/${reviewId}`
+        `${import.meta.env.VITE_API_URL}/api/product/review/delete/${reviewId}`
       );
 
       return response.data;

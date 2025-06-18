@@ -81,7 +81,7 @@ function HeaderRightContent() {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://localhost:8080/api/email/send/verification/${user._id}`
+        `${import.meta.env.VITE_API_URL}/api/email/send/verification/${user._id}`
       );
       if (response.status === 201) {
         navigate("/verify/email");

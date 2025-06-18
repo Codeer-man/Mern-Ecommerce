@@ -12,7 +12,7 @@ export const getReview = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/admin/review/get/all"
+        `${import.meta.env.VITE_API_URL}/api/admin/review/get/all`
       );
       return response.data;
     } catch (error) {
@@ -25,7 +25,7 @@ export const replyProduct = createAsyncThunk(
   async ({ id, reply }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/admin/review/update/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/review/update/${id}`,
         { reply },
         {
           headers: {

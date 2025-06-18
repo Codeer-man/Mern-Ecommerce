@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: true, // Essential for cookies
 });
 
@@ -14,7 +14,6 @@ api.interceptors.request.use(
     const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log("Access token added to request");
     }
     return config;
   },
@@ -27,19 +26,9 @@ api.interceptors.request.use(
 // Response interceptor - handles token refresh
 api.interceptors.response.use(
   (response) => {
-    console.log("Successful response from:", response.config.url);
     return response;
   },
   async (error) => {
-    console.group("[Interceptor] Error Handling");
-    console.log("Error object:", error);
-    console.log("Has response?:", !!error.response);
-    console.log("Status code:", error.response?.status);
-    console.log("Request URL:", error.config?.url);
-    console.log(
-      "Is refresh request?:",
-      error.config?.url?.includes("/auth/refresh")
-    );
     console.groupEnd();
     const originalRequest = error.config;
 
@@ -49,10 +38,7 @@ api.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url.includes("/auth/refresh")
     ) {
-      console.log("Attempting token refresh...");
-
       if (isRefreshing) {
-        console.log("Refresh already in progress - queuing request");
         return new Promise((resolve, reject) => {
           failedRequests.push({ resolve, reject });
         }).then((token) => {
@@ -65,14 +51,12 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        console.log("Making refresh token request");
         const { data } = await axios.post(
-          "http://localhost:8080/api/auth/refreshToken",
+          `${import.meta.env.VITE_API_URL}/api/auth/refreshToken`,
           {},
           { withCredentials: true }
         );
 
-        console.log("Refresh successful, new token:", data.accessToken);
         localStorage.setItem("accessToken", data.accessToken);
 
         // Update default headers
