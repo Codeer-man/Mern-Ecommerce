@@ -27,7 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { logout } from "@/store/authslice";
+import { logout, resetToken } from "@/store/authslice";
 import CartWrapper from "./cart-wrapper";
 import { fetchUserItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
@@ -77,27 +77,32 @@ function HeaderRightContent() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  async function handleVerifyEmail() {
-    try {
-      setLoading(true);
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/email/send/verification/${user._id}`
-      );
-      if (response.status === 201) {
-        navigate("/verify/email");
-        toast.success("Verification sent to your gmail");
-        return;
-      }
-      toast.error("Something wend wrong");
-    } catch (error) {
-      console.error("Invalid server error ", error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  // async function handleVerifyEmail() {
+  //   try {
+  //     setLoading(true);
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_API_URL}/api/email/send/verification/${
+  //         user._id
+  //       }`
+  //     );
+  //     if (response.status === 201) {
+  //       navigate("/verify/email");
+  //       toast.success("Verification sent to your gmail");
+  //       return;
+  //     }
+  //     toast.error("Something wend wrong");
+  //   } catch (error) {
+  //     console.error("Invalid server error ", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   function handleLogOut() {
-    dispatch(logout());
+    // dispatch(logout());
+    dispatch(resetToken());
+    sessionStorage.clear();
+    navigate("/auth/login");
   }
 
   useEffect(() => {
@@ -153,7 +158,7 @@ function HeaderRightContent() {
             Account
           </DropdownMenuItem>
           <Separator className={"my-1"} />
-          {user.emailVerify === false && loading === false ? (
+          {/* {user.emailVerify === false && loading === false ? (
             <div>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -168,7 +173,7 @@ function HeaderRightContent() {
             <h2 className="flex gap-2 ml-1 ">
               <ClipboardCheck className="" /> Your Email is verifyed
             </h2>
-          )}
+          )} */}
           <DropdownMenuSeparator />
           <DropdownMenuItem className={"cursor-pointer"} onClick={handleLogOut}>
             <LogOut className="mr-2 w-4 h-5" />

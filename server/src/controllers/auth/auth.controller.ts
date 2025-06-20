@@ -77,23 +77,29 @@ export const authLogin = async (
       role: findUser.role,
     });
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
-      expires: new Date(Date.now() + 15 * 60 * 1000),
-    });
-    res.cookie("refreshToken", refreshAccessToken, {
-      httpOnly: false,
-      secure: true,
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   expires: new Date(Date.now() + 15 * 60 * 1000),
+    // });
+    // res.cookie("refreshToken", refreshAccessToken, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    // });
 
     res.status(200).json({
       success: true,
       message: "User logged in",
       data: findUser,
-      accessToken: accessToken,
-      refreshAccessToken: refreshAccessToken,
+      token: accessToken,
+      user: {
+        id: findUser._id.toString(),
+        email: findUser.email,
+        role: findUser.role,
+        username: findUser.username,
+      },
+      // refreshAccessToken: refreshAccessToken,
     });
   } catch (error) {
     console.log(error);
