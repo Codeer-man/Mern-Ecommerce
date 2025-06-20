@@ -15,7 +15,7 @@ const router = express.Router();
 router.post("/register", validation(registerSchema), authRegister);
 router.post("/login", validation(loginSchema), authLogin);
 router.get("/getData", authMiddleware, GetUserData);
-router.post("/logout", authMiddleware, logout);
+router.post("/logout", logout);
 router.post("/refreshToken", refreshToken);
 
 router.get("/check-auth", authMiddleware, (req, res) => {

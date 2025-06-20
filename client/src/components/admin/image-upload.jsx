@@ -45,7 +45,7 @@ export default function ProductImageUpload({
     setImageFiles(newFiles);
     setPreviews(newPreviews);
   };
-
+  
   const uploadImages = async () => {
     setImageLoading(true);
     try {

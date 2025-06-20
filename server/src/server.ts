@@ -7,7 +7,7 @@ import { errorHandler } from "./middleware/errorHandlin.middleware";
 import authRoutes from "./routes/auth/auth.routes";
 import adminProducts from "./routes/admin/product.routes";
 import shopProductRoutes from "./routes/shop/products.routes";
-import cookieParse from "cookie-parser";
+import cookieParser from "cookie-parser";
 import OauthRoutes from "./routes/oauth/google.routes";
 import cartRoutes from "./routes/cart/Cart.Routes";
 import addressRoutes from "./routes/shop/address.routes";
@@ -32,7 +32,7 @@ const app = express();
 app.use(corsConfig());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_BASE_URL,
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
     allowedHeaders: [
       "Content-Type",
@@ -46,7 +46,7 @@ app.use(
 );
 
 app.use(express.json());
-app.use(cookieParse());
+app.use(cookieParser());
 
 const redisUrl = process.env.REDIS_URL;
 if (!redisUrl) {

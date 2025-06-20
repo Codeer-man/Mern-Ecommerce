@@ -96,6 +96,8 @@ export const authLogin = async (
       refreshAccessToken: refreshAccessToken,
     });
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 };
@@ -181,12 +183,6 @@ export const logout = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const refreshToken = req.cookies?.refreshToken;
-
-    if (!refreshToken) {
-      return next(new ErrorHandler("Refresh token not found", 400, false));
-    }
-
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
