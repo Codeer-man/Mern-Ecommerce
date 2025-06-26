@@ -13,6 +13,12 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
   const token =
     req.cookies?.accessToken ||
     req.header("Authorization")?.replace("Bearer", " ").trim();
+  // const authHeader = req.header("Authorization");
+  // const tokenFromHeader = authHeader?.startsWith("Bearer ")
+  //   ? authHeader.split(" ")[1]
+  //   : undefined;
+
+  // const token = tokenFromHeader;
 
   if (!token) {
     throw new ErrorHandler("Token not received", UNAUTHORIZED, false);
@@ -43,6 +49,7 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error(error, "invalid server");
     next(error);
   }
 };

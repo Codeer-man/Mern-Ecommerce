@@ -30,20 +30,20 @@ import corsConfig from "./helpers/corsConfig";
 const app = express();
 
 app.use(corsConfig());
-app.use(
-  cors({
-    origin: process.env.CLIENT_BASE_URL,
-    methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
+//     allowedHeaders: [
+//       "Content-Type",
+//       "Authorization",
+//       "Cache-Control",
+//       "Expires",
+//       "Pragma",
+//     ],
+//     credentials: true,
+//   })
+// );
 
 app.use(express.json());
 app.use(cookieParser());
